@@ -30,12 +30,24 @@
             "inputs": ["src/**", "scripts/**"],
             "outputs": ["openapi.json"]
         },
+        "docs#generate:cli": {
+            "inputs": [
+                "scripts/generate-cli-docs.mts",
+                "$TURBO_ROOT$/apps/cli/src/**",
+                "$TURBO_ROOT$/apps/cli/package.json"
+            ],
+            "outputs": ["content/docs/cli/**"]
+        },
         "docs#build": {
-            "dependsOn": ["^build", "@quilt/api#generate:openapi"],
+            "dependsOn": [
+                "^build",
+                "@quilt/api#generate:openapi",
+                "generate:cli"
+            ],
             "outputs": [".next/**", "!.next/cache/**"]
         },
         "docs#dev": {
-            "dependsOn": ["@quilt/api#generate:openapi"],
+            "dependsOn": ["@quilt/api#generate:openapi", "generate:cli"],
             "cache": false,
             "persistent": true
         },

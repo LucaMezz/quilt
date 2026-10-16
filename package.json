@@ -26,15 +26,20 @@
         "env:generate": "varlock codegen --path ./apps/web/ && varlock codegen --path ./apps/server/ && varlock codegen --path ./packages/db/",
         "postinstall": "varlock codegen --path ./apps/web/ && varlock codegen --path ./apps/server/ && varlock codegen --path ./packages/db/",
         "auth:generate": "cd apps/server && npm run auth:generate",
-        "check": "biome check --write ."
+        "check": "biome check --write .",
+        "prepare": "husky"
     },
     "dependencies": {
         "zod": "^4.5.4"
     },
     "devDependencies": {
         "@biomejs/biome": "^2.5.15",
+        "@commitlint/cli": "^21.2.3",
+        "@commitlint/config-conventional": "^21.2.3",
         "@quilt/config": "*",
         "@types/node": "^26.4.1",
+        "husky": "^9.1.7",
+        "lint-staged": "^17.6.0",
         "turbo": "^2.11.7",
         "typescript": "^6.0.3",
         "varlock": "1.18.0"

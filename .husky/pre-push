@@ -1,0 +1,1 @@
+npx --no -- turbo run check-types test

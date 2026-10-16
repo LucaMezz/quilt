@@ -13,5 +13,7 @@ export const openAPISecuritySchemes = {
             "Session cookie set by signing in through Better Auth at `/api/auth/sign-in/email`. Named `__Secure-better-auth.session_token` over HTTPS.",
     },
 } satisfies NonNullable<
-    NonNullable<OpenAPIGeneratorGenerateOptions["components"]>["securitySchemes"]
+    NonNullable<
+        OpenAPIGeneratorGenerateOptions["components"]
+    >["securitySchemes"]
 >;

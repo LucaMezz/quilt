@@ -7,7 +7,10 @@ html {
     scrollbar-gutter: stable;
 }
 
+/* Overrides the scroll lock's own !important styles, so it needs !important too. */
 html > body[data-scroll-locked] {
+    /* biome-ignore lint/complexity/noImportantStyles: must beat the scroll lock's !important */
     margin-right: 0px !important;
+    /* biome-ignore lint/complexity/noImportantStyles: must beat the scroll lock's !important */
     --removed-body-scroll-bar-size: 0px !important;
 }

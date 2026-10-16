@@ -1,0 +1,16 @@
+import { defineCommand } from "citty";
+
+import pkg from "../package.json" with { type: "json" };
+import health from "./commands/health";
+
+/** The root command. Kept free of side effects so the docs generator can import it. */
+export const main = defineCommand({
+    meta: {
+        name: "quilt",
+        version: pkg.version,
+        description: "Self-hosted PaaS that stitches your servers together",
+    },
+    subCommands: {
+        health,
+    },
+});

@@ -1,7 +1,8 @@
 import { stripVTControlCharacters } from "node:util";
 import { type ArgsDef, type CommandDef, runCommand } from "citty";
 
-import { findCommand, renderHelp } from "./ui/help";
+import { describeCommand, findCommand } from "./command-tree";
+import { renderHelp } from "./ui/help";
 import { log } from "./ui/log";
 import { theme } from "./ui/theme";
 
@@ -21,8 +22,15 @@ export async function run(
         rawArgs.length === 0 ||
         rawArgs.some((arg) => arg === "--help" || arg === "-h")
     ) {
-        const { cmd, path } = await findCommand(root, rawArgs);
-        console.log(await renderHelp(root, cmd, path));
+        const { path } = await findCommand(root, rawArgs);
+        const rootInfo = await describeCommand(root);
+        const info = path.reduce(
+            (current, name) =>
+                current.subCommands.find((sub) => sub.path.at(-1) === name) ??
+                current,
+            rootInfo,
+        );
+        console.log(renderHelp(rootInfo, info));
         return;
     }
 

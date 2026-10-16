@@ -7,7 +7,8 @@
     },
     "scripts": {
         "build": "tsc -b",
-        "check-types": "tsc -b"
+        "check-types": "tsc -b",
+        "generate:openapi": "tsx scripts/generate-openapi.ts"
     },
     "dependencies": {
         "@orpc/client": "^1.15.6",
@@ -20,6 +21,7 @@
     },
     "devDependencies": {
         "@quilt/config": "*",
+        "tsx": "^4.23.15",
         "typescript": "^6.0.3"
     }
 }

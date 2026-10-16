@@ -20,7 +20,8 @@
     "turborepo",
     "biome",
     "mcp",
-    "skills"
+    "skills",
+    "fumadocs"
   ],
   "examples": [],
   "auth": "better-auth",
@@ -31,6 +32,11 @@
   "webDeploy": "none",
   "serverDeploy": "none",
   "addonOptions": {
+    "fumadocs": {
+      "template": "next-mdx",
+      "devPort": 4000,
+      "search": "orama"
+    },
     "mcp": {
       "scope": "project",
       "servers": [

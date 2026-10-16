@@ -24,3 +24,4 @@ dist/
 
 # Generated
 apps/web/src/routeTree.gen.ts
+packages/api/openapi.json

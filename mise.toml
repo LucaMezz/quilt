@@ -1,0 +1,9 @@
+# Pinned developer tools. Run `mise install` after cloning.
+# Keep kubectl within one minor version of K3S_VERSION in deploy/versions.env.
+
+[tools]
+k3d = "5.9.0"
+kubectl = "1.37.1"
+
+[env]
+_.file = "deploy/versions.env"

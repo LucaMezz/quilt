@@ -14,6 +14,7 @@
         "test:e2e": "turbo run test:e2e",
         "dev:web": "turbo run dev -F web --",
         "dev:server": "turbo run dev -F server --",
+        "quilt": "npm run quilt -w cli --",
         "db:push": "turbo run db:push -F @quilt/db --",
         "db:studio": "turbo run db:studio -F @quilt/db --",
         "db:generate": "turbo run db:generate -F @quilt/db --",

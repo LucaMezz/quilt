@@ -1,0 +1,14 @@
+# prod
+dist/
+# Standalone binaries from `npm run compile`
+build/
+
+# deps
+node_modules/
+
+# env
+.env*
+!.env.example
+
+# typescript
+*.tsbuildinfo

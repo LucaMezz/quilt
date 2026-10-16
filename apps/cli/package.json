@@ -1,0 +1,28 @@
+{
+    "name": "cli",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "bin": {
+        "quilt": "./dist/index.mjs"
+    },
+    "scripts": {
+        "build": "tsc -b ../../packages/api && tsdown",
+        "check-types": "tsc -b ../../packages/api && tsc --noEmit",
+        "compile": "bun build --compile --minify --sourcemap --bytecode ./src/index.ts --outfile build/quilt",
+        "quilt": "tsx src/index.ts",
+        "start": "node dist/index.mjs"
+    },
+    "devDependencies": {
+        "@quilt/config": "*",
+        "@types/node": "^26.6.5",
+        "tsdown": "^0.23.1",
+        "tsx": "^4.23.15",
+        "typescript": "^6.0.3"
+    },
+    "dependencies": {
+        "@orpc/client": "^1.15.7",
+        "@quilt/api": "*",
+        "citty": "^0.2.2"
+    }
+}

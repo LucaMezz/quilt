@@ -1,0 +1,10 @@
+{
+    "extends": "@quilt/config/tsconfig.base.json",
+    "references": [{ "path": "../../packages/api" }],
+    "compilerOptions": {
+        "noEmit": true,
+        "paths": {
+            "@/*": ["./src/*"]
+        }
+    }
+}

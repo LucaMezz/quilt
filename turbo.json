@@ -14,6 +14,10 @@
             "dependsOn": ["^build"],
             "outputs": []
         },
+        "test:e2e": {
+            "dependsOn": ["^build"],
+            "cache": false
+        },
         "check-types": {
             "dependsOn": ["^check-types"],
             "outputs": ["dist/**"]

@@ -3,6 +3,7 @@ import { OpenAPIReferencePlugin } from "@orpc/openapi/plugins";
 import { onError } from "@orpc/server";
 import { RPCHandler } from "@orpc/server/node";
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4";
+import { openAPISecuritySchemes } from "@quilt/api/openapi";
 import { appRouter } from "@quilt/api/routers/index";
 import { toNodeHandler } from "better-auth/node";
 import cors from "cors";
@@ -36,6 +37,9 @@ const apiHandler = new OpenAPIHandler(appRouter, {
     plugins: [
         new OpenAPIReferencePlugin({
             schemaConverters: [new ZodToJsonSchemaConverter()],
+            specGenerateOptions: {
+                components: { securitySchemes: openAPISecuritySchemes },
+            },
         }),
     ],
     interceptors: [

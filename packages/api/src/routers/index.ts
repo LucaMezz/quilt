@@ -11,7 +11,9 @@ export const appRouter = {
             summary: "Health check",
             tags: ["System"],
         })
-        .output(z.literal("OK").describe("Always `OK` while the server is up"))
+        // z.enum rather than z.literal: Fumadocs can't name a `const` schema
+        // and shows "unknown", but it renders a one-value enum as `"OK"`.
+        .output(z.enum(["OK"]).describe("Always `OK` while the server is up"))
         .handler(() => {
             return "OK" as const;
         }),
@@ -22,10 +24,24 @@ export const appRouter = {
             summary: "Private data",
             tags: ["Example"],
         })
+        .output(
+            z.object({
+                message: z.string(),
+                user: z.object({
+                    id: z.string(),
+                    name: z.string(),
+                    email: z.email(),
+                    emailVerified: z.boolean(),
+                    image: z.string().nullish(),
+                    createdAt: z.date(),
+                    updatedAt: z.date(),
+                }),
+            }),
+        )
         .handler(({ context }) => {
             return {
                 message: "This is private",
-                user: context.session?.user,
+                user: context.session.user,
             };
         }),
 };

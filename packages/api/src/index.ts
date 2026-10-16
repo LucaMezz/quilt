@@ -1,6 +1,7 @@
 import { ORPCError, os } from "@orpc/server";
 
 import type { Context } from "./context";
+import { SESSION_COOKIE_SCHEME } from "./openapi";
 
 export const o = os.$context<Context>();
 
@@ -17,4 +18,14 @@ const requireAuth = o.middleware(async ({ context, next }) => {
     });
 });
 
-export const protectedProcedure = publicProcedure.use(requireAuth);
+export const protectedProcedure = publicProcedure.use(requireAuth).route({
+    // Marks every protected procedure as needing a session in the OpenAPI spec.
+    spec: (operation) => ({
+        ...operation,
+        security: [{ [SESSION_COOKIE_SCHEME]: [] }],
+        responses: {
+            ...operation.responses,
+            401: { description: "No valid session" },
+        },
+    }),
+});

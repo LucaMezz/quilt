@@ -1,0 +1,32 @@
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+metadata:
+    name: ${PROJECT_NAME}-demo
+servers: 1
+agents: 2
+kubeAPI:
+    hostIP: 127.0.0.1
+    hostPort: "6550"
+image: ${K3S_IMAGE}
+ports:
+  - port: 80:80
+    nodeFilters: [loadbalancer]
+  - port: 443:443
+    nodeFilters: [loadbalancer]
+options:
+  k3s:
+    nodeLabels:
+      - label: topology.kubernetes.io/zone=zone-a
+        nodeFilters: [agent:0]
+      - label: topology.kubernetes.io/zone=zone-b
+        nodeFilters: [agent:1]
+  kubeconfig:
+    switchCurrentContext: false
+  runtime:
+    serversMemory: 2g
+    agentsMemory: 2g
+registries:
+  create:
+    name: ${PROJECT_NAME}-registry
+    host: "127.0.0.1"
+    hostPort: "5000"

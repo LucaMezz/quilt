@@ -6,4 +6,12 @@ k3d = "5.9.0"
 kubectl = "1.37.1"
 
 [env]
-_.file = "deploy/versions.env"
+_.file = ["deploy/versions.env", "deploy/project.env"]
+
+[tasks."demo:up"]
+description = "Create the local demo cluster"
+run = "k3d cluster create --config deploy/k3d/demo.yaml"
+
+[tasks."demo:down"]
+description = "Delete the local demo cluster"
+run = "k3d cluster delete --config deploy/k3d/demo.yaml"

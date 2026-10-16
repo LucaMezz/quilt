@@ -25,3 +25,6 @@ dist/
 # Generated
 apps/web/src/routeTree.gen.ts
 packages/api/openapi.json
+
+# Nx (used for releases only)
+.nx/

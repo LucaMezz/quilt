@@ -1,0 +1,3 @@
+{
+    "extends": "@quilt/config/tsconfig.base.json"
+}

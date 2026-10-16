@@ -1,0 +1,24 @@
+{
+    "name": "@quilt/auth",
+    "type": "module",
+    "exports": {
+        ".": "./src/index.ts",
+        "./*": "./src/*.ts"
+    },
+    "scripts": {
+        "build": "tsc -b",
+        "check-types": "tsc -b"
+    },
+    "dependencies": {
+        "@better-auth/core": "1.7.7",
+        "@better-auth/drizzle-adapter": "1.7.7",
+        "@quilt/db": "*",
+        "better-auth": "1.7.7",
+        "drizzle-orm": "1.0.0-rc.4",
+        "zod": "^4.5.4"
+    },
+    "devDependencies": {
+        "@quilt/config": "*",
+        "typescript": "^6.0.3"
+    }
+}

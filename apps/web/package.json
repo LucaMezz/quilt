@@ -1,0 +1,48 @@
+{
+    "name": "web",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "vite dev",
+        "build": "tsc -b ../../packages/api && vite build",
+        "serve": "vite preview",
+        "start": "vite",
+        "check-types": "tsc -b ../../packages/api && vite build && tsc --noEmit",
+        "env:generate": "varlock codegen"
+    },
+    "dependencies": {
+        "@orpc/client": "^1.15.6",
+        "@orpc/server": "^1.15.6",
+        "@orpc/tanstack-query": "^1.15.6",
+        "@quilt/api": "*",
+        "@quilt/ui": "*",
+        "@tailwindcss/vite": "^4.3.3",
+        "@tanstack/react-form": "^1.33.5",
+        "@tanstack/react-query": "^5.104.2",
+        "@tanstack/react-router": "^1.170.44",
+        "@varlock/vite-integration": "1.5.1",
+        "better-auth": "1.7.7",
+        "lucide-react": "^1.56.0",
+        "next-themes": "^0.4.6",
+        "react": "^19.3.0",
+        "react-dom": "^19.3.0",
+        "sonner": "^2.0.8",
+        "varlock": "1.18.0",
+        "zod": "^4.5.4"
+    },
+    "devDependencies": {
+        "@quilt/config": "*",
+        "@tanstack/react-query-devtools": "^5.104.2",
+        "@tanstack/react-router-devtools": "^1.167.2",
+        "@tanstack/router-plugin": "^1.168.45",
+        "@types/node": "^26.6.5",
+        "@types/react": "^19.3.0",
+        "@types/react-dom": "^19.3.0",
+        "@vitejs/plugin-react": "^6.1.2",
+        "postcss": "^8.5.30",
+        "tailwindcss": "^4.3.3",
+        "typescript": "^6.0.3",
+        "vite": "^8.3.4"
+    }
+}

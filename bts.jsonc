@@ -1,0 +1,28 @@
+// Better-T-Stack project metadata
+//
+// Keep this file to use the `add` command.
+// Add addons: npx create-better-t-stack@latest add
+//
+// Docs: https://better-t-stack.dev/docs
+// Stack Builder: https://better-t-stack.dev/new
+
+{
+  "$schema": "https://r2.better-t-stack.dev/schema.json",
+  "version": "3.46.1",
+  "createdAt": "2026-10-16T04:01:39.110Z",
+  "reproducibleCommand": "npx create-better-t-stack@latest . --frontend tanstack-router --backend express --runtime node --database postgres --orm drizzle --api orpc --auth better-auth --payments none --addons turborepo biome --examples none --db-setup docker --web-deploy none --server-deploy none --no-git --package-manager npm --no-install",
+  "database": "postgres",
+  "orm": "drizzle",
+  "backend": "express",
+  "runtime": "node",
+  "frontend": ["tanstack-router"],
+  "addons": ["turborepo", "biome"],
+  "examples": [],
+  "auth": "better-auth",
+  "payments": "none",
+  "packageManager": "npm",
+  "dbSetup": "docker",
+  "api": "orpc",
+  "webDeploy": "none",
+  "serverDeploy": "none",
+}

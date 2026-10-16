@@ -1,0 +1,43 @@
+{
+    "name": "quilt",
+    "private": true,
+    "workspaces": [
+        "apps/*",
+        "packages/*"
+    ],
+    "type": "module",
+    "scripts": {
+        "dev": "turbo run dev",
+        "build": "turbo run build",
+        "check-types": "turbo run check-types",
+        "dev:web": "turbo run dev -F web --",
+        "dev:server": "turbo run dev -F server --",
+        "db:push": "turbo run db:push -F @quilt/db --",
+        "db:studio": "turbo run db:studio -F @quilt/db --",
+        "db:generate": "turbo run db:generate -F @quilt/db --",
+        "db:migrate": "turbo run db:migrate -F @quilt/db --",
+        "db:start": "turbo run db:start -F @quilt/db --",
+        "db:watch": "turbo run db:watch -F @quilt/db --",
+        "db:stop": "turbo run db:stop -F @quilt/db --",
+        "db:down": "turbo run db:down -F @quilt/db --",
+        "env:generate": "varlock codegen --path ./apps/web/ && varlock codegen --path ./apps/server/ && varlock codegen --path ./packages/db/",
+        "postinstall": "varlock codegen --path ./apps/web/ && varlock codegen --path ./apps/server/ && varlock codegen --path ./packages/db/",
+        "auth:generate": "cd apps/server && npm run auth:generate",
+        "check": "biome check --write ."
+    },
+    "dependencies": {
+        "zod": "^4.5.4"
+    },
+    "devDependencies": {
+        "@biomejs/biome": "^2.5.15",
+        "@quilt/config": "*",
+        "@types/node": "^26.4.1",
+        "turbo": "^2.11.7",
+        "typescript": "^6.0.3",
+        "varlock": "1.18.0"
+    },
+    "packageManager": "npm@11.16.0",
+    "allowScripts": {
+        "esbuild": true
+    }
+}

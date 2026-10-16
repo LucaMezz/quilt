@@ -16,7 +16,12 @@
   "backend": "express",
   "runtime": "node",
   "frontend": ["tanstack-router"],
-  "addons": ["turborepo", "biome"],
+  "addons": [
+    "turborepo",
+    "biome",
+    "mcp",
+    "skills"
+  ],
   "examples": [],
   "auth": "better-auth",
   "payments": "none",
@@ -25,4 +30,54 @@
   "api": "orpc",
   "webDeploy": "none",
   "serverDeploy": "none",
+  "addonOptions": {
+    "mcp": {
+      "scope": "project",
+      "servers": [
+        "better-t-stack",
+        "context7",
+        "shadcn",
+        "better-auth"
+      ],
+      "agents": [
+        "claude-code"
+      ]
+    },
+    "skills": {
+      "scope": "project",
+      "agents": [
+        "claude-code"
+      ],
+      "selections": [
+        {
+          "source": "vercel-labs/agent-skills",
+          "skills": [
+            "web-design-guidelines",
+            "vercel-composition-patterns",
+            "vercel-react-best-practices"
+          ]
+        },
+        {
+          "source": "shadcn/ui",
+          "skills": [
+            "shadcn"
+          ]
+        },
+        {
+          "source": "better-auth/skills",
+          "skills": [
+            "better-auth-best-practices",
+            "better-auth-security-best-practices",
+            "email-and-password-best-practices"
+          ]
+        },
+        {
+          "source": "vercel/turborepo",
+          "skills": [
+            "turborepo"
+          ]
+        }
+      ]
+    }
+  },
 }

@@ -10,7 +10,10 @@ _.file = ["deploy/versions.env", "deploy/project.env"]
 
 [tasks."demo:up"]
 description = "Create the local demo cluster"
-run = "k3d cluster create --config deploy/k3d/demo.yaml"
+run = [
+    "k3d cluster create --config deploy/k3d/demo.yaml",
+    "KUBE_CONTEXT=k3d-$PROJECT_NAME-demo KNATIVE_DOMAIN=127.0.0.1.sslip.io deploy/knative/install.sh",
+]
 
 [tasks."demo:down"]
 description = "Delete the local demo cluster"

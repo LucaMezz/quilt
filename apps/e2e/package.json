@@ -1,0 +1,33 @@
+{
+    "name": "e2e",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "check-types": "tsc -b ../../packages/api ../../packages/cluster && tsc --noEmit",
+        "test:e2e": "vitest run",
+        "test:e2e:watch": "vitest",
+        "env:generate": "varlock codegen"
+    },
+    "dependencies": {
+        "@kubernetes/client-node": "^2.0.0",
+        "@orpc/client": "^1.15.7",
+        "@orpc/server": "^1.15.7",
+        "@quilt/api": "*",
+        "@quilt/auth": "*",
+        "@quilt/cluster": "*",
+        "@quilt/db": "*",
+        "controller": "*",
+        "drizzle-orm": "1.0.0-rc.4",
+        "pg": "^8.23.0",
+        "server": "*",
+        "varlock": "1.18.0"
+    },
+    "devDependencies": {
+        "@quilt/config": "*",
+        "@types/node": "^26.4.1",
+        "@types/pg": "^8.23.1",
+        "typescript": "^6.0.3",
+        "vitest": "^5.0.5"
+    }
+}

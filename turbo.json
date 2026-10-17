@@ -18,6 +18,10 @@
             "dependsOn": ["^build"],
             "cache": false
         },
+        "e2e#test:e2e": {
+            "cache": false,
+            "passThroughEnv": ["HOME", "KUBECONFIG", "E2E_*"]
+        },
         "check-types": {
             "dependsOn": ["^check-types"],
             "outputs": ["dist/**"]

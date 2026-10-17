@@ -1,0 +1,11 @@
+{
+    "extends": "@quilt/config/tsconfig.base.json",
+    "references": [
+        { "path": "../../packages/api" },
+        { "path": "../../packages/cluster" }
+    ],
+    "compilerOptions": {
+        "noEmit": true
+    },
+    "include": ["src/**/*.ts", "vitest.config.ts"]
+}

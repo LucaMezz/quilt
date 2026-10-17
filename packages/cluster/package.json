@@ -1,0 +1,23 @@
+{
+    "name": "@quilt/cluster",
+    "version": "0.0.0",
+    "type": "module",
+    "exports": {
+        ".": "./src/index.ts",
+        "./*": "./src/*.ts"
+    },
+    "scripts": {
+        "build": "tsc -b",
+        "check-types": "tsc -b",
+        "test": "vitest run --passWithNoTests",
+        "test:watch": "vitest"
+    },
+    "devDependencies": {
+        "@quilt/config": "*",
+        "typescript": "^6.0.3",
+        "vitest": "^5.0.5"
+    },
+    "dependencies": {
+        "@kubernetes/client-node": "^2.0.0"
+    }
+}

@@ -3,6 +3,9 @@
     "version": "0.0.0",
     "type": "module",
     "main": "src/index.ts",
+    "exports": {
+        "./app": "./src/app.ts"
+    },
     "scripts": {
         "build": "tsc -b ../../packages/api && tsdown",
         "check-types": "tsc -b ../../packages/api && tsc --noEmit",

@@ -1,0 +1,32 @@
+{
+    "name": "controller",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "main": "src/index.ts",
+    "exports": {
+        "./controller": "./src/controller.ts"
+    },
+    "scripts": {
+        "build": "tsc -b ../../packages/db ../../packages/cluster && tsdown",
+        "check-types": "tsc -b ../../packages/db ../../packages/cluster && tsc --noEmit",
+        "dev": "tsx watch src/index.ts",
+        "start": "node dist/index.mjs",
+        "test": "vitest run --passWithNoTests",
+        "env:generate": "varlock codegen"
+    },
+    "dependencies": {
+        "@quilt/cluster": "*",
+        "@quilt/db": "*",
+        "drizzle-orm": "1.0.0-rc.4",
+        "varlock": "1.18.0"
+    },
+    "devDependencies": {
+        "@quilt/config": "*",
+        "@types/node": "^26.4.1",
+        "tsdown": "^0.23.0",
+        "tsx": "^4.23.15",
+        "typescript": "^6.0.3",
+        "vitest": "^5.0.5"
+    }
+}

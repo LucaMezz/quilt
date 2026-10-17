@@ -16,6 +16,7 @@
         "release:dry": "nx release --skip-publish --dry-run",
         "dev:web": "turbo run dev -F web --",
         "dev:server": "turbo run dev -F server --",
+        "dev:controller": "turbo run dev -F controller --",
         "quilt": "npm run quilt -w cli --",
         "db:push": "turbo run db:push -F @quilt/db --",
         "db:studio": "turbo run db:studio -F @quilt/db --",
@@ -25,8 +26,8 @@
         "db:watch": "turbo run db:watch -F @quilt/db --",
         "db:stop": "turbo run db:stop -F @quilt/db --",
         "db:down": "turbo run db:down -F @quilt/db --",
-        "env:generate": "varlock codegen --path ./apps/web/ && varlock codegen --path ./apps/server/ && varlock codegen --path ./packages/db/",
-        "postinstall": "varlock codegen --path ./apps/web/ && varlock codegen --path ./apps/server/ && varlock codegen --path ./packages/db/",
+        "env:generate": "varlock codegen --path ./apps/web/ && varlock codegen --path ./apps/server/ && varlock codegen --path ./packages/db/ && varlock codegen --path ./apps/controller/",
+        "postinstall": "varlock codegen --path ./apps/web/ && varlock codegen --path ./apps/server/ && varlock codegen --path ./packages/db/ && varlock codegen --path ./apps/controller/",
         "auth:generate": "cd apps/server && npm run auth:generate",
         "check": "biome check --write .",
         "prepare": "husky"

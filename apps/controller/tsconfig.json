@@ -1,0 +1,10 @@
+{
+    "extends": "@quilt/config/tsconfig.base.json",
+    "references": [
+        { "path": "../../packages/db" },
+        { "path": "../../packages/cluster" }
+    ],
+    "compilerOptions": {
+        "noEmit": true
+    }
+}

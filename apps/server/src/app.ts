@@ -1,0 +1,83 @@
+import { OpenAPIHandler } from "@orpc/openapi/node";
+import { OpenAPIReferencePlugin } from "@orpc/openapi/plugins";
+import { onError } from "@orpc/server";
+import { RPCHandler } from "@orpc/server/node";
+import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4";
+import { openAPISecuritySchemes } from "@quilt/api/openapi";
+import { appRouter } from "@quilt/api/routers/index";
+import type { Auth } from "@quilt/auth";
+import type { Database } from "@quilt/db";
+import { toNodeHandler } from "better-auth/node";
+import cors from "cors";
+import express from "express";
+
+import { createContextFactory } from "./context";
+
+export type AppOptions = {
+    auth: Auth;
+    db: Database;
+    corsOrigin: string;
+    onError?: (error: unknown) => void;
+};
+
+export function createApp({
+    auth,
+    db,
+    corsOrigin,
+    onError: reportError = console.error,
+}: AppOptions) {
+    const app = express();
+    const createContext = createContextFactory(auth, db);
+
+    app.use(
+        cors({
+            origin: corsOrigin,
+            methods: ["GET", "POST", "OPTIONS"],
+            allowedHeaders: ["Content-Type", "Authorization"],
+            credentials: true,
+        }),
+    );
+
+    app.all("/api/auth{/*path}", toNodeHandler(auth));
+
+    const rpcHandler = new RPCHandler(appRouter, {
+        interceptors: [onError(reportError)],
+    });
+    const apiHandler = new OpenAPIHandler(appRouter, {
+        plugins: [
+            new OpenAPIReferencePlugin({
+                schemaConverters: [new ZodToJsonSchemaConverter()],
+                specGenerateOptions: {
+                    components: { securitySchemes: openAPISecuritySchemes },
+                },
+            }),
+        ],
+        interceptors: [onError(reportError)],
+    });
+
+    app.use(async (req, res, next) => {
+        const context = await createContext(req);
+
+        const rpcResult = await rpcHandler.handle(req, res, {
+            prefix: "/rpc",
+            context,
+        });
+        if (rpcResult.matched) return;
+
+        const apiResult = await apiHandler.handle(req, res, {
+            prefix: "/api-reference",
+            context,
+        });
+        if (apiResult.matched) return;
+
+        next();
+    });
+
+    app.use(express.json());
+
+    app.get("/", (_req, res) => {
+        res.status(200).send("OK");
+    });
+
+    return app;
+}

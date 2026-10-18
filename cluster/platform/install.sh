@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Install Knative Serving with Kourier as its networking layer.
 #
-# Versions come from deploy/versions.env. Set KNATIVE_DOMAIN to the domain apps get
+# Versions come from cluster/versions.env. Set KNATIVE_DOMAIN to the domain apps get
 # hostnames under, and KUBE_CONTEXT to target a context other than the current one.
 set -euo pipefail
 
-: "${KNATIVE_SERVING_VERSION:?set in deploy/versions.env}"
-: "${KOURIER_VERSION:?set in deploy/versions.env}"
+: "${KNATIVE_SERVING_VERSION:?set in cluster/versions.env}"
+: "${KOURIER_VERSION:?set in cluster/versions.env}"
 : "${KNATIVE_DOMAIN:?domain that app hostnames go under}"
 
 k() { kubectl ${KUBE_CONTEXT:+--context "$KUBE_CONTEXT"} "$@"; }

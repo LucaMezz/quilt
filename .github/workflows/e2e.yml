@@ -10,7 +10,8 @@ on:
       - "apps/controller/**"
       - "apps/server/**"
       - "packages/**"
-      - "deploy/**"
+      - "cluster/**"
+      - "dev/**"
       - "mise.toml"
       - "package-lock.json"
       - ".github/workflows/e2e.yml"
@@ -58,12 +59,12 @@ jobs:
       - uses: jdx/mise-action@v2
 
       - name: Create cluster
-        run: mise run demo:up
+        run: mise run cluster:dev:up
 
       - run: npx turbo run test:e2e -F e2e
 
       - name: Show cluster state
         if: failure()
         run: |
-          mise exec -- kubectl --context k3d-quilt-demo get all -A
-          mise exec -- kubectl --context k3d-quilt-demo get events -A --sort-by=.lastTimestamp | tail -50
+          mise exec -- kubectl --context k3d-quilt-dev get all -A
+          mise exec -- kubectl --context k3d-quilt-dev get events -A --sort-by=.lastTimestamp | tail -50

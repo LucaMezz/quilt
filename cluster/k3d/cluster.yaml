@@ -1,11 +1,11 @@
 apiVersion: k3d.io/v1alpha5
 kind: Simple
 metadata:
-    name: ${PROJECT_NAME}-demo
+    name: ${PROJECT_NAME}-${CLUSTER_ENV}
 servers: 1
 agents: 2
 kubeAPI:
-    hostIP: 127.0.0.1
+    hostIP: ${KUBE_API_HOST}
     hostPort: "6550"
 image: ${K3S_IMAGE}
 ports:
@@ -26,8 +26,8 @@ options:
   kubeconfig:
     switchCurrentContext: false
   runtime:
-    serversMemory: 2g
-    agentsMemory: 2g
+    serversMemory: ${NODE_MEMORY}
+    agentsMemory: ${NODE_MEMORY}
 registries:
   create:
     name: ${PROJECT_NAME}-registry

@@ -1,20 +1,19 @@
 # Pinned developer tools. Run `mise install` after cloning.
-# Keep kubectl within one minor version of K3S_VERSION in deploy/versions.env.
+# Keep kubectl within one minor version of K3S_VERSION in cluster/versions.env.
 
 [tools]
 k3d = "5.9.0"
 kubectl = "1.37.1"
 
 [env]
-_.file = ["deploy/versions.env", "deploy/project.env"]
+_.file = ["cluster/versions.env", "cluster/project.env"]
 
-[tasks."demo:up"]
-description = "Create the local demo cluster"
-run = [
-    "k3d cluster create --config deploy/k3d/demo.yaml",
-    "KUBE_CONTEXT=k3d-$PROJECT_NAME-demo KNATIVE_DOMAIN=127.0.0.1.sslip.io deploy/knative/install.sh",
-]
+[tasks."cluster:dev:up"]
+description = "Create the local development k3d cluster"
+env = { _.file = "dev/cluster.env" }
+run = "cluster/k3d/up.sh"
 
-[tasks."demo:down"]
-description = "Delete the local demo cluster"
-run = "k3d cluster delete --config deploy/k3d/demo.yaml"
+[tasks."cluster:dev:down"]
+description = "Delete the local development k3d cluster"
+env = { _.file = "dev/cluster.env" }
+run = "k3d cluster delete --config cluster/k3d/cluster.yaml"

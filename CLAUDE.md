@@ -48,6 +48,13 @@ npm run db:migrate -w @quilt/db                         # apply to the dev DB (D
 - Object storage only through `@quilt/storage` (`putObject`, `getObject`, `deleteObject`).
 - `@quilt/db/testing` and `@quilt/storage/testing` are test-only; Biome rejects them in application code.
 - API integration tests use the fixtures in `packages/api/src/testing/fixtures.ts` (`db`, `storage`, `auth`, `signUp`, `createOrganization`) and run against real Postgres, RustFS and Better Auth.
+- Aim for roughly 80% unit, 15% integration and 5% e2e tests by count; anything that must not break gets a test.
+
+## Workflow
+
+- `main` only changes through squash-merged PRs once `Checks`, `Integration tests` and `Browser tests` pass. Work on a short-lived branch, never push to `main`, and never skip git hooks.
+- Keep each PR one self-contained change that is quick to review. Following Google's guidance, around 100 changed lines is usually a reasonable size and 1000 is usually too large. Tests belong in the same PR as the code they cover.
+- Before writing anything sizeable, propose how to split it into a series of PRs that each work on their own (e.g. schema, then service, then endpoint; or API, then page, then navigation) and keep refactors separate from features.
 
 ## Gotchas
 

@@ -12,11 +12,12 @@
         },
         "test": {
             "dependsOn": ["^build"],
-            "outputs": []
+            "outputs": ["coverage/unit/**"]
         },
         "test:integration": {
             "dependsOn": ["^build"],
-            "cache": false
+            "cache": false,
+            "outputs": ["coverage/integration/**"]
         },
         "test:browser": {
             "dependsOn": ["^build"],

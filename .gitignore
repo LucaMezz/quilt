@@ -23,6 +23,7 @@ dist/
 *.log
 
 # Generated
+coverage/
 apps/web/src/routeTree.gen.ts
 packages/api/openapi.json
 

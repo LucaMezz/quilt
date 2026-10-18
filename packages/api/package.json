@@ -12,7 +12,7 @@
         "generate:openapi": "tsx scripts/generate-openapi.ts",
         "test": "vitest run --project unit",
         "test:watch": "vitest --project unit",
-        "test:integration": "vitest run --project integration"
+        "test:integration": "vitest run --project integration --coverage.reportsDirectory=coverage/integration"
     },
     "dependencies": {
         "@orpc/client": "^1.15.6",
@@ -28,6 +28,7 @@
     },
     "devDependencies": {
         "@quilt/config": "*",
+        "@vitest/coverage-v8": "^5.0.5",
         "tsx": "^4.23.15",
         "typescript": "^6.0.3",
         "varlock": "1.18.0",

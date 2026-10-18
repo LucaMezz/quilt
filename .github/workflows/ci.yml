@@ -22,6 +22,9 @@ jobs:
     name: Checks
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    permissions:
+      contents: read
+      id-token: write
     env:
       VITE_SERVER_URL: http://localhost:3000
     steps:
@@ -50,12 +53,22 @@ jobs:
 
       - run: npx turbo boundaries
 
-      - run: npx turbo run check-types test build
+      - run: npx turbo run check-types build
+
+      - run: npx turbo run test -- --coverage.enabled
+
+      - uses: codecov/codecov-action@v7
+        with:
+          use_oidc: true
+          flags: unit
 
   integration:
     name: Integration tests
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write
     services:
       postgres:
         image: postgres:18
@@ -81,7 +94,12 @@ jobs:
       - name: Start storage
         run: docker compose -f dev/compose.yaml up -d --wait storage
 
-      - run: npx turbo run test:integration
+      - run: npx turbo run test:integration -- --coverage.enabled
+
+      - uses: codecov/codecov-action@v7
+        with:
+          use_oidc: true
+          flags: integration
 
   browser:
     name: Browser tests

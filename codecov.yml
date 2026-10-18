@@ -1,0 +1,19 @@
+coverage:
+  status:
+    project:
+      default:
+        informational: true
+    patch:
+      default:
+        target: 80%
+        informational: true
+
+comment:
+  layout: "condensed_header, diff, flags, files"
+
+flag_management:
+  default_rules:
+    carryforward: false
+  individual_flags:
+    - name: unit
+    - name: integration

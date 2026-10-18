@@ -25,20 +25,20 @@ export class AppNameTakenError extends Error {
 }
 
 export type AppRef = {
-    ownerId: string;
+    organizationId: string;
     name: string;
 };
 
-function ownedBy(ref: AppRef) {
+function inOrganization(ref: AppRef) {
     return and(
-        eq(app.ownerId, ref.ownerId),
+        eq(app.organizationId, ref.organizationId),
         eq(app.name, ref.name),
         isNull(app.deletedAt),
     );
 }
 
 export async function getOwnedApp(db: Database, ref: AppRef): Promise<App> {
-    const [found] = await db.select().from(app).where(ownedBy(ref));
+    const [found] = await db.select().from(app).where(inOrganization(ref));
     if (!found) {
         throw new AppNotFoundError(ref.name);
     }
@@ -55,7 +55,7 @@ export async function createApp(
         .insert(app)
         .values({
             id,
-            ownerId: ref.ownerId,
+            organizationId: ref.organizationId,
             name: ref.name,
             namespace: `app-${id}`,
             hostname: `${ref.name}.${appsDomain}`,
@@ -68,7 +68,7 @@ export async function destroyApp(db: Database, ref: AppRef): Promise<App> {
     const [destroyed] = await db
         .update(app)
         .set({ status: "destroying" })
-        .where(ownedBy(ref))
+        .where(inOrganization(ref))
         .returning();
     if (!destroyed) {
         throw new AppNotFoundError(ref.name);
@@ -78,7 +78,7 @@ export async function destroyApp(db: Database, ref: AppRef): Promise<App> {
 
 export async function listApps(
     db: Database,
-    ownerId: string,
+    organizationId: string,
     page: PageParams,
 ): Promise<Page<App>> {
     const rows = await db
@@ -86,7 +86,7 @@ export async function listApps(
         .from(app)
         .where(
             and(
-                eq(app.ownerId, ownerId),
+                eq(app.organizationId, organizationId),
                 isNull(app.deletedAt),
                 afterCursor(app, page.cursor),
             ),

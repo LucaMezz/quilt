@@ -13,7 +13,7 @@ import {
     unique,
 } from "drizzle-orm/pg-core";
 
-import { user } from "./auth";
+import { organization, user } from "./auth";
 
 export const appStatus = pgEnum("app_status", [
     "pending",
@@ -43,9 +43,9 @@ export const app = pgTable(
         id: text("id")
             .primaryKey()
             .$defaultFn(() => crypto.randomUUID()),
-        ownerId: text("owner_id")
+        organizationId: text("organization_id")
             .notNull()
-            .references(() => user.id, { onDelete: "restrict" }),
+            .references(() => organization.id, { onDelete: "restrict" }),
         name: text("name").notNull().unique(),
         namespace: text("namespace").notNull(),
         hostname: text("hostname").notNull().unique(),
@@ -64,7 +64,7 @@ export const app = pgTable(
         deletedAt: timestamp("deleted_at"),
     },
     (table) => [
-        index("app_ownerId_idx").on(table.ownerId),
+        index("app_organizationId_idx").on(table.organizationId),
         check(
             "app_name_dns_label",
             sql`char_length(${table.name}) <= 63 and ${table.name} ~ '^[a-z0-9]([-a-z0-9]*[a-z0-9])?$'`,
@@ -137,12 +137,12 @@ export type DeploymentKind = (typeof deploymentKind.enumValues)[number];
 export type DeploymentStatus = (typeof deploymentStatus.enumValues)[number];
 
 export const appRelations = defineRelationsPart(
-    { user, app, appSecret, deployment },
+    { user, organization, app, appSecret, deployment },
     (r) => ({
         app: {
-            owner: r.one.user({
-                from: r.app.ownerId,
-                to: r.user.id,
+            organization: r.one.organization({
+                from: r.app.organizationId,
+                to: r.organization.id,
             }),
             liveDeployment: r.one.deployment({
                 from: r.app.liveDeploymentId,

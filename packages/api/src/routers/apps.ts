@@ -10,6 +10,11 @@ import {
     destroyApp,
     listApps,
 } from "../services/apps";
+import {
+    getMemberOrganization,
+    OrganizationNotFoundError,
+} from "../services/organizations";
+import { OrganizationRef, organizationNotFound } from "./organizations";
 
 export const AppName = z
     .string()
@@ -17,7 +22,7 @@ export const AppName = z
     .max(63)
     .regex(/^[a-z0-9]([-a-z0-9]*[a-z0-9])?$/)
     .describe(
-        "Identifies the app in API paths and CLI commands. Unique across all apps, not just yours, and can't be changed later.",
+        "Identifies the app in API paths and CLI commands. Unique across all apps, not just your organization's, and can't be changed later.",
     );
 
 export const AppStatus = z
@@ -41,35 +46,46 @@ export const AppSchema = z.object({
     updatedAt: z.date(),
 });
 
+const AppRef = OrganizationRef.extend({ name: AppName });
+
 export const appsRouter = {
     createApp: protectedProcedure
         .route({
             method: "POST",
-            path: "/apps",
+            path: "/orgs/{org}/apps",
             successStatus: 201,
             summary: "Create app",
             description:
-                "Registers a new app owned by you and reserves its name and hostname. Nothing is deployed until you create a deployment.",
+                "Registers a new app in the organization and reserves its name and hostname. Nothing is deployed until you create a deployment.",
             successDescription: "App created",
             tags: ["Apps"],
         })
         .errors({
+            NOT_FOUND: organizationNotFound,
             CONFLICT: describeErrorResponse(
                 { message: "App name is already taken" },
                 409,
                 "App name is already taken",
             ),
         })
-        .input(z.object({ name: AppName }))
+        .input(AppRef)
         .output(AppSchema)
         .handler(async ({ input, context, errors }) => {
             try {
+                const organization = await getMemberOrganization(
+                    context.db,
+                    context.session.user.id,
+                    input.org,
+                );
                 return await createApp(
                     context.db,
-                    { ownerId: context.session.user.id, name: input.name },
+                    { organizationId: organization.id, name: input.name },
                     context.appsDomain,
                 );
             } catch (error) {
+                if (error instanceof OrganizationNotFoundError) {
+                    throw errors.NOT_FOUND();
+                }
                 if (error instanceof AppNameTakenError) throw errors.CONFLICT();
                 throw error;
             }
@@ -77,7 +93,7 @@ export const appsRouter = {
     destroyApp: protectedProcedure
         .route({
             method: "DELETE",
-            path: "/apps/{name}",
+            path: "/orgs/{org}/apps/{name}",
             successStatus: 202,
             summary: "Destroy app",
             description:
@@ -89,35 +105,58 @@ export const appsRouter = {
             NOT_FOUND: describeErrorResponse(
                 { message: "App not found" },
                 404,
-                "No app with this name exists in your account",
+                "No app with this name exists in an organization you're a member of",
             ),
         })
-        .input(z.object({ name: AppName }))
+        .input(AppRef)
         .output(AppSchema)
         .handler(async ({ input, context, errors }) => {
             try {
+                const organization = await getMemberOrganization(
+                    context.db,
+                    context.session.user.id,
+                    input.org,
+                );
                 return await destroyApp(context.db, {
-                    ownerId: context.session.user.id,
+                    organizationId: organization.id,
                     name: input.name,
                 });
             } catch (error) {
-                if (error instanceof AppNotFoundError) throw errors.NOT_FOUND();
+                if (
+                    error instanceof OrganizationNotFoundError ||
+                    error instanceof AppNotFoundError
+                ) {
+                    throw errors.NOT_FOUND();
+                }
                 throw error;
             }
         }),
     listApps: protectedProcedure
         .route({
             method: "GET",
-            path: "/apps",
+            path: "/orgs/{org}/apps",
             summary: "List apps",
             description:
-                "Lists the apps you own, newest first, including ones still being destroyed. Results are paginated: pass `nextCursor` back as `cursor` to get the next page.",
-            successDescription: "A page of your apps",
+                "Lists the organization's apps, newest first, including ones still being destroyed. Results are paginated: pass `nextCursor` back as `cursor` to get the next page.",
+            successDescription: "A page of the organization's apps",
             tags: ["Apps"],
         })
-        .input(PageInput)
+        .errors({ NOT_FOUND: organizationNotFound })
+        .input(PageInput.extend(OrganizationRef.shape))
         .output(pageOf(AppSchema))
-        .handler(({ input, context }) =>
-            listApps(context.db, context.session.user.id, input),
-        ),
+        .handler(async ({ input, context, errors }) => {
+            try {
+                const organization = await getMemberOrganization(
+                    context.db,
+                    context.session.user.id,
+                    input.org,
+                );
+                return await listApps(context.db, organization.id, input);
+            } catch (error) {
+                if (error instanceof OrganizationNotFoundError) {
+                    throw errors.NOT_FOUND();
+                }
+                throw error;
+            }
+        }),
 };

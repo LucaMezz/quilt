@@ -10,9 +10,8 @@ export function createContextFactory(
     appsDomain: string,
 ) {
     return async (req: Request): Promise<ApiContext> => {
-        const session = await auth.api.getSession({
-            headers: fromNodeHeaders(req.headers),
-        });
-        return { db, appsDomain, session };
+        const headers = fromNodeHeaders(req.headers);
+        const session = await auth.api.getSession({ headers });
+        return { db, appsDomain, auth, headers, session };
     };
 }

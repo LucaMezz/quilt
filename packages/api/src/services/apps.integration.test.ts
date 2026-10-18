@@ -4,15 +4,18 @@ import { test } from "../testing/fixtures";
 import { createApp, listApps } from "./apps";
 
 describe("apps service", () => {
-    test("lists an app after creating it", async ({ db, createUser }) => {
-        const owner = await createUser();
+    test("lists an app after creating it", async ({
+        db,
+        createOrganization,
+    }) => {
+        const { organization } = await createOrganization();
 
         const created = await createApp(
             db,
-            { ownerId: owner.id, name: "hello" },
+            { organizationId: organization.id, name: "hello" },
             "apps.test",
         );
-        const page = await listApps(db, owner.id, { limit: 10 });
+        const page = await listApps(db, organization.id, { limit: 10 });
 
         expect(created).toMatchObject({
             name: "hello",

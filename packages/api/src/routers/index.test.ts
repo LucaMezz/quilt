@@ -1,6 +1,7 @@
 // Example unit tests: call procedures directly with a hand-built context, so no
 // HTTP server or database is needed. Copy this pattern for real tests.
 import { call, ORPCError } from "@orpc/server";
+import type { Auth } from "@quilt/auth";
 import type { Database } from "@quilt/db";
 import { describe, expect, it } from "vitest";
 
@@ -13,6 +14,8 @@ function createContext(overrides: Partial<Context> = {}): Context {
         // Procedures under test here don't touch the database.
         db: {} as Database,
         appsDomain: "127.0.0.1.sslip.io",
+        auth: {} as Auth,
+        headers: new Headers(),
         ...overrides,
     };
 }
@@ -29,7 +32,7 @@ describe("example", () => {
     it("rejects protected procedures without a session", async () => {
         const result = call(
             appRouter.listApps,
-            {},
+            { org: "acme" },
             { context: createContext() },
         );
 

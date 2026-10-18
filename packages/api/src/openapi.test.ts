@@ -15,7 +15,7 @@ const spec = await generator.generate(appRouter, {
 
 describe("OpenAPI spec", () => {
     it("requires a session for protected procedures", () => {
-        const operation = spec.paths?.["/apps"]?.get;
+        const operation = spec.paths?.["/orgs/{org}/apps"]?.get;
 
         expect(operation?.security).toEqual([{ [SESSION_COOKIE_SCHEME]: [] }]);
         expect(operation?.responses).toHaveProperty("401");

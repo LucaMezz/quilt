@@ -1,5 +1,5 @@
 import { createDb } from "@quilt/db";
-import { user } from "@quilt/db/schema/auth";
+import { member, organization, user } from "@quilt/db/schema/auth";
 import { sql } from "drizzle-orm";
 import { test as baseTest, inject } from "vitest";
 
@@ -30,4 +30,29 @@ export const test = baseTest
             .returning();
         if (!created) throw new Error("Insert returned no row");
         return created;
-    });
+    })
+    .extend(
+        "createOrganization",
+        ({ db, createUser }) =>
+            async (slug = "acme") => {
+                const owner = await createUser(`${slug}-owner`);
+                const [created] = await db
+                    .insert(organization)
+                    .values({
+                        id: crypto.randomUUID(),
+                        name: slug,
+                        slug,
+                        createdAt: new Date(),
+                    })
+                    .returning();
+                if (!created) throw new Error("Insert returned no row");
+                await db.insert(member).values({
+                    id: crypto.randomUUID(),
+                    organizationId: created.id,
+                    userId: owner.id,
+                    role: "owner",
+                    createdAt: new Date(),
+                });
+                return { organization: created, owner };
+            },
+    );

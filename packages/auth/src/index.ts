@@ -35,5 +35,7 @@ export function createAuth(
     });
 }
 
+export { isAPIError } from "better-auth/api";
+
 export type Auth = ReturnType<typeof createAuth>;
 export type Session = Auth["$Infer"]["Session"];

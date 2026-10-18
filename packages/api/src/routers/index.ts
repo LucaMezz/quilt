@@ -3,9 +3,11 @@ import { z } from "zod";
 
 import { publicProcedure } from "../index";
 import { appsRouter } from "./apps";
+import { organizationsRouter } from "./organizations";
 
 export const appRouter = {
     ...appsRouter,
+    ...organizationsRouter,
     healthCheck: publicProcedure
         .route({
             method: "GET",

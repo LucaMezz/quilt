@@ -11,6 +11,7 @@
         "build": "turbo run build",
         "check-types": "turbo run check-types",
         "test": "turbo run test",
+        "test:integration": "turbo run test:integration",
         "test:e2e": "turbo run test:e2e",
         "test:e2e:api": "turbo run test:e2e -F e2e",
         "release": "nx release --skip-publish",
@@ -27,8 +28,8 @@
         "db:watch": "turbo run db:watch -F @quilt/db --",
         "db:stop": "turbo run db:stop -F @quilt/db --",
         "db:down": "turbo run db:down -F @quilt/db --",
-        "env:generate": "varlock codegen --path ./apps/web/ && varlock codegen --path ./apps/server/ && varlock codegen --path ./packages/db/ && varlock codegen --path ./apps/controller/ && varlock codegen --path ./apps/e2e/",
-        "postinstall": "varlock codegen --path ./apps/web/ && varlock codegen --path ./apps/server/ && varlock codegen --path ./packages/db/ && varlock codegen --path ./apps/controller/ && varlock codegen --path ./apps/e2e/",
+        "env:generate": "varlock codegen --path ./apps/web/ && varlock codegen --path ./apps/server/ && varlock codegen --path ./packages/db/ && varlock codegen --path ./apps/controller/ && varlock codegen --path ./apps/e2e/ && varlock codegen --path ./packages/api/",
+        "postinstall": "varlock codegen --path ./apps/web/ && varlock codegen --path ./apps/server/ && varlock codegen --path ./packages/db/ && varlock codegen --path ./apps/controller/ && varlock codegen --path ./apps/e2e/ && varlock codegen --path ./packages/api/",
         "auth:generate": "cd apps/server && npm run auth:generate",
         "check": "biome check --write .",
         "prepare": "husky"

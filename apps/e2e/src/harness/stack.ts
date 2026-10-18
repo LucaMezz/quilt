@@ -1,6 +1,6 @@
 import { createDb } from "@quilt/db";
 import { migrateDb } from "@quilt/db/migrate";
-
+import { createDatabase, dropDatabase } from "@quilt/db/testing";
 import {
     assertDisposableContext,
     createKubeClients,
@@ -8,7 +8,6 @@ import {
     deleteRunNamespaces,
 } from "../support/kubernetes";
 import { startController } from "./controller";
-import { createDatabase, dropDatabase } from "./database";
 import { startServer } from "./server";
 
 export type StackOptions = {

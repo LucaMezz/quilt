@@ -8,7 +8,7 @@ const workspaceScopes = ["apps", "packages"].flatMap((dir) =>
         .map((entry) => entry.name),
 );
 
-const repoScopes = ["deploy", "deps", "ci", "release", "repo"];
+const repoScopes = ["infra", "deps", "ci", "release", "repo"];
 
 /** @type {import("@commitlint/types").UserConfig} */
 export default {

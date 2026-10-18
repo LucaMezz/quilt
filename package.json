@@ -44,6 +44,7 @@
         "@commitlint/config-conventional": "^21.2.3",
         "@nx/js": "^23.3.0",
         "@quilt/config": "*",
+        "@tanstack/intent": "^0.5.5",
         "@types/node": "^26.4.1",
         "husky": "^9.1.7",
         "lint-staged": "^17.6.0",
@@ -55,5 +56,14 @@
     "packageManager": "npm@11.16.0",
     "allowScripts": {
         "esbuild": true
+    },
+    "intent": {
+        "skills": [
+            "drizzle-kit",
+            "varlock",
+            "@tanstack/router-core",
+            "@tanstack/router-plugin",
+            "@tanstack/virtual-file-routes"
+        ]
     }
 }

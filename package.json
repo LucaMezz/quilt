@@ -29,8 +29,8 @@
         "infra:watch": "docker compose -f dev/compose.yaml up",
         "infra:stop": "docker compose -f dev/compose.yaml stop",
         "infra:down": "docker compose -f dev/compose.yaml down",
-        "env:generate": "varlock codegen --path ./apps/web/ && varlock codegen --path ./apps/server/ && varlock codegen --path ./packages/db/ && varlock codegen --path ./apps/controller/ && varlock codegen --path ./apps/e2e/ && varlock codegen --path ./packages/api/",
-        "postinstall": "varlock codegen --path ./apps/web/ && varlock codegen --path ./apps/server/ && varlock codegen --path ./packages/db/ && varlock codegen --path ./apps/controller/ && varlock codegen --path ./apps/e2e/ && varlock codegen --path ./packages/api/",
+        "env:generate": "varlock codegen --path ./apps/web/ && varlock codegen --path ./apps/server/ && varlock codegen --path ./packages/db/ && varlock codegen --path ./apps/controller/ && varlock codegen --path ./apps/e2e/ && varlock codegen --path ./packages/api/ && varlock codegen --path ./packages/storage/",
+        "postinstall": "varlock codegen --path ./apps/web/ && varlock codegen --path ./apps/server/ && varlock codegen --path ./packages/db/ && varlock codegen --path ./apps/controller/ && varlock codegen --path ./apps/e2e/ && varlock codegen --path ./packages/api/ && varlock codegen --path ./packages/storage/",
         "auth:generate": "cd apps/server && npm run auth:generate",
         "check": "biome check --write .",
         "prepare": "husky"

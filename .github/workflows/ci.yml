@@ -76,4 +76,7 @@ jobs:
 
       - run: npm ci
 
+      - name: Start storage
+        run: docker compose -f dev/compose.yaml up -d --wait storage
+
       - run: npx turbo run test:integration

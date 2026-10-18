@@ -11,6 +11,11 @@ export default async function setup(project: TestProject) {
     const stack = await startStack({
         runId,
         adminDatabaseUrl: ENV.E2E_DATABASE_URL,
+        storage: {
+            endpoint: ENV.E2E_STORAGE_ENDPOINT,
+            accessKeyId: ENV.E2E_STORAGE_ACCESS_KEY_ID,
+            secretAccessKey: ENV.E2E_STORAGE_SECRET_ACCESS_KEY,
+        },
         kubeContext: ENV.E2E_KUBE_CONTEXT,
         reconcileIntervalMs: ENV.E2E_RECONCILE_INTERVAL_MS,
         keepResources: ENV.E2E_KEEP_RESOURCES,
@@ -28,7 +33,7 @@ export default async function setup(project: TestProject) {
 
     if (ENV.E2E_KEEP_RESOURCES) {
         console.log(
-            `[e2e] keeping namespace ${stack.namespace} and database quilt_e2e_${runId}`,
+            `[e2e] keeping namespace ${stack.namespace}, database quilt_e2e_${runId} and bucket quilt-e2e-${runId}`,
         );
     }
 

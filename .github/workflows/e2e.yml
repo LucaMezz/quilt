@@ -56,6 +56,9 @@ jobs:
 
       - run: npm ci
 
+      - name: Start storage
+        run: docker compose -f dev/compose.yaml up -d --wait storage
+
       - uses: jdx/mise-action@v2
 
       - name: Create cluster

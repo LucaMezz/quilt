@@ -1,6 +1,8 @@
 import { createDb } from "@quilt/db";
 import { migrateDb } from "@quilt/db/migrate";
 import { createDatabase, dropDatabase } from "@quilt/db/testing";
+import { createStorage } from "@quilt/storage";
+import { createBucket, dropBucket } from "@quilt/storage/testing";
 import {
     assertDisposableContext,
     createKubeClients,
@@ -13,6 +15,11 @@ import { startServer } from "./server";
 export type StackOptions = {
     runId: string;
     adminDatabaseUrl: string;
+    storage: {
+        endpoint: string;
+        accessKeyId: string;
+        secretAccessKey: string;
+    };
     kubeContext: string;
     reconcileIntervalMs: number;
     keepResources: boolean;
@@ -45,11 +52,23 @@ export async function startStack(options: StackOptions): Promise<Stack> {
         resources.defer(() => db.$client.end());
         await migrateDb(db);
 
+        const storage = createStorage({
+            STORAGE_ENDPOINT: options.storage.endpoint,
+            STORAGE_REGION: "us-east-1",
+            STORAGE_BUCKET: `quilt-e2e-${options.runId}`,
+            STORAGE_FORCE_PATH_STYLE: true,
+            STORAGE_ACCESS_KEY_ID: options.storage.accessKeyId,
+            STORAGE_SECRET_ACCESS_KEY: options.storage.secretAccessKey,
+        });
+        resources.defer(async () => storage.client.destroy());
+        await createBucket(storage);
+        cleanup(() => dropBucket(storage));
+
         const namespace = `quilt-e2e-${options.runId}`;
         cleanup(() => deleteRunNamespaces(kube, options.runId));
         await createNamespace(kube, namespace, options.runId);
 
-        const server = await startServer(db);
+        const server = await startServer(db, storage);
         resources.defer(() => server.close());
 
         const controller = startController({

@@ -8,13 +8,17 @@
     },
     "scripts": {
         "build": "tsc -b",
-        "check-types": "tsc -b"
+        "check-types": "tsc -b",
+        "test:integration": "vitest run",
+        "env:generate": "varlock codegen"
     },
     "dependencies": {
         "@aws-sdk/client-s3": "^3.1152.0"
     },
     "devDependencies": {
         "@quilt/config": "*",
-        "typescript": "^6.0.3"
+        "typescript": "^6.0.3",
+        "varlock": "1.18.0",
+        "vitest": "^5.0.5"
     }
 }

@@ -17,6 +17,7 @@ export type AppOptions = {
     auth: Auth;
     db: Database;
     corsOrigin: string;
+    appsDomain: string;
     onError?: (error: unknown) => void;
 };
 
@@ -24,10 +25,11 @@ export function createApp({
     auth,
     db,
     corsOrigin,
+    appsDomain,
     onError: reportError = console.error,
 }: AppOptions) {
     const app = express();
-    const createContext = createContextFactory(auth, db);
+    const createContext = createContextFactory(auth, db, appsDomain);
 
     app.use(
         cors({

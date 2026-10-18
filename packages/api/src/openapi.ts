@@ -1,4 +1,4 @@
-import type { OpenAPIGeneratorGenerateOptions } from "@orpc/openapi";
+import { type OpenAPIGeneratorGenerateOptions, oo } from "@orpc/openapi";
 
 export const SESSION_COOKIE_SCHEME = "sessionCookie";
 
@@ -17,3 +17,17 @@ export const openAPISecuritySchemes = {
         OpenAPIGeneratorGenerateOptions["components"]
     >["securitySchemes"]
 >;
+
+export function describeErrorResponse<T extends object>(
+    error: T,
+    status: number,
+    description: string,
+): T {
+    return oo.spec(error, (operation) => ({
+        ...operation,
+        responses: {
+            ...operation.responses,
+            [status]: { ...operation.responses?.[status], description },
+        },
+    }));
+}

@@ -1,0 +1,123 @@
+import { z } from "zod";
+
+import { protectedProcedure } from "../index";
+import { describeErrorResponse } from "../openapi";
+import { PageInput, pageOf } from "../pagination";
+import {
+    AppNameTakenError,
+    AppNotFoundError,
+    createApp,
+    destroyApp,
+    listApps,
+} from "../services/apps";
+
+export const AppName = z
+    .string()
+    .min(1)
+    .max(63)
+    .regex(/^[a-z0-9]([-a-z0-9]*[a-z0-9])?$/)
+    .describe(
+        "Identifies the app in API paths and CLI commands. Unique across all apps, not just yours, and can't be changed later.",
+    );
+
+export const AppStatus = z
+    .enum(["pending", "running", "sleeping", "destroying"])
+    .describe(
+        "`pending`: created, nothing live yet. `running`: serving traffic. `sleeping`: scaled to zero, wakes on the next request. `destroying`: being torn down.",
+    );
+
+export const AppSchema = z.object({
+    id: z.string(),
+    name: AppName,
+    hostname: z.string().describe("Public hostname the app is served on"),
+    status: AppStatus,
+    liveDeploymentId: z
+        .string()
+        .nullable()
+        .describe(
+            "Deployment currently serving traffic; `null` until the first deploy",
+        ),
+    createdAt: z.date(),
+    updatedAt: z.date(),
+});
+
+export const appsRouter = {
+    createApp: protectedProcedure
+        .route({
+            method: "POST",
+            path: "/apps",
+            successStatus: 201,
+            summary: "Create app",
+            description:
+                "Registers a new app owned by you and reserves its name and hostname. Nothing is deployed until you create a deployment.",
+            successDescription: "App created",
+            tags: ["Apps"],
+        })
+        .errors({
+            CONFLICT: describeErrorResponse(
+                { message: "App name is already taken" },
+                409,
+                "App name is already taken",
+            ),
+        })
+        .input(z.object({ name: AppName }))
+        .output(AppSchema)
+        .handler(async ({ input, context, errors }) => {
+            try {
+                return await createApp(
+                    context.db,
+                    { ownerId: context.session.user.id, name: input.name },
+                    context.appsDomain,
+                );
+            } catch (error) {
+                if (error instanceof AppNameTakenError) throw errors.CONFLICT();
+                throw error;
+            }
+        }),
+    destroyApp: protectedProcedure
+        .route({
+            method: "DELETE",
+            path: "/apps/{name}",
+            successStatus: 202,
+            summary: "Destroy app",
+            description:
+                "Starts tearing down the app and its deployments. Returns immediately with status `destroying`; the app disappears from listings once teardown finishes. Calling it again while destroying returns the same response.",
+            successDescription: "Destruction started",
+            tags: ["Apps"],
+        })
+        .errors({
+            NOT_FOUND: describeErrorResponse(
+                { message: "App not found" },
+                404,
+                "No app with this name exists in your account",
+            ),
+        })
+        .input(z.object({ name: AppName }))
+        .output(AppSchema)
+        .handler(async ({ input, context, errors }) => {
+            try {
+                return await destroyApp(context.db, {
+                    ownerId: context.session.user.id,
+                    name: input.name,
+                });
+            } catch (error) {
+                if (error instanceof AppNotFoundError) throw errors.NOT_FOUND();
+                throw error;
+            }
+        }),
+    listApps: protectedProcedure
+        .route({
+            method: "GET",
+            path: "/apps",
+            summary: "List apps",
+            description:
+                "Lists the apps you own, newest first, including ones still being destroyed. Results are paginated: pass `nextCursor` back as `cursor` to get the next page.",
+            successDescription: "A page of your apps",
+            tags: ["Apps"],
+        })
+        .input(PageInput)
+        .output(pageOf(AppSchema))
+        .handler(({ input, context }) =>
+            listApps(context.db, context.session.user.id, input),
+        ),
+};

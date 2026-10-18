@@ -35,6 +35,7 @@ export async function startServer(db: Database) {
             auth,
             db,
             corsOrigin: baseUrl,
+            appsDomain: "127.0.0.1.sslip.io",
             onError: reportUnexpectedError,
         }),
     );

@@ -4,11 +4,15 @@ import type { Database } from "@quilt/db";
 import { fromNodeHeaders } from "better-auth/node";
 import type { Request } from "express";
 
-export function createContextFactory(auth: Auth, db: Database) {
+export function createContextFactory(
+    auth: Auth,
+    db: Database,
+    appsDomain: string,
+) {
     return async (req: Request): Promise<ApiContext> => {
         const session = await auth.api.getSession({
             headers: fromNodeHeaders(req.headers),
         });
-        return { db, session };
+        return { db, appsDomain, session };
     };
 }

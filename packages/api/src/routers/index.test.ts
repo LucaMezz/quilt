@@ -12,6 +12,7 @@ function createContext(overrides: Partial<Context> = {}): Context {
         session: null,
         // Procedures under test here don't touch the database.
         db: {} as Database,
+        appsDomain: "127.0.0.1.sslip.io",
         ...overrides,
     };
 }

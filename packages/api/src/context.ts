@@ -4,4 +4,5 @@ import type { Database } from "@quilt/db";
 export type Context = {
     session: Session | null;
     db: Database;
+    appsDomain: string;
 };

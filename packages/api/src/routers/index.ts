@@ -2,13 +2,18 @@ import type { RouterClient } from "@orpc/server";
 import { z } from "zod";
 
 import { protectedProcedure, publicProcedure } from "../index";
+import { appsRouter } from "./apps";
 
 export const appRouter = {
+    ...appsRouter,
     healthCheck: publicProcedure
         .route({
             method: "GET",
             path: "/health",
             summary: "Health check",
+            description:
+                "Reports whether the API server is up. Needs no authentication.",
+            successDescription: "Server is up",
             tags: ["System"],
         })
         // z.enum rather than z.literal: Fumadocs can't name a `const` schema

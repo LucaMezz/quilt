@@ -1,0 +1,1 @@
+ALTER TABLE "app" ALTER COLUMN "created_at" SET DATA TYPE timestamp(3) USING "created_at"::timestamp(3);

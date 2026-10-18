@@ -5,6 +5,7 @@ import type { AddressInfo } from "node:net";
 import { ORPCError } from "@orpc/server";
 import { createAuth } from "@quilt/auth";
 import type { Database } from "@quilt/db";
+import { createStorage } from "@quilt/storage";
 import { createApp } from "server/app";
 
 function reportUnexpectedError(error: unknown) {
@@ -29,11 +30,20 @@ export async function startServer(db: Database) {
         },
         db,
     );
+    const storage = createStorage({
+        STORAGE_ENDPOINT: "http://127.0.0.1:9000",
+        STORAGE_REGION: "us-east-1",
+        STORAGE_BUCKET: "quilt",
+        STORAGE_FORCE_PATH_STYLE: true,
+        STORAGE_ACCESS_KEY_ID: "quilt",
+        STORAGE_SECRET_ACCESS_KEY: "password",
+    });
     server.on(
         "request",
         createApp({
             auth,
             db,
+            storage,
             corsOrigin: baseUrl,
             appsDomain: "127.0.0.1.sslip.io",
             onError: reportUnexpectedError,

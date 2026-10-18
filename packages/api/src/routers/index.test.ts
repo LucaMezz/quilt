@@ -3,6 +3,7 @@
 import { call, ORPCError } from "@orpc/server";
 import type { Auth } from "@quilt/auth";
 import type { Database } from "@quilt/db";
+import type { Storage } from "@quilt/storage";
 import { describe, expect, it } from "vitest";
 
 import type { Context } from "../context";
@@ -13,6 +14,7 @@ function createContext(overrides: Partial<Context> = {}): Context {
         session: null,
         // Procedures under test here don't touch the database.
         db: {} as Database,
+        storage: {} as Storage,
         appsDomain: "127.0.0.1.sslip.io",
         auth: {} as Auth,
         headers: new Headers(),

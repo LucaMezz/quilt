@@ -7,6 +7,7 @@ import { openAPISecuritySchemes } from "@quilt/api/openapi";
 import { appRouter } from "@quilt/api/routers/index";
 import type { Auth } from "@quilt/auth";
 import type { Database } from "@quilt/db";
+import type { Storage } from "@quilt/storage";
 import { toNodeHandler } from "better-auth/node";
 import cors from "cors";
 import express from "express";
@@ -16,6 +17,7 @@ import { createContextFactory } from "./context";
 export type AppOptions = {
     auth: Auth;
     db: Database;
+    storage: Storage;
     corsOrigin: string;
     appsDomain: string;
     onError?: (error: unknown) => void;
@@ -24,12 +26,13 @@ export type AppOptions = {
 export function createApp({
     auth,
     db,
+    storage,
     corsOrigin,
     appsDomain,
     onError: reportError = console.error,
 }: AppOptions) {
     const app = express();
-    const createContext = createContextFactory(auth, db, appsDomain);
+    const createContext = createContextFactory(auth, db, storage, appsDomain);
 
     app.use(
         cors({

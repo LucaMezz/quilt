@@ -1,10 +1,11 @@
 import { createApp } from "./app";
 import { ENV } from "./env.server";
-import { auth, db } from "./services";
+import { auth, db, storage } from "./services";
 
 const app = createApp({
     auth,
     db,
+    storage,
     corsOrigin: ENV.CORS_ORIGIN,
     appsDomain: ENV.APPS_DOMAIN,
 });

@@ -52,7 +52,7 @@
         "nx": "^23.3.0",
         "turbo": "^2.11.7",
         "typescript": "^6.0.3",
-        "varlock": "1.18.0"
+        "varlock": "1.23.0"
     },
     "packageManager": "npm@11.16.0",
     "allowScripts": {

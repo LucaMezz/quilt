@@ -19,7 +19,7 @@
         "@quilt/config": "*",
         "@vitest/coverage-v8": "^5.0.5",
         "typescript": "^6.0.3",
-        "varlock": "1.18.0",
+        "varlock": "1.23.0",
         "vitest": "^5.0.5"
     }
 }

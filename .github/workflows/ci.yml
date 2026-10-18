@@ -48,6 +48,8 @@ jobs:
 
       - run: npx biome ci .
 
+      - run: npx turbo boundaries
+
       - run: npx turbo run check-types test build
 
   integration:

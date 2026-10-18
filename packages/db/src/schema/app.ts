@@ -49,6 +49,7 @@ export const app = pgTable(
         name: text("name").notNull().unique(),
         namespace: text("namespace").notNull(),
         hostname: text("hostname").notNull().unique(),
+        logo: text("logo"),
         status: appStatus("status").default("pending").notNull(),
         liveDeploymentId: text("live_deployment_id").references(
             (): AnyPgColumn => deployment.id,

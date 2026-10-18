@@ -4,16 +4,21 @@ import { protectedProcedure } from "../index";
 import { describeErrorResponse } from "../openapi";
 import { PageInput, pageOf } from "../pagination";
 import {
+    APP_LOGO_DIMENSION,
     AppNameTakenError,
     AppNotFoundError,
     createApp,
     destroyApp,
+    getOwnedApp,
     listApps,
+    setAppLogo,
 } from "../services/apps";
+import { InvalidImageError } from "../services/images";
 import {
     getMemberOrganization,
     OrganizationNotFoundError,
 } from "../services/organizations";
+import { describeImageUpload, ImageFile, invalidImage } from "./images";
 import { OrganizationRef, organizationNotFound } from "./organizations";
 
 export const AppName = z
@@ -35,6 +40,10 @@ export const AppSchema = z.object({
     id: z.string(),
     name: AppName,
     hostname: z.string().describe("Public hostname the app is served on"),
+    logo: z
+        .string()
+        .nullable()
+        .describe("Storage key of the app's logo; `null` until one is set"),
     status: AppStatus,
     liveDeploymentId: z
         .string()
@@ -47,6 +56,12 @@ export const AppSchema = z.object({
 });
 
 const AppRef = OrganizationRef.extend({ name: AppName });
+
+const appNotFound = describeErrorResponse(
+    { message: "App not found" },
+    404,
+    "No app with this name exists in an organization you're a member of",
+);
 
 export const appsRouter = {
     createApp: protectedProcedure
@@ -101,13 +116,7 @@ export const appsRouter = {
             successDescription: "Destruction started",
             tags: ["Apps"],
         })
-        .errors({
-            NOT_FOUND: describeErrorResponse(
-                { message: "App not found" },
-                404,
-                "No app with this name exists in an organization you're a member of",
-            ),
-        })
+        .errors({ NOT_FOUND: appNotFound })
         .input(AppRef)
         .output(AppSchema)
         .handler(async ({ input, context, errors }) => {
@@ -127,6 +136,48 @@ export const appsRouter = {
                     error instanceof AppNotFoundError
                 ) {
                     throw errors.NOT_FOUND();
+                }
+                throw error;
+            }
+        }),
+    setAppLogo: protectedProcedure
+        .route({
+            method: "PUT",
+            path: "/orgs/{org}/apps/{name}/logo",
+            summary: "Set app logo",
+            description: `Replaces the app's logo. ${describeImageUpload(APP_LOGO_DIMENSION)} Any member of the organization can change it.`,
+            successDescription: "Logo updated",
+            tags: ["Apps"],
+        })
+        .errors({ NOT_FOUND: appNotFound, BAD_REQUEST: invalidImage })
+        .input(AppRef.extend({ logo: ImageFile }))
+        .output(AppSchema)
+        .handler(async ({ input, context, errors }) => {
+            try {
+                const organization = await getMemberOrganization(
+                    context.db,
+                    context.session.user.id,
+                    input.org,
+                );
+                const target = await getOwnedApp(context.db, {
+                    organizationId: organization.id,
+                    name: input.name,
+                });
+                return await setAppLogo(
+                    context.db,
+                    context.storage,
+                    target,
+                    input.logo,
+                );
+            } catch (error) {
+                if (
+                    error instanceof OrganizationNotFoundError ||
+                    error instanceof AppNotFoundError
+                ) {
+                    throw errors.NOT_FOUND();
+                }
+                if (error instanceof InvalidImageError) {
+                    throw errors.BAD_REQUEST();
                 }
                 throw error;
             }

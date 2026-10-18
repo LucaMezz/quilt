@@ -1,7 +1,7 @@
 import type { Database } from "@quilt/db";
 import { type App, app } from "@quilt/db/schema/app";
+import type { Storage } from "@quilt/storage";
 import { and, eq, isNull } from "drizzle-orm";
-
 import {
     afterCursor,
     keysetOrder,
@@ -9,6 +9,7 @@ import {
     type PageParams,
     toPage,
 } from "../pagination";
+import { replaceImage } from "./images";
 
 export class AppNotFoundError extends Error {
     constructor(name: string) {
@@ -74,6 +75,36 @@ export async function destroyApp(db: Database, ref: AppRef): Promise<App> {
         throw new AppNotFoundError(ref.name);
     }
     return destroyed;
+}
+
+export const APP_LOGO_DIMENSION = 512;
+
+export function appLogoPrefix(appId: string) {
+    return `apps/${appId}/logo/`;
+}
+
+export async function setAppLogo(
+    db: Database,
+    storage: Storage,
+    target: App,
+    logo: Blob,
+): Promise<App> {
+    const slot = {
+        prefix: appLogoPrefix(target.id),
+        maxDimension: APP_LOGO_DIMENSION,
+        currentKey: target.logo,
+    };
+    return replaceImage(storage, slot, logo, async (key) => {
+        const [updated] = await db
+            .update(app)
+            .set({ logo: key })
+            .where(and(eq(app.id, target.id), isNull(app.deletedAt)))
+            .returning();
+        if (!updated) {
+            throw new AppNotFoundError(target.name);
+        }
+        return updated;
+    });
 }
 
 export async function listApps(

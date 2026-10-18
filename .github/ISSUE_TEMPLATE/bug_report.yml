@@ -1,0 +1,51 @@
+name: Bug report
+description: Something in quilt doesn't work as expected
+labels: [bug]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What went wrong, including any error message you saw.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Run `quilt ...`
+        2. Open ...
+        3. See error
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Web dashboard
+        - API
+        - CLI
+        - Controller or cluster
+        - Docs
+        - Not sure
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      placeholder: v0.1.0, or a commit SHA
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Relevant output from the server, controller, CLI or browser console.
+      render: shell

@@ -1,5 +1,5 @@
-import { GetObjectCommand, ListObjectsV2Command } from "@aws-sdk/client-s3";
-import type { Storage } from "@quilt/storage";
+import { getObject } from "@quilt/storage";
+import { listKeys } from "@quilt/storage/testing";
 import sharp from "sharp";
 import { describe, expect } from "vitest";
 
@@ -23,13 +23,6 @@ async function pngLogo() {
         .png()
         .toBuffer();
     return new File([new Uint8Array(bytes)], "logo.png", { type: "image/png" });
-}
-
-async function listKeys(storage: Storage) {
-    const page = await storage.client.send(
-        new ListObjectsV2Command({ Bucket: storage.bucket }),
-    );
-    return (page.Contents ?? []).map(({ Key }) => Key);
 }
 
 const ownedOrganization = test.extend("owned", async ({ auth, db, signUp }) => {
@@ -59,17 +52,13 @@ describe("setOrganizationLogo", () => {
                     `^${organizationLogoPrefix(owned.organization.id)}[0-9a-f-]+\\.webp$`,
                 ),
             );
-            const object = await storage.client.send(
-                new GetObjectCommand({
-                    Bucket: storage.bucket,
-                    Key: updated.logo ?? "",
-                }),
+            const object = await getObject(storage, updated.logo ?? "");
+            expect(object?.contentType).toBe("image/webp");
+            await expect(sharp(object?.body).metadata()).resolves.toMatchObject(
+                {
+                    format: "webp",
+                },
             );
-            expect(object.ContentType).toBe("image/webp");
-            const body = await object.Body?.transformToByteArray();
-            await expect(sharp(body).metadata()).resolves.toMatchObject({
-                format: "webp",
-            });
         },
     );
 

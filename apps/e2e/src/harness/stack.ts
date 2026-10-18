@@ -1,7 +1,7 @@
 import { createDb } from "@quilt/db";
 import { migrateDb } from "@quilt/db/migrate";
 import { createDatabase, dropDatabase } from "@quilt/db/testing";
-import { createStorage } from "@quilt/storage";
+import { closeStorage, createStorage } from "@quilt/storage";
 import { createBucket, dropBucket } from "@quilt/storage/testing";
 import {
     assertDisposableContext,
@@ -60,7 +60,7 @@ export async function startStack(options: StackOptions): Promise<Stack> {
             STORAGE_ACCESS_KEY_ID: options.storage.accessKeyId,
             STORAGE_SECRET_ACCESS_KEY: options.storage.secretAccessKey,
         });
-        resources.defer(async () => storage.client.destroy());
+        resources.defer(async () => closeStorage(storage));
         await createBucket(storage);
         cleanup(() => dropBucket(storage));
 

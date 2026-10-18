@@ -1,5 +1,7 @@
 import {
     DeleteObjectCommand,
+    GetObjectCommand,
+    NoSuchKey,
     PutObjectCommand,
     S3Client,
 } from "@aws-sdk/client-s3";
@@ -34,6 +36,10 @@ export function createStorage(env: StorageConfig) {
 
 export type Storage = ReturnType<typeof createStorage>;
 
+export function closeStorage(storage: Storage) {
+    storage.client.destroy();
+}
+
 export async function putObject(
     storage: Storage,
     key: string,
@@ -48,6 +54,30 @@ export async function putObject(
             ContentType: contentType,
         }),
     );
+}
+
+export type StoredObject = {
+    body: Uint8Array;
+    contentType: string | undefined;
+};
+
+export async function getObject(
+    storage: Storage,
+    key: string,
+): Promise<StoredObject | null> {
+    try {
+        const object = await storage.client.send(
+            new GetObjectCommand({ Bucket: storage.bucket, Key: key }),
+        );
+        return {
+            body:
+                (await object.Body?.transformToByteArray()) ?? new Uint8Array(),
+            contentType: object.ContentType,
+        };
+    } catch (error) {
+        if (error instanceof NoSuchKey) return null;
+        throw error;
+    }
 }
 
 export async function deleteObject(storage: Storage, key: string) {

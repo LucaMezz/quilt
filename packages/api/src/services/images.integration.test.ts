@@ -1,5 +1,5 @@
-import { GetObjectCommand, ListObjectsV2Command } from "@aws-sdk/client-s3";
-import { putObject, type Storage } from "@quilt/storage";
+import { getObject, putObject } from "@quilt/storage";
+import { listKeys } from "@quilt/storage/testing";
 import sharp from "sharp";
 import { describe, expect } from "vitest";
 
@@ -22,13 +22,6 @@ async function pngImage() {
     });
 }
 
-async function listKeys(storage: Storage) {
-    const page = await storage.client.send(
-        new ListObjectsV2Command({ Bucket: storage.bucket }),
-    );
-    return (page.Contents ?? []).map(({ Key }) => Key);
-}
-
 function slot(currentKey: string | null = null): ImageSlot {
     return { prefix: "things/1/image/", maxDimension: 64, currentKey };
 }
@@ -45,12 +38,9 @@ describe("replaceImage", () => {
         );
 
         expect(saved.key).toMatch(/^things\/1\/image\/[0-9a-f-]+\.webp$/);
-        const object = await storage.client.send(
-            new GetObjectCommand({ Bucket: storage.bucket, Key: saved.key }),
-        );
-        expect(object.ContentType).toBe("image/webp");
-        const body = await object.Body?.transformToByteArray();
-        await expect(sharp(body).metadata()).resolves.toMatchObject({
+        const object = await getObject(storage, saved.key);
+        expect(object?.contentType).toBe("image/webp");
+        await expect(sharp(object?.body).metadata()).resolves.toMatchObject({
             format: "webp",
         });
     });

@@ -1,7 +1,7 @@
 import { createAuth } from "@quilt/auth";
 import { createDb } from "@quilt/db";
 import { member, organization, user } from "@quilt/db/schema/auth";
-import { createStorage } from "@quilt/storage";
+import { closeStorage, createStorage } from "@quilt/storage";
 import { emptyBucket } from "@quilt/storage/testing";
 import { sql } from "drizzle-orm";
 import { test as baseTest, inject } from "vitest";
@@ -21,7 +21,7 @@ export const test = baseTest
         { scope: "worker" },
         ({ storageConfig }, { onCleanup }) => {
             const storage = createStorage(storageConfig);
-            onCleanup(() => storage.client.destroy());
+            onCleanup(() => closeStorage(storage));
             return storage;
         },
     )

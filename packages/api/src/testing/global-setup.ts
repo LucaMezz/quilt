@@ -5,7 +5,7 @@ import { randomBytes } from "node:crypto";
 import { createDb } from "@quilt/db";
 import { migrateDb } from "@quilt/db/migrate";
 import { createDatabase, dropDatabase } from "@quilt/db/testing";
-import { createStorage } from "@quilt/storage";
+import { closeStorage, createStorage } from "@quilt/storage";
 import type { StorageConfig } from "@quilt/storage/config";
 import { createBucket, dropBucket } from "@quilt/storage/testing";
 import type { TestProject } from "vitest/node";
@@ -40,7 +40,7 @@ export default async function setup(project: TestProject) {
     try {
         await createBucket(storage);
     } catch (error) {
-        storage.client.destroy();
+        closeStorage(storage);
         await dropDatabase(adminUrl, name);
         throw error;
     }
@@ -50,7 +50,7 @@ export default async function setup(project: TestProject) {
 
     return async () => {
         await dropBucket(storage);
-        storage.client.destroy();
+        closeStorage(storage);
         await dropDatabase(adminUrl, name);
     };
 }

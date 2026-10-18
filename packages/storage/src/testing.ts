@@ -13,6 +13,24 @@ export async function createBucket(storage: Storage) {
     );
 }
 
+export async function listKeys(storage: Storage) {
+    const keys: string[] = [];
+    let continuationToken: string | undefined;
+    do {
+        const page = await storage.client.send(
+            new ListObjectsV2Command({
+                Bucket: storage.bucket,
+                ContinuationToken: continuationToken,
+            }),
+        );
+        for (const { Key } of page.Contents ?? []) {
+            if (Key) keys.push(Key);
+        }
+        continuationToken = page.NextContinuationToken;
+    } while (continuationToken);
+    return keys;
+}
+
 export async function emptyBucket(storage: Storage) {
     let continuationToken: string | undefined;
     do {

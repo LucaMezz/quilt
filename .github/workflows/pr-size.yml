@@ -1,0 +1,35 @@
+name: PR size
+
+on:
+  pull_request_target:
+    branches: [main]
+    types: [opened, reopened, synchronize]
+
+concurrency:
+  group: pr-size-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  label:
+    name: Label PR size
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: codelytv/pr-size-labeler@19c335e7695ba922de938806dd129f0a9b992644 # v1.12.0
+        with:
+          xs_max_size: "10"
+          s_max_size: "100"
+          m_max_size: "250"
+          l_max_size: "400"
+          files_to_ignore: >-
+            package-lock.json
+            packages/db/src/migrations/*/snapshot.json
+            packages/db/src/schema/auth.ts
+          message_if_xl: >
+            This PR changes more than 400 lines, not counting lockfiles and generated files.
+            Consider splitting it into smaller, self-contained PRs, as CONTRIBUTING.md describes.

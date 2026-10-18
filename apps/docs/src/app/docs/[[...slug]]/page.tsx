@@ -21,7 +21,7 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
 
   if (page.type === "openapi") {
     return (
-      <DocsPage full>
+      <DocsPage full footer={{ className: "[&_a>p]:line-clamp-2" }}>
         <DocsTitle>{page.data.title}</DocsTitle>
         <DocsBody>
           <OpenAPIPage {...page.data.getOpenAPIPageProps()} />
@@ -34,7 +34,11 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
   const markdownUrl = getPageMarkdownUrl(page).url;
 
   return (
-    <DocsPage toc={page.data.toc} full={page.data.full}>
+    <DocsPage
+      toc={page.data.toc}
+      full={page.data.full}
+      footer={{ className: "[&_a>p]:line-clamp-2" }}
+    >
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription className="mb-0">
         {page.data.description}

@@ -27,9 +27,11 @@ describe("example", () => {
     });
 
     it("rejects protected procedures without a session", async () => {
-        const result = call(appRouter.privateData, undefined, {
-            context: createContext(),
-        });
+        const result = call(
+            appRouter.listApps,
+            {},
+            { context: createContext() },
+        );
 
         await expect(result).rejects.toBeInstanceOf(ORPCError);
         await expect(result).rejects.toMatchObject({ code: "UNAUTHORIZED" });

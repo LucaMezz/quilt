@@ -12,6 +12,7 @@
         "check-types": "turbo run check-types",
         "test": "turbo run test",
         "test:integration": "turbo run test:integration",
+        "test:browser": "turbo run test:browser",
         "test:e2e": "turbo run test:e2e",
         "test:e2e:api": "turbo run test:e2e -F e2e",
         "release": "nx release --skip-publish",

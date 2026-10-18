@@ -11,8 +11,8 @@
         "check-types": "tsc -b ../../packages/api && vite build && tsc --noEmit",
         "test": "vitest run",
         "test:watch": "vitest",
-        "test:e2e": "playwright test",
-        "test:e2e:ui": "playwright test --ui",
+        "test:browser": "playwright test",
+        "test:browser:ui": "playwright test --ui",
         "env:generate": "varlock codegen"
     },
     "dependencies": {

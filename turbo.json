@@ -18,6 +18,10 @@
             "dependsOn": ["^build"],
             "cache": false
         },
+        "test:browser": {
+            "dependsOn": ["^build"],
+            "cache": false
+        },
         "test:e2e": {
             "dependsOn": ["^build"],
             "cache": false

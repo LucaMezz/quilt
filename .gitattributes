@@ -1,0 +1,5 @@
+package-lock.json linguist-generated=true
+skills-lock.json linguist-generated=true
+packages/db/src/migrations/**/snapshot.json linguist-generated=true
+packages/db/src/schema/auth.ts linguist-generated=true
+**/.claude/skills/** linguist-vendored=true

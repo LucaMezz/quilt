@@ -1,1 +1,2 @@
 npx --no -- lint-staged
+node tools/change-size/check-change-size.mjs --staged

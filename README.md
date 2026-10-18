@@ -36,23 +36,21 @@ using it. It wakes up again on the next request.
 
 Early development. Nothing here is usable yet.
 
-## Planned structure
-
-The repo will grow into roughly this shape as each part gets built:
+## Structure
 
 ```
 quilt/
 ├── apps/
-│   ├── web/        dashboard
-│   ├── server/     public API
-│   └── desktop/    desktop app
-├── packages/       shared TypeScript (api contract, db schema, auth, ui)
-├── crates/
-│   ├── cli/        quilt CLI
-│   ├── operator/   turns apps into cluster workloads
-│   └── agent/      runs on each server: joining and idle tracking
-├── deploy/         install and join scripts
-└── docs/
+│   ├── web/          dashboard
+│   ├── server/       public API
+│   ├── controller/   turns apps into cluster workloads
+│   ├── cli/          quilt CLI
+│   ├── docs/         documentation site
+│   └── e2e/          end-to-end tests
+├── packages/         shared TypeScript (api contract, auth, cluster, db schema, storage, ui)
+├── cluster/          cluster provisioning and platform install
+├── dev/              local development services
+└── tools/            release tooling
 ```
 
 ## License

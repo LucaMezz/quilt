@@ -5,6 +5,9 @@ import { randomBytes } from "node:crypto";
 import { createDb } from "@quilt/db";
 import { migrateDb } from "@quilt/db/migrate";
 import { createDatabase, dropDatabase } from "@quilt/db/testing";
+import { createStorage } from "@quilt/storage";
+import type { StorageConfig } from "@quilt/storage/config";
+import { createBucket, dropBucket } from "@quilt/storage/testing";
 import type { TestProject } from "vitest/node";
 
 import { ENV } from "../env";
@@ -25,7 +28,29 @@ export default async function setup(project: TestProject) {
     }
     await db.$client.end();
 
-    project.provide("databaseUrl", databaseUrl);
+    const storageConfig: StorageConfig = {
+        STORAGE_ENDPOINT: ENV.TEST_STORAGE_ENDPOINT,
+        STORAGE_REGION: "us-east-1",
+        STORAGE_BUCKET: name.replaceAll("_", "-"),
+        STORAGE_FORCE_PATH_STYLE: true,
+        STORAGE_ACCESS_KEY_ID: ENV.TEST_STORAGE_ACCESS_KEY_ID,
+        STORAGE_SECRET_ACCESS_KEY: ENV.TEST_STORAGE_SECRET_ACCESS_KEY,
+    };
+    const storage = createStorage(storageConfig);
+    try {
+        await createBucket(storage);
+    } catch (error) {
+        storage.client.destroy();
+        await dropDatabase(adminUrl, name);
+        throw error;
+    }
 
-    return () => dropDatabase(adminUrl, name);
+    project.provide("databaseUrl", databaseUrl);
+    project.provide("storageConfig", storageConfig);
+
+    return async () => {
+        await dropBucket(storage);
+        storage.client.destroy();
+        await dropDatabase(adminUrl, name);
+    };
 }

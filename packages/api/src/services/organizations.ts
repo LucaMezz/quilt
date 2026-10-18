@@ -2,7 +2,10 @@ import { type Auth, isAPIError } from "@quilt/auth";
 import type { Database } from "@quilt/db";
 import { app } from "@quilt/db/schema/app";
 import { member, organization } from "@quilt/db/schema/auth";
+import type { Storage } from "@quilt/storage";
 import { and, eq, getColumns, isNotNull, isNull } from "drizzle-orm";
+
+import { replaceImage } from "./images";
 
 export type Organization = typeof organization.$inferSelect;
 
@@ -120,6 +123,56 @@ export async function updateOrganization(
         }
         throw error;
     }
+}
+
+export const ORGANIZATION_LOGO_DIMENSION = 512;
+
+export function organizationLogoPrefix(organizationId: string) {
+    return `organizations/${organizationId}/logo/`;
+}
+
+export async function setOrganizationLogo(
+    auth: Auth,
+    storage: Storage,
+    headers: Headers,
+    target: Organization,
+    logo: Blob,
+) {
+    const { success } = await auth.api.hasPermission({
+        body: {
+            organizationId: target.id,
+            permissions: { organization: ["update"] },
+        },
+        headers,
+    });
+    if (!success) {
+        throw new OrganizationForbiddenError(
+            "You are not allowed to update this organization",
+        );
+    }
+
+    const slot = {
+        prefix: organizationLogoPrefix(target.id),
+        maxDimension: ORGANIZATION_LOGO_DIMENSION,
+        currentKey: target.logo,
+    };
+    return replaceImage(storage, slot, logo, async (key) => {
+        try {
+            const updated = await auth.api.updateOrganization({
+                body: { organizationId: target.id, data: { logo: key } },
+                headers,
+            });
+            if (!updated) {
+                throw new Error("Better Auth returned no organization");
+            }
+            return updated;
+        } catch (error) {
+            if (isAPIError(error) && error.status === "FORBIDDEN") {
+                throw new OrganizationForbiddenError(error.message);
+            }
+            throw error;
+        }
+    });
 }
 
 export async function deleteOrganization(

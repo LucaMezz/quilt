@@ -1,8 +1,9 @@
 import { OpenAPIHandler } from "@orpc/openapi/node";
 import { OpenAPIReferencePlugin } from "@orpc/openapi/plugins";
 import { onError } from "@orpc/server";
-import { RPCHandler } from "@orpc/server/node";
+import { BodyLimitPlugin, RPCHandler } from "@orpc/server/node";
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4";
+import { MAX_REQUEST_BODY_BYTES } from "@quilt/api";
 import { openAPISecuritySchemes } from "@quilt/api/openapi";
 import { appRouter } from "@quilt/api/routers/index";
 import type { Auth } from "@quilt/auth";
@@ -46,10 +47,12 @@ export function createApp({
     app.all("/api/auth{/*path}", toNodeHandler(auth));
 
     const rpcHandler = new RPCHandler(appRouter, {
+        plugins: [new BodyLimitPlugin({ maxBodySize: MAX_REQUEST_BODY_BYTES })],
         interceptors: [onError(reportError)],
     });
     const apiHandler = new OpenAPIHandler(appRouter, {
         plugins: [
+            new BodyLimitPlugin({ maxBodySize: MAX_REQUEST_BODY_BYTES }),
             new OpenAPIReferencePlugin({
                 schemaConverters: [new ZodToJsonSchemaConverter()],
                 specGenerateOptions: {

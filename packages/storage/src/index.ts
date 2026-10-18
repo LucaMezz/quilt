@@ -1,4 +1,8 @@
-import { S3Client } from "@aws-sdk/client-s3";
+import {
+    DeleteObjectCommand,
+    PutObjectCommand,
+    S3Client,
+} from "@aws-sdk/client-s3";
 
 import type { StorageConfig } from "./config";
 
@@ -29,3 +33,25 @@ export function createStorage(env: StorageConfig) {
 }
 
 export type Storage = ReturnType<typeof createStorage>;
+
+export async function putObject(
+    storage: Storage,
+    key: string,
+    body: Uint8Array,
+    contentType: string,
+) {
+    await storage.client.send(
+        new PutObjectCommand({
+            Bucket: storage.bucket,
+            Key: key,
+            Body: body,
+            ContentType: contentType,
+        }),
+    );
+}
+
+export async function deleteObject(storage: Storage, key: string) {
+    await storage.client.send(
+        new DeleteObjectCommand({ Bucket: storage.bucket, Key: key }),
+    );
+}

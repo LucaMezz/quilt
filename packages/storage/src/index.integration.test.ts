@@ -5,7 +5,7 @@ import {
 } from "@aws-sdk/client-s3";
 import { afterAll, describe, expect, inject, test } from "vitest";
 
-import { createStorage } from "./index";
+import { createStorage, deleteObject, putObject } from "./index";
 import { emptyBucket } from "./testing";
 
 const storage = createStorage(inject("storageConfig"));
@@ -55,5 +55,29 @@ describe("storage", () => {
         await emptyBucket(storage);
 
         await expect(listKeys()).resolves.toEqual([]);
+    });
+
+    test("putObject stores an object that deleteObject removes", async () => {
+        await putObject(
+            storage,
+            "helpers/bytes.bin",
+            new Uint8Array([1, 2, 3]),
+            "application/octet-stream",
+        );
+
+        const object = await storage.client.send(
+            new GetObjectCommand({
+                Bucket: storage.bucket,
+                Key: "helpers/bytes.bin",
+            }),
+        );
+        expect(object.ContentType).toBe("application/octet-stream");
+        await expect(object.Body?.transformToByteArray()).resolves.toEqual(
+            new Uint8Array([1, 2, 3]),
+        );
+
+        await deleteObject(storage, "helpers/bytes.bin");
+
+        await expect(listKeys()).resolves.not.toContain("helpers/bytes.bin");
     });
 });

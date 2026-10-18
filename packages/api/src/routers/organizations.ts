@@ -2,17 +2,21 @@ import { z } from "zod";
 
 import { protectedProcedure } from "../index";
 import { describeErrorResponse } from "../openapi";
+import { InvalidImageError } from "../services/images";
 import {
     createOrganization,
     deleteOrganization,
     getMemberOrganization,
     listOrganizations,
+    ORGANIZATION_LOGO_DIMENSION,
     OrganizationForbiddenError,
     OrganizationHasAppsError,
     OrganizationNotFoundError,
     OrganizationSlugTakenError,
+    setOrganizationLogo,
     updateOrganization,
 } from "../services/organizations";
+import { describeImageUpload, ImageFile, invalidImage } from "./images";
 
 export const OrganizationSlug = z
     .string()
@@ -49,6 +53,12 @@ const slugTaken = describeErrorResponse(
     { message: "Organization slug is already taken" },
     409,
     "Organization slug is already taken",
+);
+
+const updateForbidden = describeErrorResponse(
+    { message: "You can't update this organization" },
+    403,
+    "Only owners and admins can update an organization",
 );
 
 export const organizationsRouter = {
@@ -141,11 +151,7 @@ export const organizationsRouter = {
         .errors({
             NOT_FOUND: organizationNotFound,
             CONFLICT: slugTaken,
-            FORBIDDEN: describeErrorResponse(
-                { message: "You can't update this organization" },
-                403,
-                "Only owners and admins can update an organization",
-            ),
+            FORBIDDEN: updateForbidden,
         })
         .input(
             OrganizationRef.extend({
@@ -179,6 +185,53 @@ export const organizationsRouter = {
                 }
                 if (error instanceof OrganizationForbiddenError) {
                     throw errors.FORBIDDEN();
+                }
+                throw error;
+            }
+        }),
+    setOrganizationLogo: protectedProcedure
+        .route({
+            method: "PUT",
+            path: "/orgs/{org}/logo",
+            summary: "Set organization logo",
+            description: `Replaces the organization's logo. ${describeImageUpload(ORGANIZATION_LOGO_DIMENSION)} Only owners and admins can change the logo.`,
+            successDescription: "Logo updated",
+            tags: ["Organizations"],
+        })
+        .errors({
+            NOT_FOUND: organizationNotFound,
+            FORBIDDEN: updateForbidden,
+            BAD_REQUEST: invalidImage,
+        })
+        .input(
+            OrganizationRef.extend({
+                logo: ImageFile,
+            }),
+        )
+        .output(OrganizationSchema)
+        .handler(async ({ input, context, errors }) => {
+            try {
+                const target = await getMemberOrganization(
+                    context.db,
+                    context.session.user.id,
+                    input.org,
+                );
+                return await setOrganizationLogo(
+                    context.auth,
+                    context.storage,
+                    context.headers,
+                    target,
+                    input.logo,
+                );
+            } catch (error) {
+                if (error instanceof OrganizationNotFoundError) {
+                    throw errors.NOT_FOUND();
+                }
+                if (error instanceof OrganizationForbiddenError) {
+                    throw errors.FORBIDDEN();
+                }
+                if (error instanceof InvalidImageError) {
+                    throw errors.BAD_REQUEST();
                 }
                 throw error;
             }

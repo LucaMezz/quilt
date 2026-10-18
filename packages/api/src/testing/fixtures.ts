@@ -1,5 +1,8 @@
+import { createAuth } from "@quilt/auth";
 import { createDb } from "@quilt/db";
 import { member, organization, user } from "@quilt/db/schema/auth";
+import { createStorage } from "@quilt/storage";
+import { emptyBucket } from "@quilt/storage/testing";
 import { sql } from "drizzle-orm";
 import { test as baseTest, inject } from "vitest";
 
@@ -12,6 +15,29 @@ export const test = baseTest
         onCleanup(() => db.$client.end());
         return db;
     })
+    .extend("storageConfig", { scope: "worker" }, () => inject("storageConfig"))
+    .extend(
+        "storage",
+        { scope: "worker" },
+        ({ storageConfig }, { onCleanup }) => {
+            const storage = createStorage(storageConfig);
+            onCleanup(() => storage.client.destroy());
+            return storage;
+        },
+    )
+    .extend("resetStorage", { auto: true }, ({ storage }) =>
+        emptyBucket(storage),
+    )
+    .extend("auth", { scope: "worker" }, ({ db }) =>
+        createAuth(
+            {
+                BETTER_AUTH_URL: "http://localhost:3000",
+                BETTER_AUTH_SECRET: "integration-test-secret-integration-test",
+                CORS_ORIGIN: "http://localhost:3001",
+            },
+            db,
+        ),
+    )
     .extend("resetDb", { auto: true }, async ({ db }) => {
         const { rows } = await db.execute<{ tablename: string }>(
             sql`select tablename from pg_tables where schemaname = 'public'`,
@@ -30,6 +56,21 @@ export const test = baseTest
             .returning();
         if (!created) throw new Error("Insert returned no row");
         return created;
+    })
+    .extend("signUp", ({ auth }) => async (name = "user") => {
+        const { headers, response } = await auth.api.signUpEmail({
+            body: {
+                name,
+                email: `${name}-${crypto.randomUUID()}@example.com`,
+                password: "integration-password",
+            },
+            returnHeaders: true,
+        });
+        const cookie = headers
+            .getSetCookie()
+            .map((setCookie) => setCookie.split(";")[0])
+            .join("; ");
+        return { user: response.user, headers: new Headers({ cookie }) };
     })
     .extend(
         "createOrganization",

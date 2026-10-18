@@ -58,6 +58,11 @@
     "allowScripts": {
         "esbuild": true
     },
+    "overrides": {
+        "nx": {
+            "undici": "^7.29.1"
+        }
+    },
     "intent": {
         "skills": [
             "drizzle-kit",

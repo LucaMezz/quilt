@@ -2,6 +2,7 @@ import { drizzleAdapter } from "@better-auth/drizzle-adapter/relations-v2";
 import type { Database } from "@quilt/db";
 import * as schema from "@quilt/db/schema/auth";
 import { betterAuth } from "better-auth";
+import { organization } from "better-auth/plugins";
 
 export type AuthConfig = {
     BETTER_AUTH_URL: string;
@@ -30,7 +31,7 @@ export function createAuth(
                 httpOnly: true,
             },
         },
-        plugins: [],
+        plugins: [organization()],
     });
 }
 

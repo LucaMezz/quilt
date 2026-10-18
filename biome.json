@@ -39,12 +39,60 @@
     },
     "overrides": [
         {
+            "includes": ["**", "!packages/storage/**"],
+            "linter": {
+                "rules": {
+                    "style": {
+                        "noRestrictedImports": {
+                            "level": "error",
+                            "options": {
+                                "patterns": [
+                                    {
+                                        "group": ["@aws-sdk/*"],
+                                        "message": "Talk to object storage through @quilt/storage (or @quilt/storage/testing in tests), not the AWS SDK."
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
             "includes": [
                 "apps/*/src/**",
                 "packages/*/src/**",
                 "!apps/e2e/**",
                 "!**/*.test.ts",
                 "!packages/api/src/testing/**",
+                "!packages/storage/**"
+            ],
+            "linter": {
+                "rules": {
+                    "style": {
+                        "noRestrictedImports": {
+                            "level": "error",
+                            "options": {
+                                "paths": {
+                                    "@quilt/db/testing": "Test-only helpers that create and drop databases. Import them from tests, not application code.",
+                                    "@quilt/storage/testing": "Test-only helpers that create and drop buckets. Import them from tests, not application code."
+                                },
+                                "patterns": [
+                                    {
+                                        "group": ["@aws-sdk/*"],
+                                        "message": "Talk to object storage through @quilt/storage (or @quilt/storage/testing in tests), not the AWS SDK."
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "includes": [
+                "packages/storage/src/**",
+                "!**/*.test.ts",
                 "!packages/storage/src/integration/**"
             ],
             "linter": {

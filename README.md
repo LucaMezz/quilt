@@ -5,11 +5,13 @@
 <p><strong>A self-hosted PaaS that stitches your servers together and lets idle apps sleep.</strong></p>
 
 <p>
+  <a href="https://github.com/LucaMezz/quilt/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/LucaMezz/quilt/actions/workflows/ci.yml/badge.svg?branch=main"></a>
+  <a href="https://codecov.io/gh/LucaMezz/quilt"><img alt="Coverage" src="https://codecov.io/gh/LucaMezz/quilt/graph/badge.svg"></a>
+  <br>
   <img alt="Status: alpha" src="https://img.shields.io/badge/status-alpha-orange">
   <img alt="Not for production" src="https://img.shields.io/badge/production-not%20ready-red">
   <img alt="License: TBD" src="https://img.shields.io/badge/license-TBD-lightgrey">
   <br>
-  <img alt="Rust" src="https://img.shields.io/badge/Rust-000000?logo=rust&logoColor=white">
   <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white">
   <img alt="k3s" src="https://img.shields.io/badge/k3s-FFC61C?logo=k3s&logoColor=black">
   <img alt="Knative" src="https://img.shields.io/badge/Knative-0865AD?logo=knative&logoColor=white">

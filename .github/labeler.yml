@@ -1,0 +1,62 @@
+cli:
+  - changed-files:
+      - any-glob-to-any-file: apps/cli/**
+
+controller:
+  - changed-files:
+      - any-glob-to-any-file: apps/controller/**
+
+docs:
+  - changed-files:
+      - any-glob-to-any-file: apps/docs/**
+
+e2e:
+  - changed-files:
+      - any-glob-to-any-file: apps/e2e/**
+
+server:
+  - changed-files:
+      - any-glob-to-any-file: apps/server/**
+
+web:
+  - changed-files:
+      - any-glob-to-any-file: apps/web/**
+
+api:
+  - changed-files:
+      - any-glob-to-any-file: packages/api/**
+
+auth:
+  - changed-files:
+      - any-glob-to-any-file: packages/auth/**
+
+cluster:
+  - changed-files:
+      - any-glob-to-any-file: packages/cluster/**
+
+config:
+  - changed-files:
+      - any-glob-to-any-file: packages/config/**
+
+db:
+  - changed-files:
+      - any-glob-to-any-file: packages/db/**
+
+storage:
+  - changed-files:
+      - any-glob-to-any-file: packages/storage/**
+
+ui:
+  - changed-files:
+      - any-glob-to-any-file: packages/ui/**
+
+infra:
+  - changed-files:
+      - any-glob-to-any-file:
+          - cluster/**
+          - dev/**
+          - mise.toml
+
+ci:
+  - changed-files:
+      - any-glob-to-any-file: .github/**

@@ -1,0 +1,64 @@
+name: quilt
+
+services:
+  postgres:
+    image: postgres:18
+    container_name: quilt-postgres
+    environment:
+      POSTGRES_DB: quilt
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - quilt_postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  storage:
+    image: rustfs/rustfs:1.0.1
+    container_name: quilt-storage
+    environment:
+      RUSTFS_ACCESS_KEY: quilt
+      RUSTFS_SECRET_KEY: password
+      RUSTFS_CONSOLE_ENABLE: "true"
+      RUSTFS_OBS_LOG_DIRECTORY: ""
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - quilt_storage_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:9000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  storage-init:
+    image: amazon/aws-cli:2.37.9
+    container_name: quilt-storage-init
+    depends_on:
+      storage:
+        condition: service_healthy
+    environment:
+      AWS_ACCESS_KEY_ID: quilt
+      AWS_SECRET_ACCESS_KEY: password
+      AWS_REGION: us-east-1
+      AWS_ENDPOINT_URL: http://storage:9000
+    entrypoint: ["sh", "-c"]
+    command:
+      - aws s3api head-bucket --bucket quilt 2>/dev/null || aws s3api create-bucket --bucket quilt
+    restart: "no"
+
+volumes:
+  quilt_postgres_data:
+  quilt_storage_data:

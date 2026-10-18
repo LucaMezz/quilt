@@ -82,3 +82,34 @@ jobs:
         run: docker compose -f dev/compose.yaml up -d --wait storage
 
       - run: npx turbo run test:integration
+
+  browser:
+    name: Browser tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      VITE_SERVER_URL: http://localhost:3000
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 26
+          cache: npm
+
+      - run: npm ci
+
+      - name: Install Chromium
+        working-directory: apps/web
+        run: npx playwright install --with-deps chromium
+
+      - run: npx turbo run test:browser -F web
+
+      - name: Upload test results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-test-results
+          path: apps/web/test-results
+          if-no-files-found: ignore
+          retention-days: 7

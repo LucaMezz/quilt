@@ -39,6 +39,31 @@
     },
     "overrides": [
         {
+            "includes": [
+                "apps/*/src/**",
+                "packages/*/src/**",
+                "!apps/e2e/**",
+                "!**/*.test.ts",
+                "!packages/api/src/testing/**",
+                "!packages/storage/src/integration/**"
+            ],
+            "linter": {
+                "rules": {
+                    "style": {
+                        "noRestrictedImports": {
+                            "level": "error",
+                            "options": {
+                                "paths": {
+                                    "@quilt/db/testing": "Test-only helpers that create and drop databases. Import them from tests, not application code.",
+                                    "@quilt/storage/testing": "Test-only helpers that create and drop buckets. Import them from tests, not application code."
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
             "includes": ["**/*.tsx", "**/*.jsx"],
             "formatter": { "indentWidth": 2 }
         },

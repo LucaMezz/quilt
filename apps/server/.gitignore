@@ -31,7 +31,8 @@ node_modules/
 # env
 .env*
 .env.production
-!.env.example
+!.env.schema
+!.env.development
 .dev.vars
 
 # logs

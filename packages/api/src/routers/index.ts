@@ -4,10 +4,12 @@ import { z } from "zod";
 import { publicProcedure } from "../index";
 import { appsRouter } from "./apps";
 import { organizationsRouter } from "./organizations";
+import { usersRouter } from "./users";
 
 export const appRouter = {
     ...appsRouter,
     ...organizationsRouter,
+    ...usersRouter,
     healthCheck: publicProcedure
         .route({
             method: "GET",

@@ -7,10 +7,11 @@
 <p>
   <a href="https://github.com/LucaMezz/quilt/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/LucaMezz/quilt/actions/workflows/ci.yml/badge.svg?branch=main"></a>
   <a href="https://codecov.io/gh/LucaMezz/quilt"><img alt="Coverage" src="https://codecov.io/gh/LucaMezz/quilt/graph/badge.svg"></a>
+  <a href="https://scorecard.dev/viewer/?uri=github.com/LucaMezz/quilt"><img alt="OpenSSF Scorecard" src="https://api.scorecard.dev/projects/github.com/LucaMezz/quilt/badge"></a>
   <br>
   <img alt="Status: alpha" src="https://img.shields.io/badge/status-alpha-orange">
   <img alt="Not for production" src="https://img.shields.io/badge/production-not%20ready-red">
-  <img alt="License: TBD" src="https://img.shields.io/badge/license-TBD-lightgrey">
+  <a href="LICENSE"><img alt="License: Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-blue"></a>
   <br>
   <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white">
   <img alt="k3s" src="https://img.shields.io/badge/k3s-FFC61C?logo=k3s&logoColor=black">
@@ -57,4 +58,4 @@ quilt/
 
 ## License
 
-Not decided yet.
+[Apache-2.0](LICENSE)

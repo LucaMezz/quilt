@@ -2,6 +2,7 @@
     "name": "cli",
     "version": "0.0.0",
     "private": true,
+    "license": "Apache-2.0",
     "type": "module",
     "exports": {
         "./main": "./src/main.ts",
@@ -27,7 +28,7 @@
     "dependencies": {
         "@orpc/client": "^1.15.7",
         "@quilt/api": "*",
-        "chalk": "^5.6.2",
+        "chalk": "^6.0.1",
         "citty": "^0.2.2"
     }
 }

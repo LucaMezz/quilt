@@ -23,10 +23,10 @@
         "@quilt/auth": "*",
         "@quilt/db": "*",
         "@quilt/storage": "*",
-        "better-auth": "1.7.7",
+        "better-auth": "1.7.10",
         "cors": "^2.8.6",
         "express": "^5.2.1",
-        "varlock": "1.18.0",
+        "varlock": "1.23.0",
         "zod": "^4.5.4"
     },
     "devDependencies": {

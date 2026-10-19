@@ -1,0 +1,46 @@
+name: Migrations
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "packages/db/src/migrations/**"
+      - "packages/db/.squawk.toml"
+      - ".github/workflows/migrations.yml"
+
+concurrency:
+  group: migrations-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  squawk:
+    name: Squawk
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Find changed migrations
+        id: changed
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          files=$(git diff --diff-filter=d --name-only "$BASE_SHA"...HEAD -- 'packages/db/src/migrations/*/migration.sql' | tr '\n' ' ')
+          echo "files=$files" >> "$GITHUB_OUTPUT"
+
+      - uses: sbdchd/squawk-action@f972c01c35289cf7611464dae9a214bb84cce5e4 # v2.2.0
+        if: steps.changed.outputs.files != ''
+        with:
+          version: 2.70.0
+          config: packages/db/.squawk.toml
+          files: ${{ steps.changed.outputs.files }}
+          upload-to-github: ${{ !github.event.pull_request.head.repo.fork }}

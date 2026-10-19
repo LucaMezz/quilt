@@ -1,13 +1,18 @@
+import { app } from "@quilt/db/schema/app";
 import { getObject } from "@quilt/storage";
 import { listKeys } from "@quilt/storage/testing";
+import { eq } from "drizzle-orm";
 import sharp from "sharp";
 import { describe, expect } from "vitest";
 
 import { test } from "../testing/fixtures";
+import { createApp, destroyApp } from "./apps";
 import {
     createOrganization,
+    deleteOrganization,
     getMemberOrganization,
     OrganizationForbiddenError,
+    OrganizationHasAppsError,
     OrganizationNotFoundError,
     OrganizationSlugTakenError,
     organizationLogoPrefix,
@@ -309,6 +314,140 @@ describe("setOrganizationLogo", () => {
                 ),
             ).rejects.toBeInstanceOf(OrganizationForbiddenError);
             await expect(listKeys(storage)).resolves.toEqual([]);
+        },
+    );
+});
+
+describe("deleteOrganization", () => {
+    ownedOrganization(
+        "lets the owner delete an organization with no apps",
+        async ({ auth, db, owned }) => {
+            await deleteOrganization(
+                db,
+                auth,
+                owned.owner.headers,
+                owned.organization,
+            );
+
+            await expect(
+                db.query.organization.findFirst({
+                    where: { id: owned.organization.id },
+                }),
+            ).resolves.toBeUndefined();
+            await expect(
+                db.query.member.findMany({
+                    where: { organizationId: owned.organization.id },
+                }),
+            ).resolves.toEqual([]);
+        },
+    );
+
+    ownedOrganization.for(["admin", "member"] as const)(
+        "rejects an %s, who can't delete the organization",
+        async (role, { auth, db, signUp, owned }) => {
+            const caller = await signUp(role);
+            await auth.api.addMember({
+                body: {
+                    userId: caller.user.id,
+                    organizationId: owned.organization.id,
+                    role,
+                },
+            });
+
+            await expect(
+                deleteOrganization(
+                    db,
+                    auth,
+                    caller.headers,
+                    owned.organization,
+                ),
+            ).rejects.toBeInstanceOf(OrganizationForbiddenError);
+            await expect(
+                db.query.organization.findFirst({
+                    where: { id: owned.organization.id },
+                }),
+            ).resolves.toMatchObject({ slug: "acme" });
+        },
+    );
+
+    ownedOrganization(
+        "keeps an organization that still has a live app",
+        async ({ auth, db, owned }) => {
+            await createApp(
+                db,
+                { organizationId: owned.organization.id, name: "web" },
+                "example.com",
+            );
+
+            await expect(
+                deleteOrganization(
+                    db,
+                    auth,
+                    owned.owner.headers,
+                    owned.organization,
+                ),
+            ).rejects.toBeInstanceOf(OrganizationHasAppsError);
+            await expect(
+                db.query.organization.findFirst({
+                    where: { id: owned.organization.id },
+                }),
+            ).resolves.toMatchObject({ slug: "acme" });
+        },
+    );
+
+    ownedOrganization(
+        "keeps an organization whose app is still being destroyed",
+        async ({ auth, db, owned }) => {
+            const ref = { organizationId: owned.organization.id, name: "web" };
+            await createApp(db, ref, "example.com");
+            await destroyApp(db, ref);
+
+            await expect(
+                deleteOrganization(
+                    db,
+                    auth,
+                    owned.owner.headers,
+                    owned.organization,
+                ),
+            ).rejects.toBeInstanceOf(OrganizationHasAppsError);
+            await expect(
+                db.query.app.findMany({
+                    where: { organizationId: owned.organization.id },
+                }),
+            ).resolves.toMatchObject([{ status: "destroying" }]);
+        },
+    );
+
+    ownedOrganization(
+        "purges torn-down apps along with the organization",
+        async ({ auth, db, owned }) => {
+            const tornDown = await createApp(
+                db,
+                { organizationId: owned.organization.id, name: "web" },
+                "example.com",
+            );
+            await db
+                .update(app)
+                .set({ deletedAt: new Date() })
+                .where(eq(app.id, tornDown.id));
+
+            await deleteOrganization(
+                db,
+                auth,
+                owned.owner.headers,
+                owned.organization,
+            );
+
+            await expect(
+                db.query.app.findMany({
+                    where: { organizationId: owned.organization.id },
+                }),
+            ).resolves.toEqual([]);
+            await expect(
+                db.query.organization.findFirst({
+                    where: { id: owned.organization.id },
+                }),
+            ).resolves.toBeUndefined();
         },
     );
 });

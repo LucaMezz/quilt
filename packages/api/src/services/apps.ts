@@ -61,8 +61,12 @@ export async function createApp(
             namespace: `app-${id}`,
             hostname: `${ref.name}.${appsDomain}`,
         })
+        .onConflictDoNothing({ target: app.name })
         .returning();
-    return created!;
+    if (!created) {
+        throw new AppNameTakenError(ref.name);
+    }
+    return created;
 }
 
 export async function destroyApp(db: Database, ref: AppRef): Promise<App> {

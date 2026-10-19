@@ -7,6 +7,7 @@ import { describe, expect } from "vitest";
 
 import { test } from "../testing/fixtures";
 import {
+    AppNameTakenError,
     AppNotFoundError,
     appLogoPrefix,
     createApp,
@@ -50,6 +51,30 @@ describe("apps service", () => {
             status: "pending",
         });
         expect(page).toEqual({ items: [created], nextCursor: null });
+    });
+
+    test("rejects a name another organization's app already uses", async ({
+        db,
+        createOrganization,
+    }) => {
+        const acme = await createOrganization("acme");
+        const globex = await createOrganization("globex");
+        await createApp(
+            db,
+            { organizationId: acme.organization.id, name: "web" },
+            "apps.test",
+        );
+
+        await expect(
+            createApp(
+                db,
+                { organizationId: globex.organization.id, name: "web" },
+                "apps.test",
+            ),
+        ).rejects.toBeInstanceOf(AppNameTakenError);
+        await expect(
+            listApps(db, globex.organization.id, { limit: 10 }),
+        ).resolves.toEqual({ items: [], nextCursor: null });
     });
 });
 

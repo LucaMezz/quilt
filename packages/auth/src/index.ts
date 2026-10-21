@@ -1,3 +1,4 @@
+import { apiKey } from "@better-auth/api-key";
 import { drizzleAdapter } from "@better-auth/drizzle-adapter/relations-v2";
 import type { Database } from "@quilt/db";
 import * as schema from "@quilt/db/schema/auth";
@@ -31,7 +32,7 @@ export function createAuth(
                 httpOnly: true,
             },
         },
-        plugins: [organization()],
+        plugins: [organization(), apiKey()],
     });
 }
 

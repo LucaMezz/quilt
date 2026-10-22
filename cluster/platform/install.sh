@@ -15,6 +15,7 @@ serving="https://github.com/knative/serving/releases/download/knative-v${KNATIVE
 kourier="https://github.com/knative-extensions/net-kourier/releases/download/knative-v${KOURIER_VERSION}"
 
 k apply -f "$serving/serving-crds.yaml"
+k wait crd -l knative.dev/crd-install=true --for=condition=Established --timeout=60s
 k apply -f "$serving/serving-core.yaml"
 k apply -f "$kourier/kourier.yaml"
 

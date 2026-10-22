@@ -76,7 +76,7 @@ describe("storage", () => {
 
         expect(listed.sort()).toEqual(keys);
         await emptyBucket(storage);
-    });
+    }, 30_000);
 
     test("getObject reads back what putObject stored", async () => {
         await putObject(

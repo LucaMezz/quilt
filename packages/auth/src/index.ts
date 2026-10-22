@@ -1,3 +1,4 @@
+import { apiKey } from "@better-auth/api-key";
 import { drizzleAdapter } from "@better-auth/drizzle-adapter/relations-v2";
 import type { Database } from "@quilt/db";
 import * as schema from "@quilt/db/schema/auth";
@@ -31,11 +32,11 @@ export function createAuth(
                 httpOnly: true,
             },
         },
-        plugins: [organization()],
+        plugins: [organization(), apiKey()],
     });
 }
 
 export { isAPIError } from "better-auth/api";
 
-export type Auth = ReturnType<typeof createAuth>;
+export interface Auth extends ReturnType<typeof createAuth> {}
 export type Session = Auth["$Infer"]["Session"];

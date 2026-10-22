@@ -1,4 +1,4 @@
-import { createAuth } from "@quilt/auth";
+import { type Auth, createAuth } from "@quilt/auth";
 import { createDb } from "@quilt/db";
 import { member, organization, user } from "@quilt/db/schema/auth";
 import { closeStorage, createStorage } from "@quilt/storage";
@@ -28,15 +28,19 @@ export const test = baseTest
     .extend("resetStorage", { auto: true }, ({ storage }) =>
         emptyBucket(storage),
     )
-    .extend("auth", { scope: "worker" }, ({ db }) =>
-        createAuth(
-            {
-                BETTER_AUTH_URL: "http://localhost:3000",
-                BETTER_AUTH_SECRET: "integration-test-secret-integration-test",
-                CORS_ORIGIN: "http://localhost:3001",
-            },
-            db,
-        ),
+    .extend(
+        "auth",
+        { scope: "worker" },
+        ({ db }): Auth =>
+            createAuth(
+                {
+                    BETTER_AUTH_URL: "http://localhost:3000",
+                    BETTER_AUTH_SECRET:
+                        "integration-test-secret-integration-test",
+                    CORS_ORIGIN: "http://localhost:3001",
+                },
+                db,
+            ),
     )
     .extend("resetDb", { auto: true }, async ({ db }) => {
         const { rows } = await db.execute<{ tablename: string }>(

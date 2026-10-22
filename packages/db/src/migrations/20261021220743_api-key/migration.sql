@@ -1,3 +1,4 @@
+-- squawk-ignore-file prefer-bigint-over-int, prefer-timestamp-tz
 CREATE TABLE "apikey" (
 	"id" text PRIMARY KEY,
 	"config_id" text DEFAULT 'default' NOT NULL,

@@ -28,7 +28,7 @@
         "@quilt/config": "*",
         "@types/node": "^26.4.1",
         "@types/pg": "^8.23.1",
-        "typescript": "^6.0.3",
+        "typescript": "^7.0.2",
         "vitest": "^5.0.5"
     }
 }

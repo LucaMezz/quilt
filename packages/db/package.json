@@ -24,7 +24,7 @@
         "@quilt/config": "*",
         "@types/pg": "^8.23.1",
         "drizzle-kit": "1.0.0-rc.4",
-        "typescript": "^6.0.3",
+        "typescript": "^7.0.2",
         "varlock": "1.23.0"
     }
 }

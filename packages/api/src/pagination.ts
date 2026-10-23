@@ -100,3 +100,21 @@ export function toPage<T extends KeysetRow>(rows: T[], limit: number): Page<T> {
         nextCursor: rows.length > limit && last ? encodeCursor(last) : null,
     };
 }
+
+function compareKeyset(a: KeysetRow, b: KeysetRow): number {
+    return (
+        b.createdAt.getTime() - a.createdAt.getTime() ||
+        (a.id < b.id ? 1 : a.id > b.id ? -1 : 0)
+    );
+}
+
+export function paginateInMemory<T extends KeysetRow>(
+    rows: T[],
+    { limit, cursor }: PageParams,
+): Page<T> {
+    const sorted = rows.toSorted(compareKeyset);
+    const remaining = cursor
+        ? sorted.filter((row) => compareKeyset(row, cursor) > 0)
+        : sorted;
+    return toPage(remaining.slice(0, limit + 1), limit);
+}

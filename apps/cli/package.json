@@ -14,7 +14,7 @@
     "scripts": {
         "build": "tsc -b ../../packages/api && tsdown",
         "check-types": "tsc -b ../../packages/api && tsc --noEmit",
-        "compile": "bun build --compile --minify --sourcemap --bytecode ./src/index.ts --outfile build/quilt",
+        "compile": "bun build --compile --minify --sourcemap --bytecode --no-compile-autoload-dotenv --no-compile-autoload-bunfig ./src/index.ts --outfile build/quilt",
         "quilt": "tsx src/index.ts",
         "start": "node dist/index.mjs"
     },
@@ -26,9 +26,13 @@
         "typescript": "^7.0.2"
     },
     "dependencies": {
+        "@better-auth/api-key": "1.7.10",
         "@orpc/client": "^1.15.7",
         "@quilt/api": "*",
+        "@t3-oss/env-core": "^0.13.11",
+        "better-auth": "1.7.10",
         "chalk": "^6.0.1",
-        "citty": "^0.2.2"
+        "citty": "^0.2.2",
+        "zod": "^4.5.4"
     }
 }

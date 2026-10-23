@@ -1,6 +1,7 @@
 import { defineCommand } from "citty";
 
-import { client, serverUrl } from "../client";
+import { client } from "../client";
+import { env } from "../config";
 import { log } from "../ui/log";
 import { spinner } from "../ui/spinner";
 import { symbols } from "../ui/theme";
@@ -11,7 +12,7 @@ export default defineCommand({
         description: "Check that the quilt API is reachable",
     },
     async run() {
-        const host = new URL(serverUrl).host;
+        const host = new URL(env.QUILT_API_URL).host;
         const progress = spinner(`Checking ${host}…`);
         const started = performance.now();
 

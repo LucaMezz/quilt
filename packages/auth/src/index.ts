@@ -7,6 +7,7 @@ import { organization } from "better-auth/plugins";
 
 import {
     API_KEY_EXPIRES_IN_DAYS,
+    API_KEY_HEADER,
     API_KEY_NAME_LENGTH,
     API_KEY_PREFIX,
 } from "./api-keys";
@@ -49,6 +50,8 @@ export function createAuth(
                     maxExpiresIn: API_KEY_EXPIRES_IN_DAYS.max,
                 },
                 defaultPrefix: API_KEY_PREFIX,
+                apiKeyHeaders: API_KEY_HEADER,
+                rateLimit: { enabled: false },
             }),
         ],
     });

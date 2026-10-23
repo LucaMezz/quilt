@@ -14,3 +14,7 @@ export type Context = {
     storage: Storage;
     appsDomain: string;
 };
+
+export type ProcedureMeta = {
+    sessionOnly?: boolean;
+};

@@ -4,7 +4,7 @@ import { onError } from "@orpc/server";
 import { BodyLimitPlugin, RPCHandler } from "@orpc/server/node";
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4";
 import { MAX_REQUEST_BODY_BYTES } from "@quilt/api";
-import { openAPISecuritySchemes } from "@quilt/api/openapi";
+import { openAPIGenerateOptions } from "@quilt/api/openapi";
 import { appRouter } from "@quilt/api/routers/index";
 import type { Auth } from "@quilt/auth";
 import type { Database } from "@quilt/db";
@@ -55,9 +55,7 @@ export function createApp({
             new BodyLimitPlugin({ maxBodySize: MAX_REQUEST_BODY_BYTES }),
             new OpenAPIReferencePlugin({
                 schemaConverters: [new ZodToJsonSchemaConverter()],
-                specGenerateOptions: {
-                    components: { securitySchemes: openAPISecuritySchemes },
-                },
+                specGenerateOptions: openAPIGenerateOptions,
             }),
         ],
         interceptors: [onError(reportError)],

@@ -4,7 +4,7 @@ import { writeFile } from "node:fs/promises";
 import { OpenAPIGenerator } from "@orpc/openapi";
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4";
 
-import { openAPISecuritySchemes } from "../src/openapi";
+import { openAPIGenerateOptions } from "../src/openapi";
 import { appRouter } from "../src/routers/index";
 
 const serverUrl =
@@ -17,7 +17,7 @@ const generator = new OpenAPIGenerator({
 const spec = await generator.generate(appRouter, {
     info: { title: "quilt API", version: "0.0.0" },
     servers: [{ url: serverUrl }],
-    components: { securitySchemes: openAPISecuritySchemes },
+    ...openAPIGenerateOptions,
 });
 
 const output = new URL("../openapi.json", import.meta.url);

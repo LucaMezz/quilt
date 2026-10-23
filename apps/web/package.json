@@ -13,7 +13,9 @@
         "test:watch": "vitest",
         "test:browser": "playwright test",
         "test:browser:ui": "playwright test --ui",
-        "env:generate": "varlock codegen"
+        "env:generate": "varlock codegen",
+        "storybook": "storybook dev -p 6006",
+        "build-storybook": "storybook build"
     },
     "dependencies": {
         "@better-auth/api-key": "1.7.10",
@@ -55,6 +57,9 @@
         "tailwindcss": "^4.3.3",
         "typescript": "^7.0.2",
         "vite": "^8.3.4",
-        "vitest": "^5.0.5"
+        "vitest": "^5.0.5",
+        "storybook": "^10.6.3",
+        "@storybook/react-vite": "^10.6.3",
+        "@storybook/addon-docs": "^10.6.3"
     }
 }

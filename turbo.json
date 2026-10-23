@@ -81,14 +81,17 @@
             "persistent": true
         }
     },
-    "globalEnv": [
+    "remoteCache": {
+        "signature": true
+    },
+    "globalEnv": ["NODE_ENV"],
+    "globalPassThroughEnv": [
         "BETTER_AUTH_SECRET",
         "BETTER_AUTH_URL",
         "CI",
         "CORS_ORIGIN",
         "DATABASE_URL",
         "KUBECONFIG",
-        "NODE_ENV",
         "RECONCILE_INTERVAL_MS",
         "STORAGE_ACCESS_KEY_ID",
         "STORAGE_BUCKET",
@@ -102,6 +105,5 @@
         "VERCEL_URL",
         "VITE_SERVER_URL",
         "_VARLOCK_ENV_KEY"
-    ],
-    "globalDependencies": [".env*", "apps/*/.env*", "packages/*/.env*"]
+    ]
 }

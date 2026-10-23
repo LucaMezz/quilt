@@ -20,7 +20,12 @@ function resolveCredentials(env: StorageConfig) {
     return { accessKeyId, secretAccessKey };
 }
 
-export function createStorage(env: StorageConfig) {
+export type Storage = {
+    client: S3Client;
+    bucket: string;
+};
+
+export function createStorage(env: StorageConfig): Storage {
     const client = new S3Client({
         region: env.STORAGE_REGION,
         endpoint: env.STORAGE_ENDPOINT,
@@ -33,8 +38,6 @@ export function createStorage(env: StorageConfig) {
     });
     return { client, bucket: env.STORAGE_BUCKET };
 }
-
-export type Storage = ReturnType<typeof createStorage>;
 
 export function closeStorage(storage: Storage) {
     storage.client.destroy();

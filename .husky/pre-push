@@ -1,1 +1,1 @@
-npx --no -- turbo run check-types test
+pnpm exec turbo run check-types test

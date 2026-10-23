@@ -2,10 +2,6 @@
     "name": "quilt",
     "private": true,
     "license": "Apache-2.0",
-    "workspaces": [
-        "apps/*",
-        "packages/*"
-    ],
     "type": "module",
     "scripts": {
         "dev": "turbo run dev",
@@ -21,7 +17,7 @@
         "dev:web": "turbo run dev -F web --",
         "dev:server": "turbo run dev -F server --",
         "dev:controller": "turbo run dev -F controller --",
-        "quilt": "npm run quilt -w cli --",
+        "quilt": "pnpm --filter cli run quilt",
         "db:push": "turbo run db:push -F @quilt/db --",
         "db:studio": "turbo run db:studio -F @quilt/db --",
         "db:generate": "turbo run db:generate -F @quilt/db --",
@@ -31,8 +27,8 @@
         "infra:stop": "docker compose -f dev/compose.yaml stop",
         "infra:down": "docker compose -f dev/compose.yaml down",
         "env:generate": "varlock codegen --path ./apps/web/ && varlock codegen --path ./apps/server/ && varlock codegen --path ./packages/db/ && varlock codegen --path ./apps/controller/ && varlock codegen --path ./apps/e2e/ && varlock codegen --path ./packages/api/ && varlock codegen --path ./packages/storage/",
-        "postinstall": "npm run env:generate",
-        "auth:generate": "cd apps/server && npm run auth:generate",
+        "postinstall": "pnpm run env:generate",
+        "auth:generate": "pnpm --filter server run auth:generate",
         "check": "biome check --write .",
         "prepare": "husky"
     },
@@ -44,7 +40,7 @@
         "@commitlint/cli": "^21.2.3",
         "@commitlint/config-conventional": "^21.2.3",
         "@nx/js": "^23.3.0",
-        "@quilt/config": "*",
+        "@quilt/config": "workspace:*",
         "@tanstack/intent": "^0.5.5",
         "@types/node": "^26.4.1",
         "husky": "^9.1.7",
@@ -54,15 +50,7 @@
         "typescript": "^7.0.2",
         "varlock": "1.23.0"
     },
-    "packageManager": "npm@11.16.0",
-    "allowScripts": {
-        "esbuild": true
-    },
-    "overrides": {
-        "nx": {
-            "undici": "^7.29.1"
-        }
-    },
+    "packageManager": "pnpm@12.15.0",
     "intent": {
         "skills": [
             "drizzle-kit",

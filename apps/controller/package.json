@@ -16,13 +16,13 @@
         "env:generate": "varlock codegen"
     },
     "dependencies": {
-        "@quilt/cluster": "*",
-        "@quilt/db": "*",
+        "@quilt/cluster": "workspace:*",
+        "@quilt/db": "workspace:*",
         "drizzle-orm": "1.0.0-rc.4",
         "varlock": "1.23.0"
     },
     "devDependencies": {
-        "@quilt/config": "*",
+        "@quilt/config": "workspace:*",
         "@types/node": "^26.4.1",
         "tsdown": "^0.23.0",
         "tsx": "^4.23.15",

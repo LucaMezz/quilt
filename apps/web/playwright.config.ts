@@ -22,7 +22,7 @@ export default defineConfig({
     ],
     // Starts the web dev server, or reuses one already running locally.
     webServer: {
-        command: "npm run dev",
+        command: "pnpm run dev",
         url: BASE_URL,
         reuseExistingServer: !process.env.CI,
     },

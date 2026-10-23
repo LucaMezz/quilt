@@ -1,6 +1,6 @@
 # prod
 dist/
-# Standalone binaries from `npm run compile`
+# Standalone binaries from `pnpm run compile`
 build/
 
 # deps

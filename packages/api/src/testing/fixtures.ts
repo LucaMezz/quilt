@@ -1,7 +1,7 @@
 import { type Auth, createAuth } from "@quilt/auth";
 import { createDb } from "@quilt/db";
 import { member, organization, user } from "@quilt/db/schema/auth";
-import { closeStorage, createStorage } from "@quilt/storage";
+import { closeStorage, createStorage, type Storage } from "@quilt/storage";
 import { emptyBucket } from "@quilt/storage/testing";
 import { sql } from "drizzle-orm";
 import { test as baseTest, inject } from "vitest";
@@ -19,7 +19,7 @@ export const test = baseTest
     .extend(
         "storage",
         { scope: "worker" },
-        ({ storageConfig }, { onCleanup }) => {
+        ({ storageConfig }, { onCleanup }): Storage => {
             const storage = createStorage(storageConfig);
             onCleanup(() => closeStorage(storage));
             return storage;
@@ -74,7 +74,8 @@ export const test = baseTest
             .getSetCookie()
             .map((setCookie) => setCookie.split(";")[0])
             .join("; ");
-        return { user: response.user, headers: new Headers({ cookie }) };
+        const sessionHeaders: Headers = new Headers({ cookie });
+        return { user: response.user, headers: sessionHeaders };
     })
     .extend(
         "createOrganization",

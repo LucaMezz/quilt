@@ -3,7 +3,7 @@ import { drizzleAdapter } from "@better-auth/drizzle-adapter/relations-v2";
 import type { Database } from "@quilt/db";
 import * as schema from "@quilt/db/schema/auth";
 import { betterAuth } from "better-auth";
-import { organization } from "better-auth/plugins";
+import { deviceAuthorization, organization } from "better-auth/plugins";
 
 import {
     API_KEY_EXPIRES_IN_DAYS,
@@ -52,6 +52,9 @@ export function createAuth(
                 defaultPrefix: API_KEY_PREFIX,
                 apiKeyHeaders: API_KEY_HEADER,
                 rateLimit: { enabled: false },
+            }),
+            deviceAuthorization({
+                verificationUri: "/device",
             }),
         ],
     });

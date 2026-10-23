@@ -16,7 +16,7 @@
         "@better-auth/drizzle-adapter": "1.7.10",
         "@quilt/db": "workspace:*",
         "better-auth": "1.7.10",
-        "drizzle-orm": "1.0.0-rc.4",
+        "drizzle-orm": "1.0.0-rc.5-5935859",
         "zod": "^4.5.4"
     },
     "devDependencies": {

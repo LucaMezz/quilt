@@ -27,7 +27,7 @@ jobs:
           m_max_size: "250"
           l_max_size: "400"
           files_to_ignore: >-
-            package-lock.json
+            pnpm-lock.yaml
             packages/db/src/migrations/*/snapshot.json
             packages/db/src/schema/auth.ts
           message_if_xl: >

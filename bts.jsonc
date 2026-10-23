@@ -26,7 +26,7 @@
   "examples": [],
   "auth": "better-auth",
   "payments": "none",
-  "packageManager": "npm",
+  "packageManager": "pnpm",
   "dbSetup": "docker",
   "api": "orpc",
   "webDeploy": "none",

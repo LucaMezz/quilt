@@ -1,0 +1,10 @@
+packages:
+  - apps/*
+  - packages/*
+
+allowBuilds:
+  esbuild: true
+  nx: false
+
+overrides:
+  "nx>undici": "^7.29.1"

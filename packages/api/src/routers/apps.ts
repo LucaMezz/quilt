@@ -89,7 +89,7 @@ export const appsRouter = {
             try {
                 const organization = await getMemberOrganization(
                     context.db,
-                    context.session.user.id,
+                    context.caller.userId,
                     input.org,
                 );
                 return await createApp(
@@ -123,7 +123,7 @@ export const appsRouter = {
             try {
                 const organization = await getMemberOrganization(
                     context.db,
-                    context.session.user.id,
+                    context.caller.userId,
                     input.org,
                 );
                 return await destroyApp(context.db, {
@@ -156,7 +156,7 @@ export const appsRouter = {
             try {
                 const organization = await getMemberOrganization(
                     context.db,
-                    context.session.user.id,
+                    context.caller.userId,
                     input.org,
                 );
                 const target = await getOwnedApp(context.db, {
@@ -199,7 +199,7 @@ export const appsRouter = {
             try {
                 const organization = await getMemberOrganization(
                     context.db,
-                    context.session.user.id,
+                    context.caller.userId,
                     input.org,
                 );
                 return await listApps(context.db, organization.id, input);

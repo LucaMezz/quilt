@@ -10,18 +10,18 @@ export const o = os.$context<Context>();
 
 export const publicProcedure = o;
 
-const requireAuth = o.middleware(async ({ context, next }) => {
-    if (!context.session?.user) {
+const requireCaller = o.middleware(async ({ context, next }) => {
+    if (!context.caller) {
         throw new ORPCError("UNAUTHORIZED");
     }
     return next({
         context: {
-            session: context.session,
+            caller: context.caller,
         },
     });
 });
 
-export const protectedProcedure = publicProcedure.use(requireAuth).route({
+export const protectedProcedure = publicProcedure.use(requireCaller).route({
     // Marks every protected procedure as needing a session in the OpenAPI spec.
     spec: (operation) => ({
         ...operation,
@@ -32,3 +32,15 @@ export const protectedProcedure = publicProcedure.use(requireAuth).route({
         },
     }),
 });
+
+export const sessionProcedure = protectedProcedure.use(
+    async ({ context, next }) => {
+        if (context.caller.kind !== "session") {
+            throw new ORPCError("FORBIDDEN", {
+                message:
+                    "This endpoint needs a signed-in session, not an API key",
+            });
+        }
+        return next({ context: { session: context.caller.session } });
+    },
+);

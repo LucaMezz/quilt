@@ -12,6 +12,7 @@ dist/
 .env.*
 !.env.schema
 !.env.development
+mise.local.toml
 
 # Editors and OS
 .vscode/

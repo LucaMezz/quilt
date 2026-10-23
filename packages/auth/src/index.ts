@@ -5,6 +5,13 @@ import * as schema from "@quilt/db/schema/auth";
 import { betterAuth } from "better-auth";
 import { organization } from "better-auth/plugins";
 
+import {
+    API_KEY_EXPIRES_IN_DAYS,
+    API_KEY_HEADER,
+    API_KEY_NAME_LENGTH,
+    API_KEY_PREFIX,
+} from "./api-keys";
+
 export type AuthConfig = {
     BETTER_AUTH_URL: string;
     BETTER_AUTH_SECRET: string;
@@ -32,7 +39,21 @@ export function createAuth(
                 httpOnly: true,
             },
         },
-        plugins: [organization(), apiKey()],
+        plugins: [
+            organization(),
+            apiKey({
+                requireName: true,
+                minimumNameLength: API_KEY_NAME_LENGTH.min,
+                maximumNameLength: API_KEY_NAME_LENGTH.max,
+                keyExpiration: {
+                    minExpiresIn: API_KEY_EXPIRES_IN_DAYS.min,
+                    maxExpiresIn: API_KEY_EXPIRES_IN_DAYS.max,
+                },
+                defaultPrefix: API_KEY_PREFIX,
+                apiKeyHeaders: API_KEY_HEADER,
+                rateLimit: { enabled: false },
+            }),
+        ],
     });
 }
 

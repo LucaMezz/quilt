@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { protectedProcedure } from "../index";
+import { protectedProcedure, sessionProcedure } from "../index";
 import { describeErrorResponse } from "../openapi";
 import { InvalidImageError } from "../services/images";
 import {
@@ -62,7 +62,7 @@ const updateForbidden = describeErrorResponse(
 );
 
 export const organizationsRouter = {
-    listOrganizations: protectedProcedure
+    listOrganizations: sessionProcedure
         .route({
             method: "GET",
             path: "/orgs",
@@ -75,7 +75,7 @@ export const organizationsRouter = {
         .handler(({ context }) =>
             listOrganizations(context.auth, context.headers),
         ),
-    createOrganization: protectedProcedure
+    createOrganization: sessionProcedure
         .route({
             method: "POST",
             path: "/orgs",
@@ -128,7 +128,7 @@ export const organizationsRouter = {
             try {
                 return await getMemberOrganization(
                     context.db,
-                    context.session.user.id,
+                    context.caller.userId,
                     input.org,
                 );
             } catch (error) {
@@ -138,7 +138,7 @@ export const organizationsRouter = {
                 throw error;
             }
         }),
-    updateOrganization: protectedProcedure
+    updateOrganization: sessionProcedure
         .route({
             method: "PATCH",
             path: "/orgs/{org}",
@@ -189,7 +189,7 @@ export const organizationsRouter = {
                 throw error;
             }
         }),
-    setOrganizationLogo: protectedProcedure
+    setOrganizationLogo: sessionProcedure
         .route({
             method: "PUT",
             path: "/orgs/{org}/logo",
@@ -236,7 +236,7 @@ export const organizationsRouter = {
                 throw error;
             }
         }),
-    deleteOrganization: protectedProcedure
+    deleteOrganization: sessionProcedure
         .route({
             method: "DELETE",
             path: "/orgs/{org}",

@@ -2,11 +2,13 @@ import type { RouterClient } from "@orpc/server";
 import { z } from "zod";
 
 import { publicProcedure } from "../index";
+import { apiKeysRouter } from "./api-keys";
 import { appsRouter } from "./apps";
 import { organizationsRouter } from "./organizations";
 import { usersRouter } from "./users";
 
 export const appRouter = {
+    ...apiKeysRouter,
     ...appsRouter,
     ...organizationsRouter,
     ...usersRouter,

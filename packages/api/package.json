@@ -22,7 +22,7 @@
         "@quilt/auth": "workspace:*",
         "@quilt/db": "workspace:*",
         "@quilt/storage": "workspace:*",
-        "drizzle-orm": "^1.0.0-rc.4",
+        "drizzle-orm": "^1.0.0-rc.5-5935859",
         "sharp": "^0.35.5",
         "zod": "^4.5.4"
     },

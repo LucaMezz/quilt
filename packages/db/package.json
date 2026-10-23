@@ -23,7 +23,7 @@
     "devDependencies": {
         "@quilt/config": "workspace:*",
         "@types/pg": "^8.23.1",
-        "drizzle-kit": "1.0.0-rc.4",
+        "drizzle-kit": "1.0.0-rc.5-5935859",
         "typescript": "^7.0.2",
         "varlock": "1.23.0"
     }

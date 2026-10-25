@@ -2,9 +2,10 @@
 // and router, so no server is needed. Copy this pattern for real tests.
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import SignInForm from "./sign-in-form";
+import { LoginForm } from "./login-form";
 
 const { signInEmail, navigate } = vi.hoisted(() => ({
   signInEmail: vi.fn(),
@@ -20,22 +21,25 @@ vi.mock("@/lib/auth-client", () => ({
 
 vi.mock("@tanstack/react-router", () => ({
   useNavigate: () => navigate,
+  Link: ({ to, children }: { to: string; children: ReactNode }) => (
+    <a href={to}>{children}</a>
+  ),
 }));
 
-describe("SignInForm", () => {
+describe("LoginForm", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it("shows validation errors and does not submit invalid input", async () => {
     const user = userEvent.setup();
-    render(<SignInForm onSwitchToSignUp={() => {}} />);
+    render(<LoginForm />);
 
     // Passes the browser's type="email" check (which would block submit) but
     // fails the Zod schema, which requires a TLD.
     await user.type(screen.getByLabelText("Email"), "ada@example");
     await user.type(screen.getByLabelText("Password"), "short");
-    await user.click(screen.getByRole("button", { name: "Sign In" }));
+    await user.click(screen.getByRole("button", { name: "Sign in" }));
 
     expect(
       await screen.findByText("Invalid email address"),
@@ -51,11 +55,11 @@ describe("SignInForm", () => {
       onSuccess();
     });
     const user = userEvent.setup();
-    render(<SignInForm onSwitchToSignUp={() => {}} />);
+    render(<LoginForm />);
 
     await user.type(screen.getByLabelText("Email"), "ada@example.com");
     await user.type(screen.getByLabelText("Password"), "correct-horse");
-    await user.click(screen.getByRole("button", { name: "Sign In" }));
+    await user.click(screen.getByRole("button", { name: "Sign in" }));
 
     expect(signInEmail).toHaveBeenCalledWith(
       { email: "ada@example.com", password: "correct-horse" },
@@ -64,13 +68,12 @@ describe("SignInForm", () => {
     expect(navigate).toHaveBeenCalledWith({ to: "/dashboard" });
   });
 
-  it("calls onSwitchToSignUp when the sign-up link is clicked", async () => {
-    const onSwitchToSignUp = vi.fn();
-    const user = userEvent.setup();
-    render(<SignInForm onSwitchToSignUp={onSwitchToSignUp} />);
+  it("links to the sign-up page", () => {
+    render(<LoginForm />);
 
-    await user.click(screen.getByRole("button", { name: /sign up/i }));
-
-    expect(onSwitchToSignUp).toHaveBeenCalledOnce();
+    expect(screen.getByRole("link", { name: /sign up/i })).toHaveAttribute(
+      "href",
+      "/signup",
+    );
   });
 });

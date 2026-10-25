@@ -34,8 +34,8 @@ export function Footer() {
             quilt
           </Link>
           <p className="mt-2 max-w-xs text-muted-foreground text-sm">
-            A self-hosted PaaS for businesses that want their own cloud on their
-            own servers.
+            A self-hosted PaaS for businesses that want their own platform on
+            their own servers.
           </p>
           <p className="mt-6 text-muted-foreground text-xs">
             Apache-2.0 licensed. Alpha software, not for production yet. Hosting

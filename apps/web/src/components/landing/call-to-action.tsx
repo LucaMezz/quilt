@@ -12,7 +12,7 @@ export function CallToAction() {
         <div className="relative overflow-hidden rounded-3xl border bg-card px-6 py-16 text-center sm:px-16">
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,color-mix(in_oklch,var(--primary)_20%,transparent),transparent_65%)]" />
           <h2 className="relative mx-auto max-w-2xl text-balance font-semibold text-3xl tracking-tight sm:text-4xl">
-            Run your own cloud on servers you already own
+            Run your own platform on servers you already own
           </h2>
           <p className="relative mx-auto mt-4 max-w-xl text-balance text-muted-foreground">
             quilt is open source and early. Sign in to try it here, install it

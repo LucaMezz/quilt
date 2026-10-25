@@ -6,9 +6,9 @@ import { ArrowRight, Info, Star } from "lucide-react";
 import { githubUrl } from "./links";
 import { ScreenshotPlaceholder } from "./screenshot-placeholder";
 
-const headline = "The open source PaaS for running your own cloud";
+const headline = "The open source PaaS for your own servers";
 const tagline =
-  "quilt is a platform you install on your own servers. It pools them into one cloud where every team or customer gets an organization to deploy apps in, apps can sleep when idle, and usage is billed by the resources each running app reserves.";
+  "quilt is a platform you install on your own servers. It pools them into one platform where every team or customer gets an organization to deploy apps in, apps can sleep when idle, and usage is billed by the resources each running app reserves.";
 
 export function Hero() {
   return (

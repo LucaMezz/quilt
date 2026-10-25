@@ -28,7 +28,8 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
       },
       {
         name: "description",
-        content: "quilt is a web application",
+        content:
+          "quilt is a self-hosted PaaS that pools your servers, places apps for you and puts idle apps to sleep.",
       },
     ],
     links: [
@@ -50,7 +51,7 @@ function RootComponent() {
         disableTransitionOnChange
         storageKey="vite-ui-theme"
       >
-        <div className="grid h-svh grid-rows-[auto_1fr]">
+        <div className="grid min-h-svh grid-rows-[auto_1fr]">
           <Header />
           <Outlet />
         </div>

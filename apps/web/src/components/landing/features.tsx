@@ -1,5 +1,5 @@
+import { BlurFade } from "@quilt/ui/components/blur-fade";
 import { Building2, Gauge, Globe, KeyRound, Moon, Shuffle } from "lucide-react";
-
 import { SectionHeading } from "./section-heading";
 
 const features = [
@@ -45,7 +45,11 @@ export function Features() {
           description="Multi-tenancy, access control and metering are part of the platform, not add-ons. Underneath, k3s and Knative do the work, and nobody has to touch a manifest."
         />
 
-        <div className="mt-12 grid gap-px overflow-hidden rounded-xl border bg-border sm:grid-cols-2 lg:grid-cols-3">
+        <BlurFade
+          inView
+          direction="up"
+          className="mt-12 grid gap-px overflow-hidden rounded-xl border bg-border sm:grid-cols-2 lg:grid-cols-3"
+        >
           {features.map(({ icon: Icon, title, body }) => (
             <div key={title} className="bg-background p-6">
               <Icon className="size-5 text-primary" />
@@ -53,7 +57,7 @@ export function Features() {
               <p className="mt-2 text-muted-foreground text-sm">{body}</p>
             </div>
           ))}
-        </div>
+        </BlurFade>
       </div>
     </section>
   );

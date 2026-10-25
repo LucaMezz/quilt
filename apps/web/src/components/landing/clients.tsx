@@ -1,6 +1,6 @@
+import { BlurFade } from "@quilt/ui/components/blur-fade";
 import { Card, CardContent } from "@quilt/ui/components/card";
 import { KeyRound, LayoutDashboard, Terminal } from "lucide-react";
-
 import { ScreenshotPlaceholder } from "./screenshot-placeholder";
 import { SectionHeading } from "./section-heading";
 
@@ -30,22 +30,24 @@ export function Clients() {
         />
 
         <div className="mt-12 grid gap-6 lg:grid-cols-2">
-          {clients.map(({ icon: Icon, title, body, placeholder }) => (
-            <Card key={title}>
-              <CardContent>
-                <ScreenshotPlaceholder
-                  label={placeholder}
-                  className="aspect-[16/10]"
-                />
-              </CardContent>
-              <CardContent>
-                <h3 className="flex items-center gap-2 font-medium text-base">
-                  <Icon className="size-4 text-primary" />
-                  {title}
-                </h3>
-                <p className="mt-2 text-muted-foreground text-sm">{body}</p>
-              </CardContent>
-            </Card>
+          {clients.map(({ icon: Icon, title, body, placeholder }, index) => (
+            <BlurFade inView direction="up" key={title} delay={index * 0.07}>
+              <Card className="h-full">
+                <CardContent>
+                  <ScreenshotPlaceholder
+                    label={placeholder}
+                    className="aspect-[16/10]"
+                  />
+                </CardContent>
+                <CardContent>
+                  <h3 className="flex items-center gap-2 font-medium text-base">
+                    <Icon className="size-4 text-primary" />
+                    {title}
+                  </h3>
+                  <p className="mt-2 text-muted-foreground text-sm">{body}</p>
+                </CardContent>
+              </Card>
+            </BlurFade>
           ))}
         </div>
 

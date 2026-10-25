@@ -1,4 +1,5 @@
 import { Badge } from "@quilt/ui/components/badge";
+import { BlurFade } from "@quilt/ui/components/blur-fade";
 import {
   Card,
   CardAction,
@@ -18,7 +19,6 @@ import {
   TableRow,
 } from "@quilt/ui/components/table";
 import { Gauge, Receipt, ShieldCheck } from "lucide-react";
-
 import { SectionHeading } from "./section-heading";
 
 const cpuRate = 0.02;
@@ -69,71 +69,75 @@ export function Billing() {
             description="quilt meters the CPU and memory each app reserves while it is running. A sleeping app reserves nothing, so it costs nothing, and every organization gets a bill that matches what it used."
           />
 
-          <ul className="mt-8 space-y-6">
-            {points.map(({ icon: Icon, title, body }) => (
-              <li key={title} className="flex gap-4">
-                <Icon className="mt-0.5 size-5 shrink-0 text-primary" />
-                <div>
-                  <p className="font-medium text-sm">{title}</p>
-                  <p className="mt-1 text-muted-foreground text-sm">{body}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
+          <BlurFade inView direction="up">
+            <ul className="mt-8 space-y-6">
+              {points.map(({ icon: Icon, title, body }) => (
+                <li key={title} className="flex gap-4">
+                  <Icon className="mt-0.5 size-5 shrink-0 text-primary" />
+                  <div>
+                    <p className="font-medium text-sm">{title}</p>
+                    <p className="mt-1 text-muted-foreground text-sm">{body}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </BlurFade>
         </div>
 
-        <Card>
-          <CardHeader className="border-b">
-            <CardTitle>acme-marketing</CardTitle>
-            <CardDescription>October usage</CardDescription>
-            <CardAction>
-              <Badge variant="outline">On the roadmap</Badge>
-            </CardAction>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>App</TableHead>
-                  <TableHead>Reserved</TableHead>
-                  <TableHead className="text-right">Hours running</TableHead>
-                  <TableHead className="text-right">Cost</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {usage.map(({ app, cpu, memory, hours, cost }) => (
-                  <TableRow key={app}>
-                    <TableCell className="font-mono">{app}</TableCell>
-                    <TableCell className="text-muted-foreground">
-                      {cpu} vCPU · {formatMemory(memory)}
-                    </TableCell>
+        <BlurFade inView direction="up">
+          <Card>
+            <CardHeader className="border-b">
+              <CardTitle>acme-marketing</CardTitle>
+              <CardDescription>October usage</CardDescription>
+              <CardAction>
+                <Badge variant="outline">On the roadmap</Badge>
+              </CardAction>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>App</TableHead>
+                    <TableHead>Reserved</TableHead>
+                    <TableHead className="text-right">Hours running</TableHead>
+                    <TableHead className="text-right">Cost</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {usage.map(({ app, cpu, memory, hours, cost }) => (
+                    <TableRow key={app}>
+                      <TableCell className="font-mono">{app}</TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {cpu} vCPU · {formatMemory(memory)}
+                      </TableCell>
+                      <TableCell className="text-right tabular-nums">
+                        {hours}
+                      </TableCell>
+                      <TableCell className="text-right tabular-nums">
+                        ${cost.toFixed(2)}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+                <TableFooter>
+                  <TableRow>
+                    <TableCell colSpan={3}>Total</TableCell>
                     <TableCell className="text-right tabular-nums">
-                      {hours}
-                    </TableCell>
-                    <TableCell className="text-right tabular-nums">
-                      ${cost.toFixed(2)}
+                      ${total.toFixed(2)}
                     </TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-              <TableFooter>
-                <TableRow>
-                  <TableCell colSpan={3}>Total</TableCell>
-                  <TableCell className="text-right tabular-nums">
-                    ${total.toFixed(2)}
-                  </TableCell>
-                </TableRow>
-              </TableFooter>
-            </Table>
-          </CardContent>
-          <CardFooter className="border-t text-muted-foreground">
-            <p>
-              Illustration at ${cpuRate} per vCPU-hour and ${memoryRate} per
-              GiB-hour. web is always on and billed for every hour, while
-              staging slept for 682 of 744 hours and was billed for 62.
-            </p>
-          </CardFooter>
-        </Card>
+                </TableFooter>
+              </Table>
+            </CardContent>
+            <CardFooter className="border-t text-muted-foreground">
+              <p>
+                Illustration at ${cpuRate} per vCPU-hour and ${memoryRate} per
+                GiB-hour. web is always on and billed for every hour, while
+                staging slept for 682 of 744 hours and was billed for 62.
+              </p>
+            </CardFooter>
+          </Card>
+        </BlurFade>
       </div>
     </section>
   );

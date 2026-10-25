@@ -1,6 +1,6 @@
+import { BlurFade } from "@quilt/ui/components/blur-fade";
 import { cn } from "@quilt/ui/lib/utils";
 import { ArrowDown, Database, EyeOff } from "lucide-react";
-
 import { SectionHeading } from "./section-heading";
 
 function Box({
@@ -79,7 +79,11 @@ export function Architecture() {
         />
 
         <div className="mt-12 grid gap-10 lg:grid-cols-[1fr_280px]">
-          <div className="rounded-2xl border bg-card p-4 sm:p-6">
+          <BlurFade
+            inView
+            direction="up"
+            className="rounded-2xl border bg-card p-4 sm:p-6"
+          >
             <div className="grid gap-3 sm:grid-cols-2">
               <Box
                 title="Dashboard, CLI and API"
@@ -123,16 +127,18 @@ export function Architecture() {
               <Database className="size-3.5" />
               S3-compatible backup storage
             </div>
-          </div>
+          </BlurFade>
 
-          <ul className="space-y-6">
-            {decisions.map(({ title, body }) => (
-              <li key={title} className="border-primary border-l-2 pl-4">
-                <p className="font-medium text-sm">{title}</p>
-                <p className="mt-1 text-muted-foreground text-sm">{body}</p>
-              </li>
-            ))}
-          </ul>
+          <BlurFade inView direction="up">
+            <ul className="space-y-6">
+              {decisions.map(({ title, body }) => (
+                <li key={title} className="border-primary border-l-2 pl-4">
+                  <p className="font-medium text-sm">{title}</p>
+                  <p className="mt-1 text-muted-foreground text-sm">{body}</p>
+                </li>
+              ))}
+            </ul>
+          </BlurFade>
         </div>
       </div>
     </section>

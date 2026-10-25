@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { MotionConfig } from "motion/react";
 
 import { Architecture } from "@/components/landing/architecture";
 import { Audiences } from "@/components/landing/audiences";
@@ -20,7 +21,7 @@ export const Route = createFileRoute("/")({
 
 function LandingPage() {
   return (
-    <>
+    <MotionConfig reducedMotion="user">
       <main>
         <Hero />
         <HowItWorks />
@@ -36,6 +37,6 @@ function LandingPage() {
         <CallToAction />
       </main>
       <Footer />
-    </>
+    </MotionConfig>
   );
 }

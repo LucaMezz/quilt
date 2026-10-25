@@ -1,6 +1,6 @@
+import { BlurFade } from "@quilt/ui/components/blur-fade";
 import { Card, CardContent } from "@quilt/ui/components/card";
 import { Lock, ScrollText, ShieldCheck, Unlock } from "lucide-react";
-
 import { SectionHeading } from "./section-heading";
 
 const principles = [
@@ -37,14 +37,16 @@ export function Principles() {
         />
 
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {principles.map(({ icon: Icon, title, body }) => (
-            <Card key={title} className="[--card-spacing:--spacing(6)]">
-              <CardContent>
-                <Icon className="size-5 text-primary" />
-                <h3 className="mt-4 font-medium text-base">{title}</h3>
-                <p className="mt-2 text-muted-foreground text-sm">{body}</p>
-              </CardContent>
-            </Card>
+          {principles.map(({ icon: Icon, title, body }, index) => (
+            <BlurFade inView direction="up" key={title} delay={index * 0.07}>
+              <Card className="h-full [--card-spacing:--spacing(6)]">
+                <CardContent>
+                  <Icon className="size-5 text-primary" />
+                  <h3 className="mt-4 font-medium text-base">{title}</h3>
+                  <p className="mt-2 text-muted-foreground text-sm">{body}</p>
+                </CardContent>
+              </Card>
+            </BlurFade>
           ))}
         </div>
       </div>

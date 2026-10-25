@@ -1,4 +1,5 @@
 import { Badge } from "@quilt/ui/components/badge";
+import { BlurFade } from "@quilt/ui/components/blur-fade";
 import {
   Card,
   CardAction,
@@ -7,7 +8,6 @@ import {
 } from "@quilt/ui/components/card";
 import { cn } from "@quilt/ui/lib/utils";
 import { Building2, Check, User, Users } from "lucide-react";
-
 import { SectionHeading } from "./section-heading";
 
 const audiences = [
@@ -57,41 +57,44 @@ export function Audiences() {
         />
 
         <div className="mt-12 grid gap-4 lg:grid-cols-3">
-          {audiences.map(({ icon: Icon, title, highlight, body, points }) => (
-            <Card
-              key={title}
-              className={cn(
-                "[--card-spacing:--spacing(6)]",
-                highlight && "ring-primary/60",
-              )}
-            >
-              <CardHeader>
-                <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                  <Icon className="size-5" />
-                </div>
-                {highlight && (
-                  <CardAction>
-                    <Badge>Main focus</Badge>
-                  </CardAction>
-                )}
-              </CardHeader>
-              <CardContent>
-                <h3 className="font-medium text-base">{title}</h3>
-                <p className="mt-2 text-muted-foreground text-sm">{body}</p>
-                <ul className="mt-4 space-y-2 text-sm">
-                  {points.map((point) => (
-                    <li
-                      key={point}
-                      className="flex gap-2 text-muted-foreground"
-                    >
-                      <Check className="mt-0.5 size-4 shrink-0 text-primary" />
-                      {point}
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-          ))}
+          {audiences.map(
+            ({ icon: Icon, title, highlight, body, points }, index) => (
+              <BlurFade inView direction="up" key={title} delay={index * 0.07}>
+                <Card
+                  className={cn(
+                    "h-full [--card-spacing:--spacing(6)]",
+                    highlight && "ring-primary/60",
+                  )}
+                >
+                  <CardHeader>
+                    <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                      <Icon className="size-5" />
+                    </div>
+                    {highlight && (
+                      <CardAction>
+                        <Badge>Main focus</Badge>
+                      </CardAction>
+                    )}
+                  </CardHeader>
+                  <CardContent>
+                    <h3 className="font-medium text-base">{title}</h3>
+                    <p className="mt-2 text-muted-foreground text-sm">{body}</p>
+                    <ul className="mt-4 space-y-2 text-sm">
+                      {points.map((point) => (
+                        <li
+                          key={point}
+                          className="flex gap-2 text-muted-foreground"
+                        >
+                          <Check className="mt-0.5 size-4 shrink-0 text-primary" />
+                          {point}
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              </BlurFade>
+            ),
+          )}
         </div>
       </div>
     </section>

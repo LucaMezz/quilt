@@ -1,4 +1,5 @@
 import { Badge } from "@quilt/ui/components/badge";
+import { BlurFade } from "@quilt/ui/components/blur-fade";
 import {
   Card,
   CardAction,
@@ -6,7 +7,6 @@ import {
   CardHeader,
 } from "@quilt/ui/components/card";
 import { cn } from "@quilt/ui/lib/utils";
-
 import { SectionHeading } from "./section-heading";
 
 const phases = [
@@ -64,33 +64,40 @@ export function Roadmap() {
         />
 
         <ol className="mt-12 grid gap-4 lg:grid-cols-3">
-          {phases.map(({ name, status, current, items }) => (
+          {phases.map(({ name, status, current, items }, index) => (
             <li key={name}>
-              <Card
-                className={cn(
-                  "h-full gap-4 [--card-spacing:--spacing(6)]",
-                  current && "ring-primary/60",
-                )}
+              <BlurFade
+                inView
+                direction="up"
+                delay={index * 0.07}
+                className="h-full"
               >
-                <CardHeader>
-                  <h3 className="font-semibold text-lg">{name}</h3>
-                  <CardAction>
-                    <Badge variant={current ? "default" : "outline"}>
-                      {status}
-                    </Badge>
-                  </CardAction>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2 text-muted-foreground text-sm">
-                    {items.map((item) => (
-                      <li key={item} className="flex gap-2">
-                        <span className="mt-2 size-1 shrink-0 rounded-full bg-muted-foreground/60" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
+                <Card
+                  className={cn(
+                    "h-full gap-4 [--card-spacing:--spacing(6)]",
+                    current && "ring-primary/60",
+                  )}
+                >
+                  <CardHeader>
+                    <h3 className="font-semibold text-lg">{name}</h3>
+                    <CardAction>
+                      <Badge variant={current ? "default" : "outline"}>
+                        {status}
+                      </Badge>
+                    </CardAction>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-2 text-muted-foreground text-sm">
+                      {items.map((item) => (
+                        <li key={item} className="flex gap-2">
+                          <span className="mt-2 size-1 shrink-0 rounded-full bg-muted-foreground/60" />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              </BlurFade>
             </li>
           ))}
         </ol>

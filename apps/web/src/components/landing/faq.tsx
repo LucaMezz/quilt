@@ -4,7 +4,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@quilt/ui/components/accordion";
-
+import { BlurFade } from "@quilt/ui/components/blur-fade";
 import { SectionHeading } from "./section-heading";
 
 const questions = [
@@ -66,18 +66,20 @@ export function Faq() {
       <div className="container mx-auto max-w-3xl px-4 py-24">
         <SectionHeading eyebrow="FAQ" title="Questions, answered" centered />
 
-        <Accordion className="mt-12 rounded-xl bg-card">
-          {questions.map(({ question, answer }) => (
-            <AccordionItem key={question}>
-              <AccordionTrigger className="px-5 py-4 text-sm">
-                {question}
-              </AccordionTrigger>
-              <AccordionContent className="px-3 text-muted-foreground text-sm">
-                {answer}
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
+        <BlurFade inView direction="up">
+          <Accordion className="mt-12 rounded-xl bg-card">
+            {questions.map(({ question, answer }) => (
+              <AccordionItem key={question}>
+                <AccordionTrigger className="px-5 py-4 text-sm">
+                  {question}
+                </AccordionTrigger>
+                <AccordionContent className="px-3 text-muted-foreground text-sm">
+                  {answer}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </BlurFade>
       </div>
     </section>
   );

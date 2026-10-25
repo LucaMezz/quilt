@@ -1,3 +1,4 @@
+import { BlurFade } from "@quilt/ui/components/blur-fade";
 import {
   Card,
   CardAction,
@@ -5,7 +6,6 @@ import {
   CardHeader,
 } from "@quilt/ui/components/card";
 import { Building2, Rocket, Server } from "lucide-react";
-
 import { SectionHeading } from "./section-heading";
 
 const steps = [
@@ -38,20 +38,27 @@ export function HowItWorks() {
         <ol className="mt-12 grid gap-4 md:grid-cols-3">
           {steps.map(({ icon: Icon, title, body }, index) => (
             <li key={title}>
-              <Card className="h-full [--card-spacing:--spacing(6)]">
-                <CardHeader>
-                  <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                    <Icon className="size-5" />
-                  </div>
-                  <CardAction className="font-mono text-muted-foreground text-xs">
-                    0{index + 1}
-                  </CardAction>
-                </CardHeader>
-                <CardContent>
-                  <h3 className="font-medium text-base">{title}</h3>
-                  <p className="mt-2 text-muted-foreground text-sm">{body}</p>
-                </CardContent>
-              </Card>
+              <BlurFade
+                inView
+                direction="up"
+                delay={index * 0.07}
+                className="h-full"
+              >
+                <Card className="h-full [--card-spacing:--spacing(6)]">
+                  <CardHeader>
+                    <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                      <Icon className="size-5" />
+                    </div>
+                    <CardAction className="font-mono text-muted-foreground text-xs">
+                      0{index + 1}
+                    </CardAction>
+                  </CardHeader>
+                  <CardContent>
+                    <h3 className="font-medium text-base">{title}</h3>
+                    <p className="mt-2 text-muted-foreground text-sm">{body}</p>
+                  </CardContent>
+                </Card>
+              </BlurFade>
             </li>
           ))}
         </ol>

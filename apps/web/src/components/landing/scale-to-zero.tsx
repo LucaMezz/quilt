@@ -1,3 +1,13 @@
+import { Badge } from "@quilt/ui/components/badge";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@quilt/ui/components/card";
 import { cn } from "@quilt/ui/lib/utils";
 import { Check, Moon, Power } from "lucide-react";
 
@@ -71,9 +81,11 @@ export function ScaleToZero() {
               description="Scale to zero is a per-app choice. Apps that sit idle release their resources until someone needs them, so they stop taking room on your servers and stop appearing on the bill. Apps that need to be ready at all times simply opt out."
             />
 
-            <div className="mt-8 rounded-xl border bg-card p-5">
-              <p className="font-medium text-sm">One server, many apps</p>
-              <div className="mt-4 grid grid-cols-12 gap-1.5">
+            <Card className="mt-8">
+              <CardHeader>
+                <CardTitle>One server, many apps</CardTitle>
+              </CardHeader>
+              <CardContent className="grid grid-cols-12 gap-1.5">
                 {densityApps.map(({ id, isAwake }) => (
                   <div
                     key={id}
@@ -85,12 +97,14 @@ export function ScaleToZero() {
                     )}
                   />
                 ))}
-              </div>
-              <p className="mt-3 text-muted-foreground text-xs">
-                Illustration: 24 apps on one server with 3 awake. Density
-                benchmarks are part of the prototype and will be published.
-              </p>
-            </div>
+              </CardContent>
+              <CardFooter className="text-muted-foreground">
+                <p>
+                  Illustration: 24 apps on one server with 3 awake. Density
+                  benchmarks are part of the prototype and will be published.
+                </p>
+              </CardFooter>
+            </Card>
 
             <ul className="mt-8 space-y-2 text-sm">
               <li className="font-medium">Coming next</li>
@@ -139,18 +153,18 @@ export function ScaleToZero() {
 
         <div className="mt-12 grid gap-4 md:grid-cols-2">
           {modes.map(({ icon: Icon, title, tag, body }) => (
-            <div key={title} className="rounded-xl border bg-card p-6">
-              <div className="flex items-center justify-between">
-                <p className="flex items-center gap-2 font-medium">
+            <Card key={title} className="[--card-spacing:--spacing(6)]">
+              <CardHeader>
+                <h3 className="flex items-center gap-2 font-medium text-base">
                   <Icon className="size-4 text-primary" />
                   {title}
-                </p>
-                <span className="rounded-full border px-2 py-0.5 text-muted-foreground text-xs">
-                  {tag}
-                </span>
-              </div>
-              <p className="mt-2 text-muted-foreground text-sm">{body}</p>
-            </div>
+                </h3>
+                <CardDescription className="text-sm">{body}</CardDescription>
+                <CardAction>
+                  <Badge variant="outline">{tag}</Badge>
+                </CardAction>
+              </CardHeader>
+            </Card>
           ))}
         </div>
       </div>

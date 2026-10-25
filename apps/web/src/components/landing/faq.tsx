@@ -1,4 +1,9 @@
-import { ChevronDown } from "lucide-react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@quilt/ui/components/accordion";
 
 import { SectionHeading } from "./section-heading";
 
@@ -61,17 +66,18 @@ export function Faq() {
       <div className="container mx-auto max-w-3xl px-4 py-24">
         <SectionHeading eyebrow="FAQ" title="Questions, answered" centered />
 
-        <div className="mt-12 divide-y rounded-xl border bg-card">
+        <Accordion className="mt-12 rounded-xl bg-card">
           {questions.map(({ question, answer }) => (
-            <details key={question} className="group p-5">
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-medium">
+            <AccordionItem key={question}>
+              <AccordionTrigger className="px-5 py-4 text-sm">
                 {question}
-                <ChevronDown className="size-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" />
-              </summary>
-              <p className="mt-3 text-muted-foreground text-sm">{answer}</p>
-            </details>
+              </AccordionTrigger>
+              <AccordionContent className="px-3 text-muted-foreground text-sm">
+                {answer}
+              </AccordionContent>
+            </AccordionItem>
           ))}
-        </div>
+        </Accordion>
       </div>
     </section>
   );

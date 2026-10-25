@@ -1,3 +1,10 @@
+import { Badge } from "@quilt/ui/components/badge";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardHeader,
+} from "@quilt/ui/components/card";
 import { cn } from "@quilt/ui/lib/utils";
 import { Building2, Check, User, Users } from "lucide-react";
 
@@ -51,34 +58,39 @@ export function Audiences() {
 
         <div className="mt-12 grid gap-4 lg:grid-cols-3">
           {audiences.map(({ icon: Icon, title, highlight, body, points }) => (
-            <div
+            <Card
               key={title}
               className={cn(
-                "rounded-xl border bg-card p-6",
-                highlight && "border-primary/60 ring-1 ring-primary/20",
+                "[--card-spacing:--spacing(6)]",
+                highlight && "ring-primary/60",
               )}
             >
-              <div className="flex items-center justify-between">
+              <CardHeader>
                 <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
                   <Icon className="size-5" />
                 </div>
                 {highlight && (
-                  <span className="rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 text-primary text-xs">
-                    Main focus
-                  </span>
+                  <CardAction>
+                    <Badge>Main focus</Badge>
+                  </CardAction>
                 )}
-              </div>
-              <h3 className="mt-6 font-medium">{title}</h3>
-              <p className="mt-2 text-muted-foreground text-sm">{body}</p>
-              <ul className="mt-4 space-y-2 text-sm">
-                {points.map((point) => (
-                  <li key={point} className="flex gap-2 text-muted-foreground">
-                    <Check className="mt-0.5 size-4 shrink-0 text-primary" />
-                    {point}
-                  </li>
-                ))}
-              </ul>
-            </div>
+              </CardHeader>
+              <CardContent>
+                <h3 className="font-medium text-base">{title}</h3>
+                <p className="mt-2 text-muted-foreground text-sm">{body}</p>
+                <ul className="mt-4 space-y-2 text-sm">
+                  {points.map((point) => (
+                    <li
+                      key={point}
+                      className="flex gap-2 text-muted-foreground"
+                    >
+                      <Check className="mt-0.5 size-4 shrink-0 text-primary" />
+                      {point}
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
           ))}
         </div>
       </div>

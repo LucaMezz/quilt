@@ -1,3 +1,4 @@
+import { Card, CardContent } from "@quilt/ui/components/card";
 import { KeyRound, LayoutDashboard, Terminal } from "lucide-react";
 
 import { ScreenshotPlaceholder } from "./screenshot-placeholder";
@@ -30,19 +31,21 @@ export function Clients() {
 
         <div className="mt-12 grid gap-6 lg:grid-cols-2">
           {clients.map(({ icon: Icon, title, body, placeholder }) => (
-            <div key={title} className="rounded-2xl border bg-card p-2">
-              <ScreenshotPlaceholder
-                label={placeholder}
-                className="aspect-[16/10]"
-              />
-              <div className="p-4">
-                <p className="flex items-center gap-2 font-medium">
+            <Card key={title}>
+              <CardContent>
+                <ScreenshotPlaceholder
+                  label={placeholder}
+                  className="aspect-[16/10]"
+                />
+              </CardContent>
+              <CardContent>
+                <h3 className="flex items-center gap-2 font-medium text-base">
                   <Icon className="size-4 text-primary" />
                   {title}
-                </p>
+                </h3>
                 <p className="mt-2 text-muted-foreground text-sm">{body}</p>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
 

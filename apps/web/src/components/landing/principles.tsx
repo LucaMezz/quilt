@@ -1,3 +1,4 @@
+import { Card, CardContent } from "@quilt/ui/components/card";
 import { Lock, ScrollText, ShieldCheck, Unlock } from "lucide-react";
 
 import { SectionHeading } from "./section-heading";
@@ -25,29 +26,6 @@ const principles = [
   },
 ];
 
-const durability = [
-  {
-    data: "Stateless apps",
-    promise: "Rescheduled when a node fails",
-    phase: "Prototype",
-  },
-  {
-    data: "Postgres",
-    promise: "Survives one node loss, backed up to S3",
-    phase: "v1",
-  },
-  {
-    data: "SQLite apps",
-    promise: "Restored from backup, small loss window",
-    phase: "Planned",
-  },
-  {
-    data: "General volumes",
-    promise: "3 replicas, survives one node loss",
-    phase: "v2",
-  },
-];
-
 export function Principles() {
   return (
     <section id="principles" className="scroll-mt-16 border-t bg-muted/30">
@@ -60,40 +38,14 @@ export function Principles() {
 
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {principles.map(({ icon: Icon, title, body }) => (
-            <div key={title} className="rounded-xl border bg-card p-6">
-              <Icon className="size-5 text-primary" />
-              <h3 className="mt-4 font-medium">{title}</h3>
-              <p className="mt-2 text-muted-foreground text-sm">{body}</p>
-            </div>
+            <Card key={title} className="[--card-spacing:--spacing(6)]">
+              <CardContent>
+                <Icon className="size-5 text-primary" />
+                <h3 className="mt-4 font-medium text-base">{title}</h3>
+                <p className="mt-2 text-muted-foreground text-sm">{body}</p>
+              </CardContent>
+            </Card>
           ))}
-        </div>
-
-        <div className="mt-10 overflow-x-auto rounded-xl border bg-card">
-          <table className="w-full text-left text-sm">
-            <caption className="border-b p-4 text-left font-medium">
-              Durability labels, by data type
-            </caption>
-            <thead className="text-muted-foreground text-xs">
-              <tr className="border-b">
-                <th className="p-4 font-medium">Data</th>
-                <th className="p-4 font-medium">What it survives</th>
-                <th className="p-4 font-medium">Available</th>
-              </tr>
-            </thead>
-            <tbody>
-              {durability.map(({ data, promise, phase }) => (
-                <tr key={data} className="border-b last:border-0">
-                  <td className="p-4 font-medium">{data}</td>
-                  <td className="p-4 text-muted-foreground">{promise}</td>
-                  <td className="p-4">
-                    <span className="rounded-full border px-2 py-0.5 text-xs">
-                      {phase}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
         </div>
       </div>
     </section>

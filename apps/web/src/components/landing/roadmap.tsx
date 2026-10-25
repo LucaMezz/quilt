@@ -1,3 +1,10 @@
+import { Badge } from "@quilt/ui/components/badge";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardHeader,
+} from "@quilt/ui/components/card";
 import { cn } from "@quilt/ui/lib/utils";
 
 import { SectionHeading } from "./section-heading";
@@ -58,34 +65,32 @@ export function Roadmap() {
 
         <ol className="mt-12 grid gap-4 lg:grid-cols-3">
           {phases.map(({ name, status, current, items }) => (
-            <li
-              key={name}
-              className={cn(
-                "rounded-xl border bg-card p-6",
-                current && "border-primary/60 ring-1 ring-primary/20",
-              )}
-            >
-              <div className="flex items-center justify-between">
-                <h3 className="font-semibold text-lg">{name}</h3>
-                <span
-                  className={cn(
-                    "rounded-full border px-2 py-0.5 text-xs",
-                    current
-                      ? "border-primary/40 bg-primary/10 text-primary"
-                      : "text-muted-foreground",
-                  )}
-                >
-                  {status}
-                </span>
-              </div>
-              <ul className="mt-4 space-y-2 text-muted-foreground text-sm">
-                {items.map((item) => (
-                  <li key={item} className="flex gap-2">
-                    <span className="mt-2 size-1 shrink-0 rounded-full bg-muted-foreground/60" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
+            <li key={name}>
+              <Card
+                className={cn(
+                  "h-full gap-4 [--card-spacing:--spacing(6)]",
+                  current && "ring-primary/60",
+                )}
+              >
+                <CardHeader>
+                  <h3 className="font-semibold text-lg">{name}</h3>
+                  <CardAction>
+                    <Badge variant={current ? "default" : "outline"}>
+                      {status}
+                    </Badge>
+                  </CardAction>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2 text-muted-foreground text-sm">
+                    {items.map((item) => (
+                      <li key={item} className="flex gap-2">
+                        <span className="mt-2 size-1 shrink-0 rounded-full bg-muted-foreground/60" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
             </li>
           ))}
         </ol>

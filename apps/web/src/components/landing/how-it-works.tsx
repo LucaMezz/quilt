@@ -1,3 +1,9 @@
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardHeader,
+} from "@quilt/ui/components/card";
 import { Building2, Rocket, Server } from "lucide-react";
 
 import { SectionHeading } from "./section-heading";
@@ -31,17 +37,21 @@ export function HowItWorks() {
 
         <ol className="mt-12 grid gap-4 md:grid-cols-3">
           {steps.map(({ icon: Icon, title, body }, index) => (
-            <li key={title} className="rounded-xl border bg-card p-6">
-              <div className="flex items-center justify-between">
-                <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                  <Icon className="size-5" />
-                </div>
-                <span className="font-mono text-muted-foreground text-xs">
-                  0{index + 1}
-                </span>
-              </div>
-              <h3 className="mt-6 font-medium">{title}</h3>
-              <p className="mt-2 text-muted-foreground text-sm">{body}</p>
+            <li key={title}>
+              <Card className="h-full [--card-spacing:--spacing(6)]">
+                <CardHeader>
+                  <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <Icon className="size-5" />
+                  </div>
+                  <CardAction className="font-mono text-muted-foreground text-xs">
+                    0{index + 1}
+                  </CardAction>
+                </CardHeader>
+                <CardContent>
+                  <h3 className="font-medium text-base">{title}</h3>
+                  <p className="mt-2 text-muted-foreground text-sm">{body}</p>
+                </CardContent>
+              </Card>
             </li>
           ))}
         </ol>

@@ -16,14 +16,14 @@
         "auth:generate": "varlock run -- pnpm dlx auth@latest generate --config src/services.ts --output ../../packages/db/src/schema/auth.ts --yes"
     },
     "dependencies": {
-        "@orpc/openapi": "^1.15.6",
-        "@orpc/server": "^1.15.6",
-        "@orpc/zod": "^1.15.6",
+        "@orpc/openapi": "^1.16.0",
+        "@orpc/server": "^1.16.0",
+        "@orpc/zod": "^1.16.0",
         "@quilt/api": "workspace:*",
         "@quilt/auth": "workspace:*",
         "@quilt/db": "workspace:*",
         "@quilt/storage": "workspace:*",
-        "better-auth": "1.7.10",
+        "better-auth": "1.7.12",
         "cors": "^2.8.6",
         "express": "^5.2.1",
         "varlock": "1.23.0",

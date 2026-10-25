@@ -15,10 +15,10 @@
         "test:integration": "vitest run --project integration --coverage.reportsDirectory=coverage/integration"
     },
     "dependencies": {
-        "@orpc/client": "^1.15.6",
-        "@orpc/openapi": "^1.15.6",
-        "@orpc/server": "^1.15.6",
-        "@orpc/zod": "^1.15.6",
+        "@orpc/client": "^1.16.0",
+        "@orpc/openapi": "^1.16.0",
+        "@orpc/server": "^1.16.0",
+        "@orpc/zod": "^1.16.0",
         "@quilt/auth": "workspace:*",
         "@quilt/db": "workspace:*",
         "@quilt/storage": "workspace:*",

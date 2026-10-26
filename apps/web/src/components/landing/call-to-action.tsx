@@ -1,10 +1,10 @@
 import { BlurFade } from "@quilt/ui/components/blur-fade";
 import { buttonVariants } from "@quilt/ui/components/button";
 import { cn } from "@quilt/ui/lib/utils";
-import { Link } from "@tanstack/react-router";
-import { ArrowRight, Star } from "lucide-react";
+import { Star } from "lucide-react";
 
 import { githubUrl } from "./links";
+import { TryItLink } from "./try-it-link";
 
 export function CallToAction() {
   return (
@@ -25,13 +25,7 @@ export function CallToAction() {
             switch.
           </p>
           <div className="relative mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-            <Link
-              to="/login"
-              className={cn(buttonVariants({ size: "lg" }), "h-10 px-5")}
-            >
-              Sign in and try it
-              <ArrowRight data-icon="inline-end" />
-            </Link>
+            <TryItLink />
             <a
               href={githubUrl}
               className={cn(

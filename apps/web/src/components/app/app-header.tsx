@@ -8,7 +8,7 @@ import { Separator } from "@quilt/ui/components/separator";
 import { SidebarTrigger } from "@quilt/ui/components/sidebar";
 import { useMatches } from "@tanstack/react-router";
 
-import { ModeToggle } from "./mode-toggle";
+import { ModeToggle } from "@/components/mode-toggle";
 
 export function AppHeader() {
   const title = useMatches({

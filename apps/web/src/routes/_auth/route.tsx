@@ -1,8 +1,8 @@
 import { SidebarInset, SidebarProvider } from "@quilt/ui/components/sidebar";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 
-import { AppHeader } from "@/components/app-header";
-import { AppSidebar } from "@/components/app-sidebar";
+import { AppHeader } from "@/components/app/app-header";
+import { AppSidebar } from "@/components/app/app-sidebar";
 import { authClient } from "@/lib/auth-client";
 
 export const Route = createFileRoute("/_auth")({

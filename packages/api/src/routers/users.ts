@@ -12,9 +12,10 @@ const UserSchema = z.object({
     createdAt: z.date(),
 });
 
-export const usersRouter = {
-    setUserImage: protectedProcedure
+export const userRouter = {
+    setImage: protectedProcedure
         .route({
+            operationId: "setUserImage",
             method: "PUT",
             path: "/user/image",
             summary: "Set profile picture",

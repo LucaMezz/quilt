@@ -41,7 +41,7 @@ describe("getOrganization", () => {
             const outsider = await signUp("outsider");
 
             const result = call(
-                appRouter.getOrganization,
+                appRouter.organizations.get,
                 { org: "acme" },
                 { context: await contextFor(outsider.headers) },
             );
@@ -60,7 +60,7 @@ describe("createOrganization", () => {
             const other = await signUp("other");
 
             const result = call(
-                appRouter.createOrganization,
+                appRouter.organizations.create,
                 { name: "Acme", slug: "acme" },
                 { context: await contextFor(other.headers) },
             );
@@ -79,7 +79,7 @@ describe("updateOrganization", () => {
             const outsider = await signUp("outsider");
 
             const result = call(
-                appRouter.updateOrganization,
+                appRouter.organizations.update,
                 { org: "acme", name: "Hijacked" },
                 { context: await contextFor(outsider.headers) },
             );
@@ -99,7 +99,7 @@ describe("updateOrganization", () => {
             });
 
             const result = call(
-                appRouter.updateOrganization,
+                appRouter.organizations.update,
                 { org: "acme", slug: "globex" },
                 { context: await contextFor(owned.owner.headers) },
             );
@@ -116,7 +116,7 @@ describe("updateOrganization", () => {
             const member = await join("member");
 
             const result = call(
-                appRouter.updateOrganization,
+                appRouter.organizations.update,
                 { org: "acme", name: "Hijacked" },
                 { context: await contextFor(member.headers) },
             );
@@ -135,7 +135,7 @@ describe("setOrganizationLogo", () => {
             const outsider = await signUp("outsider");
 
             const result = call(
-                appRouter.setOrganizationLogo,
+                appRouter.organizations.setLogo,
                 { org: "acme", logo: notAnImage() },
                 { context: await contextFor(outsider.headers) },
             );
@@ -152,7 +152,7 @@ describe("setOrganizationLogo", () => {
             const member = await join("member");
 
             const result = call(
-                appRouter.setOrganizationLogo,
+                appRouter.organizations.setLogo,
                 { org: "acme", logo: notAnImage() },
                 { context: await contextFor(member.headers) },
             );
@@ -167,7 +167,7 @@ describe("setOrganizationLogo", () => {
         "responds with BAD_REQUEST when the logo isn't an image",
         async ({ contextFor, owned }) => {
             const result = call(
-                appRouter.setOrganizationLogo,
+                appRouter.organizations.setLogo,
                 { org: "acme", logo: notAnImage() },
                 { context: await contextFor(owned.owner.headers) },
             );
@@ -186,7 +186,7 @@ describe("deleteOrganization", () => {
             const outsider = await signUp("outsider");
 
             const result = call(
-                appRouter.deleteOrganization,
+                appRouter.organizations.delete,
                 { org: "acme" },
                 { context: await contextFor(outsider.headers) },
             );
@@ -203,7 +203,7 @@ describe("deleteOrganization", () => {
             const admin = await join("admin");
 
             const result = call(
-                appRouter.deleteOrganization,
+                appRouter.organizations.delete,
                 { org: "acme" },
                 { context: await contextFor(admin.headers) },
             );
@@ -224,7 +224,7 @@ describe("deleteOrganization", () => {
             );
 
             const result = call(
-                appRouter.deleteOrganization,
+                appRouter.organizations.delete,
                 { org: "acme" },
                 { context: await contextFor(owned.owner.headers) },
             );

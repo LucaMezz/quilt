@@ -59,8 +59,9 @@ const apiKeyNotFound = describeErrorResponse(
 );
 
 export const apiKeysRouter = {
-    listApiKeys: protectedProcedure
+    list: protectedProcedure
         .route({
+            operationId: "listApiKeys",
             method: "GET",
             path: "/user/api-keys",
             summary: "List API keys",
@@ -74,8 +75,9 @@ export const apiKeysRouter = {
         .handler(({ input, context }) =>
             listApiKeys(context.auth, context.headers, input),
         ),
-    createApiKey: protectedProcedure
+    create: protectedProcedure
         .route({
+            operationId: "createApiKey",
             method: "POST",
             path: "/user/api-keys",
             successStatus: 201,
@@ -97,8 +99,9 @@ export const apiKeysRouter = {
                 expiresIn: input.expiresIn,
             }),
         ),
-    getApiKey: protectedProcedure
+    get: protectedProcedure
         .route({
+            operationId: "getApiKey",
             method: "GET",
             path: "/user/api-keys/{id}",
             summary: "Get API key",
@@ -119,8 +122,9 @@ export const apiKeysRouter = {
                 throw error;
             }
         }),
-    updateApiKey: protectedProcedure
+    update: protectedProcedure
         .route({
+            operationId: "updateApiKey",
             method: "PATCH",
             path: "/user/api-keys/{id}",
             summary: "Update API key",
@@ -156,8 +160,9 @@ export const apiKeysRouter = {
                 throw error;
             }
         }),
-    deleteApiKey: protectedProcedure
+    delete: protectedProcedure
         .route({
+            operationId: "deleteApiKey",
             method: "DELETE",
             path: "/user/api-keys/{id}",
             summary: "Delete API key",

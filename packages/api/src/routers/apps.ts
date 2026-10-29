@@ -63,8 +63,9 @@ const appNotFound = describeErrorResponse(
 );
 
 export const appsRouter = {
-    createApp: protectedProcedure
+    create: protectedProcedure
         .route({
+            operationId: "createApp",
             method: "POST",
             path: "/orgs/{org}/apps",
             successStatus: 201,
@@ -104,8 +105,9 @@ export const appsRouter = {
                 throw error;
             }
         }),
-    destroyApp: protectedProcedure
+    destroy: protectedProcedure
         .route({
+            operationId: "destroyApp",
             method: "DELETE",
             path: "/orgs/{org}/apps/{name}",
             successStatus: 202,
@@ -139,8 +141,9 @@ export const appsRouter = {
                 throw error;
             }
         }),
-    setAppLogo: protectedProcedure
+    setLogo: protectedProcedure
         .route({
+            operationId: "setAppLogo",
             method: "PUT",
             path: "/orgs/{org}/apps/{name}/logo",
             summary: "Set app logo",
@@ -181,8 +184,9 @@ export const appsRouter = {
                 throw error;
             }
         }),
-    listApps: protectedProcedure
+    list: protectedProcedure
         .route({
+            operationId: "listApps",
             method: "GET",
             path: "/orgs/{org}/apps",
             summary: "List apps",

@@ -14,7 +14,7 @@ describe("setUserImage", () => {
         const caller = await signUp();
 
         const result = call(
-            appRouter.setUserImage,
+            appRouter.user.setImage,
             { image: notAnImage() },
             { context: await contextFor(caller.headers) },
         );

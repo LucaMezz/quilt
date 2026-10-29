@@ -61,8 +61,9 @@ const updateForbidden = describeErrorResponse(
 );
 
 export const organizationsRouter = {
-    listOrganizations: protectedProcedure
+    list: protectedProcedure
         .route({
+            operationId: "listOrganizations",
             method: "GET",
             path: "/orgs",
             summary: "List organizations",
@@ -74,8 +75,9 @@ export const organizationsRouter = {
         .handler(({ context }) =>
             listOrganizations(context.auth, context.headers),
         ),
-    createOrganization: protectedProcedure
+    create: protectedProcedure
         .route({
+            operationId: "createOrganization",
             method: "POST",
             path: "/orgs",
             successStatus: 201,
@@ -112,8 +114,9 @@ export const organizationsRouter = {
                 throw error;
             }
         }),
-    getOrganization: protectedProcedure
+    get: protectedProcedure
         .route({
+            operationId: "getOrganization",
             method: "GET",
             path: "/orgs/{org}",
             summary: "Get organization",
@@ -137,8 +140,9 @@ export const organizationsRouter = {
                 throw error;
             }
         }),
-    updateOrganization: protectedProcedure
+    update: protectedProcedure
         .route({
+            operationId: "updateOrganization",
             method: "PATCH",
             path: "/orgs/{org}",
             summary: "Update organization",
@@ -188,8 +192,9 @@ export const organizationsRouter = {
                 throw error;
             }
         }),
-    setOrganizationLogo: protectedProcedure
+    setLogo: protectedProcedure
         .route({
+            operationId: "setOrganizationLogo",
             method: "PUT",
             path: "/orgs/{org}/logo",
             summary: "Set organization logo",
@@ -235,8 +240,9 @@ export const organizationsRouter = {
                 throw error;
             }
         }),
-    deleteOrganization: protectedProcedure
+    delete: protectedProcedure
         .route({
+            operationId: "deleteOrganization",
             method: "DELETE",
             path: "/orgs/{org}",
             summary: "Delete organization",

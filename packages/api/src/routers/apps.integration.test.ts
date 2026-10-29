@@ -34,7 +34,7 @@ describe("createApp", () => {
             const outsider = await signUp("outsider");
 
             const result = call(
-                appRouter.createApp,
+                appRouter.apps.create,
                 { org: "acme", name: "api" },
                 { context: await contextFor(outsider.headers) },
             );
@@ -55,7 +55,7 @@ describe("createApp", () => {
             });
 
             const result = call(
-                appRouter.createApp,
+                appRouter.apps.create,
                 { org: "globex", name: "web" },
                 { context: await contextFor(other.headers) },
             );
@@ -74,7 +74,7 @@ describe("destroyApp", () => {
             const outsider = await signUp("outsider");
 
             const result = call(
-                appRouter.destroyApp,
+                appRouter.apps.destroy,
                 { org: "acme", name: "web" },
                 { context: await contextFor(outsider.headers) },
             );
@@ -89,7 +89,7 @@ describe("destroyApp", () => {
         "responds with NOT_FOUND for an app that doesn't exist",
         async ({ contextFor, owned }) => {
             const result = call(
-                appRouter.destroyApp,
+                appRouter.apps.destroy,
                 { org: "acme", name: "missing" },
                 { context: await contextFor(owned.owner.headers) },
             );
@@ -108,7 +108,7 @@ describe("setAppLogo", () => {
             const outsider = await signUp("outsider");
 
             const result = call(
-                appRouter.setAppLogo,
+                appRouter.apps.setLogo,
                 { org: "acme", name: "web", logo: notAnImage() },
                 { context: await contextFor(outsider.headers) },
             );
@@ -123,7 +123,7 @@ describe("setAppLogo", () => {
         "responds with NOT_FOUND for an app that doesn't exist",
         async ({ contextFor, owned }) => {
             const result = call(
-                appRouter.setAppLogo,
+                appRouter.apps.setLogo,
                 { org: "acme", name: "missing", logo: notAnImage() },
                 { context: await contextFor(owned.owner.headers) },
             );
@@ -138,7 +138,7 @@ describe("setAppLogo", () => {
         "responds with BAD_REQUEST when the logo isn't an image",
         async ({ contextFor, owned }) => {
             const result = call(
-                appRouter.setAppLogo,
+                appRouter.apps.setLogo,
                 { org: "acme", name: "web", logo: notAnImage() },
                 { context: await contextFor(owned.owner.headers) },
             );
@@ -157,7 +157,7 @@ describe("listApps", () => {
             const outsider = await signUp("outsider");
 
             const result = call(
-                appRouter.listApps,
+                appRouter.apps.list,
                 { org: "acme" },
                 { context: await contextFor(outsider.headers) },
             );

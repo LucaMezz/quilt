@@ -24,7 +24,7 @@
     "devDependencies": {
         "@quilt/config": "workspace:*",
         "@types/node": "^26.4.1",
-        "tsdown": "^0.23.0",
+        "tsdown": "^0.23.2",
         "tsx": "^4.23.15",
         "typescript": "^7.0.2",
         "vitest": "^5.0.5"

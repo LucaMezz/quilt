@@ -11,12 +11,12 @@
         "check-types": "tsc -b"
     },
     "dependencies": {
-        "@better-auth/api-key": "1.7.10",
-        "@better-auth/core": "1.7.10",
-        "@better-auth/drizzle-adapter": "1.7.10",
+        "@better-auth/api-key": "1.7.13",
+        "@better-auth/core": "1.7.13",
+        "@better-auth/drizzle-adapter": "1.7.13",
         "@quilt/db": "workspace:*",
-        "better-auth": "1.7.10",
-        "better-call": "1.4.2",
+        "better-auth": "1.7.13",
+        "better-call": "1.4.4",
         "drizzle-orm": "1.0.0-rc.5",
         "zod": "^4.5.4"
     },

@@ -11,6 +11,7 @@ import {
     API_KEY_NAME_LENGTH,
     API_KEY_PREFIX,
 } from "./api-keys";
+import { hideBearerToken } from "./bearer";
 
 export type AuthConfig = {
     BETTER_AUTH_URL: string;
@@ -42,6 +43,7 @@ export function createAuth(
         plugins: [
             organization(),
             bearer(),
+            hideBearerToken(),
             apiKey({
                 requireName: true,
                 minimumNameLength: API_KEY_NAME_LENGTH.min,

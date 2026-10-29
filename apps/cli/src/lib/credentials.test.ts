@@ -1,8 +1,17 @@
+import { mkdtempSync, rmSync, statSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { deleteToken, getToken, saveToken } from "./credentials";
 
-const keychain = vi.hoisted(() => new Map<string, string>());
+const keychain = vi.hoisted(() => ({
+    entries: new Map<string, string>(),
+    available: true,
+    check() {
+        if (!this.available) throw new Error("No keychain available");
+    },
+}));
 
 vi.mock("@napi-rs/keyring", () => ({
     Entry: class {
@@ -11,24 +20,33 @@ vi.mock("@napi-rs/keyring", () => ({
             this.key = `${service}/${account}`;
         }
         getPassword() {
-            return keychain.get(this.key) ?? null;
+            keychain.check();
+            return keychain.entries.get(this.key) ?? null;
         }
         setPassword(password: string) {
-            keychain.set(this.key, password);
+            keychain.check();
+            keychain.entries.set(this.key, password);
         }
         deletePassword() {
-            return keychain.delete(this.key);
+            keychain.check();
+            return keychain.entries.delete(this.key);
         }
     },
 }));
 
+let configDir: string;
+
 beforeEach(() => {
-    keychain.clear();
+    keychain.entries.clear();
+    keychain.available = true;
+    configDir = mkdtempSync(join(tmpdir(), "quilt-credentials-"));
+    vi.stubEnv("XDG_CONFIG_HOME", configDir);
     vi.stubEnv("QUILT_TOKEN", undefined);
 });
 
 afterEach(() => {
     vi.unstubAllEnvs();
+    rmSync(configDir, { recursive: true, force: true });
 });
 
 describe("credentials", () => {
@@ -63,5 +81,37 @@ describe("credentials", () => {
         saveToken("quilt.test", "saved");
 
         expect(getToken("quilt.test")).toBe("from-env");
+    });
+
+    describe("without a keychain", () => {
+        beforeEach(() => {
+            keychain.available = false;
+        });
+
+        it("saves the token to a file instead", () => {
+            expect(saveToken("quilt.test", "token")).toBe("file");
+
+            expect(getToken("quilt.test")).toBe("token");
+        });
+
+        it("forgets a deleted token", () => {
+            saveToken("quilt.test", "token");
+            saveToken("other.test", "other");
+
+            deleteToken("quilt.test");
+
+            expect(getToken("quilt.test")).toBeUndefined();
+            expect(getToken("other.test")).toBe("other");
+        });
+
+        it.skipIf(process.platform === "win32")(
+            "makes the file readable only by its owner",
+            () => {
+                saveToken("quilt.test", "token");
+
+                const file = join(configDir, "quilt", "credentials.json");
+                expect(statSync(file).mode & 0o777).toBe(0o600);
+            },
+        );
     });
 });

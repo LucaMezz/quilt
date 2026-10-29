@@ -1,12 +1,12 @@
 import { ORPCError, os } from "@orpc/server";
 
-import type { Context, ProcedureMeta } from "./context";
+import type { Context } from "./context";
 import { API_KEY_SCHEME } from "./openapi";
 import { MAX_IMAGE_BYTES } from "./services/images";
 
 export const MAX_REQUEST_BODY_BYTES = MAX_IMAGE_BYTES + 1024 * 1024;
 
-const o = os.$context<Context>().$meta<ProcedureMeta>({});
+const o = os.$context<Context>();
 
 export const publicProcedure = o;
 
@@ -33,15 +33,3 @@ export const protectedProcedure = publicProcedure.use(requireCaller).route({
         },
     }),
 });
-
-export const sessionProcedure = protectedProcedure
-    .use(async ({ context, next }) => {
-        if (context.caller.kind !== "session") {
-            throw new ORPCError("FORBIDDEN", {
-                message:
-                    "This endpoint needs a signed-in session, not an API key",
-            });
-        }
-        return next({ context: { session: context.caller.session } });
-    })
-    .meta({ sessionOnly: true });

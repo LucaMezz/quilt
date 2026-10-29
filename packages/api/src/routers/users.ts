@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { sessionProcedure } from "../index";
+import { protectedProcedure } from "../index";
 import { InvalidImageError } from "../services/images";
 import { setUserImage, USER_IMAGE_DIMENSION } from "../services/users";
 import { describeImageUpload, ImageFile, invalidImage } from "./images";
@@ -14,7 +14,7 @@ export const UserSchema = z.object({
 });
 
 export const usersRouter = {
-    setUserImage: sessionProcedure
+    setUserImage: protectedProcedure
         .route({
             method: "PUT",
             path: "/user/image",
@@ -33,7 +33,7 @@ export const usersRouter = {
                     context.auth,
                     context.storage,
                     context.headers,
-                    context.session.user.id,
+                    context.caller.userId,
                     input.image,
                 );
             } catch (error) {

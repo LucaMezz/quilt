@@ -78,7 +78,7 @@ describe("resolveCaller", () => {
 });
 
 describe("API key callers", () => {
-    test("can use protected procedures but not session-only ones", async ({
+    test("can use every protected procedure", async ({
         auth,
         db,
         storage,
@@ -108,14 +108,14 @@ describe("API key callers", () => {
             caller: await resolveCaller(auth, headers),
         };
 
-        const fetched = await call(
-            appRouter.getOrganization,
-            { org: "acme" },
+        const organizations = await call(
+            appRouter.listOrganizations,
+            undefined,
             { context },
         );
-        const listKeys = call(appRouter.listApiKeys, {}, { context });
+        const keys = await call(appRouter.listApiKeys, {}, { context });
 
-        expect(fetched.id).toBe(organization.id);
-        await expect(listKeys).rejects.toMatchObject({ code: "FORBIDDEN" });
+        expect(organizations.map((org) => org.id)).toEqual([organization.id]);
+        expect(keys.items.map((key) => key.id)).toEqual([created.id]);
     });
 });

@@ -41,18 +41,4 @@ describe("example", () => {
         await expect(result).rejects.toBeInstanceOf(ORPCError);
         await expect(result).rejects.toMatchObject({ code: "UNAUTHORIZED" });
     });
-
-    it("rejects API keys on session-only procedures", async () => {
-        const result = call(
-            appRouter.listApiKeys,
-            {},
-            {
-                context: createContext({
-                    caller: { kind: "apiKey", userId: "user", apiKeyId: "key" },
-                }),
-            },
-        );
-
-        await expect(result).rejects.toMatchObject({ code: "FORBIDDEN" });
-    });
 });

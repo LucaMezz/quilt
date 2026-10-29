@@ -19,10 +19,13 @@ describe("OpenAPI spec", () => {
         expect(operation?.responses).toHaveProperty("401");
     });
 
-    it("leaves out session-only procedures", () => {
-        expect(spec.paths).not.toHaveProperty("/user/api-keys");
-        expect(spec.paths?.["/orgs/{org}"]).toHaveProperty("get");
-        expect(spec.paths?.["/orgs/{org}"]).not.toHaveProperty("patch");
+    it("documents organization and API key procedures", () => {
+        expect(spec.paths?.["/user/api-keys"]?.get?.security).toEqual([
+            { [API_KEY_SCHEME]: [] },
+        ]);
+        expect(spec.paths?.["/orgs/{org}"]?.patch?.security).toEqual([
+            { [API_KEY_SCHEME]: [] },
+        ]);
     });
 
     it("leaves public procedures open", () => {

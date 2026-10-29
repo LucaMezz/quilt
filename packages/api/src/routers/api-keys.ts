@@ -4,7 +4,7 @@ import {
 } from "@quilt/auth/api-keys";
 import { z } from "zod";
 
-import { sessionProcedure } from "../index";
+import { protectedProcedure } from "../index";
 import { describeErrorResponse } from "../openapi";
 import { PageInput, pageOf } from "../pagination";
 import {
@@ -60,7 +60,7 @@ const apiKeyNotFound = describeErrorResponse(
 );
 
 export const apiKeysRouter = {
-    listApiKeys: sessionProcedure
+    listApiKeys: protectedProcedure
         .route({
             method: "GET",
             path: "/user/api-keys",
@@ -75,7 +75,7 @@ export const apiKeysRouter = {
         .handler(({ input, context }) =>
             listApiKeys(context.auth, context.headers, input),
         ),
-    createApiKey: sessionProcedure
+    createApiKey: protectedProcedure
         .route({
             method: "POST",
             path: "/user/api-keys",
@@ -98,7 +98,7 @@ export const apiKeysRouter = {
                 expiresIn: input.expiresIn,
             }),
         ),
-    getApiKey: sessionProcedure
+    getApiKey: protectedProcedure
         .route({
             method: "GET",
             path: "/user/api-keys/{id}",
@@ -120,7 +120,7 @@ export const apiKeysRouter = {
                 throw error;
             }
         }),
-    updateApiKey: sessionProcedure
+    updateApiKey: protectedProcedure
         .route({
             method: "PATCH",
             path: "/user/api-keys/{id}",
@@ -157,7 +157,7 @@ export const apiKeysRouter = {
                 throw error;
             }
         }),
-    deleteApiKey: sessionProcedure
+    deleteApiKey: protectedProcedure
         .route({
             method: "DELETE",
             path: "/user/api-keys/{id}",

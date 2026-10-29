@@ -2,12 +2,10 @@ import { type OpenAPIGeneratorGenerateOptions, oo } from "@orpc/openapi";
 
 import { API_KEY_HEADER, API_KEY_PREFIX } from "@quilt/auth/api-keys";
 
-import type { ProcedureMeta } from "./context";
-
 export const API_KEY_SCHEME = "apiKey";
 
 // Shared by the spec script and the server's live reference so both document
-// the same public API: what an API key can call, without session-only endpoints.
+// the same public API: everything an API key can call.
 export const openAPIGenerateOptions = {
     components: {
         securitySchemes: {
@@ -19,8 +17,6 @@ export const openAPIGenerateOptions = {
             },
         },
     },
-    filter: ({ contract }) =>
-        !(contract["~orpc"].meta as ProcedureMeta).sessionOnly,
 } satisfies OpenAPIGeneratorGenerateOptions;
 
 export function describeErrorResponse<T extends object>(

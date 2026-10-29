@@ -43,7 +43,7 @@ export function createAuth(
         plugins: [
             organization(),
             signDeviceTokens(),
-            bearer(),
+            bearer({ requireSignature: true }),
             hideBearerToken(),
             apiKey({
                 requireName: true,

@@ -4,7 +4,7 @@ import z from "zod";
 import { Backdrop } from "@/components/backdrop";
 import { DeviceAuthorization } from "@/components/device-authorization";
 
-export const Route = createFileRoute("/device")({
+export const Route = createFileRoute("/_auth/device")({
   validateSearch: z.object({
     user_code: z
       .union([z.string(), z.number()])

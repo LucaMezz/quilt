@@ -3,7 +3,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import { authClient } from "@/lib/auth-client";
 
 export const Route = createFileRoute("/_auth")({
-  beforeLoad: async () => {
+  beforeLoad: async ({ location }) => {
     // This is the only ourside input to the component. To test this,
     // we want to control the response we get from this.
     //
@@ -12,6 +12,7 @@ export const Route = createFileRoute("/_auth")({
     if (!session) {
       throw redirect({
         to: "/login",
+        search: { redirect: location.href },
       });
     }
     return { session };

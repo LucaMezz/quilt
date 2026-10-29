@@ -38,12 +38,23 @@ function getKeychainToken(host: string) {
     }
 }
 
+export function getCredential(host: string) {
+    if (process.env.QUILT_TOKEN) {
+        return {
+            token: process.env.QUILT_TOKEN,
+            source: "QUILT_TOKEN",
+        } as const;
+    }
+    const keychainToken = getKeychainToken(host);
+    if (keychainToken)
+        return { token: keychainToken, source: "keychain" } as const;
+    const fileToken = readFileTokens()[host];
+    if (fileToken) return { token: fileToken, source: "file" } as const;
+    return undefined;
+}
+
 export function getToken(host: string) {
-    return (
-        process.env.QUILT_TOKEN ||
-        getKeychainToken(host) ||
-        readFileTokens()[host]
-    );
+    return getCredential(host)?.token;
 }
 
 export function saveToken(host: string, token: string) {

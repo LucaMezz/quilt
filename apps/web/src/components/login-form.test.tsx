@@ -7,9 +7,8 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { LoginForm } from "./login-form";
 
-const { signInEmail, navigate } = vi.hoisted(() => ({
+const { signInEmail } = vi.hoisted(() => ({
   signInEmail: vi.fn(),
-  navigate: vi.fn(),
 }));
 
 vi.mock("@/lib/auth-client", () => ({
@@ -20,7 +19,6 @@ vi.mock("@/lib/auth-client", () => ({
 }));
 
 vi.mock("@tanstack/react-router", () => ({
-  useNavigate: () => navigate,
   Link: ({ to, children }: { to: string; children: ReactNode }) => (
     <a href={to}>{children}</a>
   ),
@@ -50,10 +48,25 @@ describe("LoginForm", () => {
     expect(signInEmail).not.toHaveBeenCalled();
   });
 
-  it("signs in and navigates to the dashboard on success", async () => {
-    signInEmail.mockImplementation(async (_body, { onSuccess }) => {
-      onSuccess();
-    });
+  it("signs in with the redirect target as the callback URL", async () => {
+    const user = userEvent.setup();
+    render(<LoginForm redirect="/device?user_code=WDJBMJHT" />);
+
+    await user.type(screen.getByLabelText("Email"), "ada@example.com");
+    await user.type(screen.getByLabelText("Password"), "correct-horse");
+    await user.click(screen.getByRole("button", { name: "Sign in" }));
+
+    expect(signInEmail).toHaveBeenCalledWith(
+      {
+        email: "ada@example.com",
+        password: "correct-horse",
+        callbackURL: "/device?user_code=WDJBMJHT",
+      },
+      expect.any(Object),
+    );
+  });
+
+  it("returns to the dashboard when there is no redirect target", async () => {
     const user = userEvent.setup();
     render(<LoginForm />);
 
@@ -62,10 +75,9 @@ describe("LoginForm", () => {
     await user.click(screen.getByRole("button", { name: "Sign in" }));
 
     expect(signInEmail).toHaveBeenCalledWith(
-      { email: "ada@example.com", password: "correct-horse" },
+      expect.objectContaining({ callbackURL: "/dashboard" }),
       expect.any(Object),
     );
-    expect(navigate).toHaveBeenCalledWith({ to: "/dashboard" });
   });
 
   it("links to the sign-up page", () => {

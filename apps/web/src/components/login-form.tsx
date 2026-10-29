@@ -10,7 +10,7 @@ import {
 import { Input } from "@quilt/ui/components/input";
 import { cn } from "@quilt/ui/lib/utils";
 import { useForm } from "@tanstack/react-form";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 import z from "zod";
 
@@ -20,11 +20,11 @@ import { AuthPanel } from "./auth-panel";
 import Loader from "./loader";
 import { Logo } from "./logo";
 
-export function LoginForm({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
-  const navigate = useNavigate();
+interface LoginFormProps extends React.ComponentProps<"div"> {
+  redirect?: string;
+}
+
+export function LoginForm({ redirect, className, ...props }: LoginFormProps) {
   const { isPending } = authClient.useSession();
 
   const form = useForm({
@@ -37,12 +37,10 @@ export function LoginForm({
         {
           email: value.email,
           password: value.password,
+          callbackURL: redirect ?? "/dashboard",
         },
         {
           onSuccess: () => {
-            navigate({
-              to: "/dashboard",
-            });
             toast.success("Sign in successful");
           },
           onError: (error) => {

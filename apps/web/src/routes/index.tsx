@@ -1,51 +1,42 @@
-import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
+import { MotionConfig } from "motion/react";
 
-import { orpc } from "@/utils/orpc";
+import { Architecture } from "@/components/landing/architecture";
+import { Audiences } from "@/components/landing/audiences";
+import { Billing } from "@/components/landing/billing";
+import { CallToAction } from "@/components/landing/call-to-action";
+import { Clients } from "@/components/landing/clients";
+import { Faq } from "@/components/landing/faq";
+import { Features } from "@/components/landing/features";
+import { Footer } from "@/components/landing/footer";
+import { Hero } from "@/components/landing/hero";
+import { HowItWorks } from "@/components/landing/how-it-works";
+import { Principles } from "@/components/landing/principles";
+import { Roadmap } from "@/components/landing/roadmap";
+import { ScaleToZero } from "@/components/landing/scale-to-zero";
 
 export const Route = createFileRoute("/")({
-  component: HomeComponent,
+  component: LandingPage,
 });
 
-const TITLE_TEXT = `
- ██████╗ ███████╗████████╗████████╗███████╗██████╗
- ██╔══██╗██╔════╝╚══██╔══╝╚══██╔══╝██╔════╝██╔══██╗
- ██████╔╝█████╗     ██║      ██║   █████╗  ██████╔╝
- ██╔══██╗██╔══╝     ██║      ██║   ██╔══╝  ██╔══██╗
- ██████╔╝███████╗   ██║      ██║   ███████╗██║  ██║
- ╚═════╝ ╚══════╝   ╚═╝      ╚═╝   ╚══════╝╚═╝  ╚═╝
-
- ████████╗    ███████╗████████╗ █████╗  ██████╗██╗  ██╗
- ╚══██╔══╝    ██╔════╝╚══██╔══╝██╔══██╗██╔════╝██║ ██╔╝
-    ██║       ███████╗   ██║   ███████║██║     █████╔╝
-    ██║       ╚════██║   ██║   ██╔══██║██║     ██╔═██╗
-    ██║       ███████║   ██║   ██║  ██║╚██████╗██║  ██╗
-    ╚═╝       ╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝
- `;
-
-function HomeComponent() {
-  const healthCheck = useQuery(orpc.healthCheck.queryOptions());
-
+function LandingPage() {
   return (
-    <div className="container mx-auto max-w-3xl px-4 py-2">
-      <pre className="overflow-x-auto font-mono text-sm">{TITLE_TEXT}</pre>
-      <div className="grid gap-6">
-        <section className="rounded-lg border p-4">
-          <h2 className="mb-2 font-medium">API Status</h2>
-          <div className="flex items-center gap-2">
-            <div
-              className={`h-2 w-2 rounded-full ${healthCheck.data ? "bg-green-500" : "bg-red-500"}`}
-            />
-            <span className="text-muted-foreground text-sm">
-              {healthCheck.isLoading
-                ? "Checking..."
-                : healthCheck.data
-                  ? "Connected"
-                  : "Disconnected"}
-            </span>
-          </div>
-        </section>
-      </div>
-    </div>
+    <MotionConfig reducedMotion="user">
+      <main>
+        <Hero />
+        <HowItWorks />
+        <Features />
+        <Billing />
+        <ScaleToZero />
+        <Architecture />
+        <Clients />
+        <Audiences />
+        <Principles />
+        <Roadmap />
+        <Faq />
+        <CallToAction />
+      </main>
+      <Footer />
+    </MotionConfig>
   );
 }

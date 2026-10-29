@@ -1,7 +1,6 @@
 import { z } from "zod";
-
-import { describeErrorResponse } from "../openapi";
-import { MAX_IMAGE_BYTES } from "../services/images";
+import { MAX_IMAGE_BYTES } from "../../lib/images";
+import { describeErrorResponse } from "../../openapi";
 
 export const ImageFile = z
     .file()

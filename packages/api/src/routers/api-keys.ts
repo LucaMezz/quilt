@@ -3,10 +3,9 @@ import {
     API_KEY_NAME_LENGTH,
 } from "@quilt/auth/api-keys";
 import { z } from "zod";
-
-import { protectedProcedure } from "../index";
+import { PageInput, pageOf } from "../lib/pagination";
 import { describeErrorResponse } from "../openapi";
-import { PageInput, pageOf } from "../pagination";
+import { protectedProcedure } from "../procedures";
 import {
     ApiKeyNotFoundError,
     createApiKey,

@@ -1,8 +1,7 @@
 import { z } from "zod";
-
-import { protectedProcedure } from "../index";
+import { InvalidImageError } from "../lib/images";
 import { describeErrorResponse } from "../openapi";
-import { InvalidImageError } from "../services/images";
+import { protectedProcedure } from "../procedures";
 import {
     createOrganization,
     deleteOrganization,
@@ -16,7 +15,7 @@ import {
     setOrganizationLogo,
     updateOrganization,
 } from "../services/organizations";
-import { describeImageUpload, ImageFile, invalidImage } from "./images";
+import { describeImageUpload, ImageFile, invalidImage } from "./shared/images";
 
 const OrganizationSlug = z
     .string()

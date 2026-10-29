@@ -1,17 +1,9 @@
-import { API_KEY_HEADER } from "@quilt/auth/api-keys";
 import { defineCommand } from "citty";
 
-import { client, serverHost } from "../client";
-import { authClient } from "../lib/auth-client";
+import { serverHost } from "../client";
+import { revokeApiKey } from "../lib/api-key-session";
 import { deleteToken, getToken } from "../lib/credentials";
 import { log } from "../ui/log";
-
-async function revokeApiKey(key: string) {
-    const { data } = await authClient.getSession({
-        fetchOptions: { headers: { [API_KEY_HEADER]: key } },
-    });
-    if (data) await client.deleteApiKey({ id: data.session.id });
-}
 
 export default defineCommand({
     meta: {

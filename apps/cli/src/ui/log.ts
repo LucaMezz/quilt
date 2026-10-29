@@ -1,18 +1,21 @@
+import logSymbols from "log-symbols";
+
 import { symbols, theme } from "./theme";
 
-// Results go to stdout so they can be piped; everything else goes to stderr.
+// Everything here is meant for people, so it goes to stderr and stdout stays
+// free for data that scripts consume.
 export const log = {
     success(message: string, detail?: string) {
-        console.log(line(theme.success(symbols.success), message, detail));
+        console.error(line(logSymbols.success, message, detail));
     },
     info(message: string, detail?: string) {
-        console.error(line(theme.brand(symbols.info), message, detail));
+        console.error(line(logSymbols.info, message, detail));
     },
     warn(message: string, detail?: string) {
-        console.error(line(theme.warning(symbols.warning), message, detail));
+        console.error(line(logSymbols.warning, message, detail));
     },
     error(message: string, detail?: string) {
-        console.error(line(theme.error(symbols.error), message, detail));
+        console.error(line(logSymbols.error, message, detail));
     },
     hint(message: string) {
         console.error(`  ${theme.muted(`${symbols.pointer} ${message}`)}`);

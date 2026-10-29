@@ -64,9 +64,7 @@
                 "apps/controller",
                 "apps/e2e",
                 "packages/config",
-                "packages/storage",
-                "package-lock.json",
-                "pnpm-lock.yaml"
+                "packages/storage"
             ],
             "extra-files": [
                 {

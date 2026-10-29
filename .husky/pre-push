@@ -1,2 +1,4 @@
 pnpm knip
+pnpm depcruise
+pnpm syncpack
 pnpm exec turbo run check-types test

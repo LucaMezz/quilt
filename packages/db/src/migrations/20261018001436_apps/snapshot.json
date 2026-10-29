@@ -1,1243 +1,997 @@
 {
-    "version": "8",
+    "type": "diff",
+    "version": "9",
     "dialect": "postgres",
     "id": "36b1c8f3-f055-4863-a1b2-292a2805f1ba",
     "prevIds": ["4744d0d9-1f80-4551-b776-f969b2dafe1c"],
-    "ddl": [
-        {
-            "values": ["pending", "running", "sleeping", "destroying"],
-            "name": "app_status",
-            "entityType": "enums",
-            "schema": "public"
-        },
-        {
-            "values": ["deploy", "config", "secrets", "rollback"],
-            "name": "deployment_kind",
-            "entityType": "enums",
-            "schema": "public"
-        },
-        {
-            "values": ["pending", "deploying", "ready", "failed", "superseded"],
-            "name": "deployment_status",
-            "entityType": "enums",
-            "schema": "public"
-        },
-        {
-            "isRlsEnabled": false,
-            "name": "app",
-            "entityType": "tables",
-            "schema": "public"
-        },
-        {
-            "isRlsEnabled": false,
-            "name": "app_secret",
-            "entityType": "tables",
-            "schema": "public"
-        },
-        {
-            "isRlsEnabled": false,
-            "name": "deployment",
-            "entityType": "tables",
-            "schema": "public"
-        },
-        {
-            "isRlsEnabled": false,
-            "name": "account",
-            "entityType": "tables",
-            "schema": "public"
-        },
-        {
-            "isRlsEnabled": false,
-            "name": "session",
-            "entityType": "tables",
-            "schema": "public"
-        },
-        {
-            "isRlsEnabled": false,
-            "name": "user",
-            "entityType": "tables",
-            "schema": "public"
-        },
-        {
-            "isRlsEnabled": false,
-            "name": "verification",
-            "entityType": "tables",
-            "schema": "public"
-        },
-        {
-            "type": "text",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "id",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "app"
-        },
-        {
-            "type": "text",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "owner_id",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "app"
-        },
-        {
-            "type": "text",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "name",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "app"
-        },
-        {
-            "type": "text",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "namespace",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "app"
-        },
-        {
-            "type": "text",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "hostname",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "app"
-        },
-        {
-            "type": "app_status",
-            "typeSchema": "public",
-            "notNull": true,
-            "dimensions": 0,
-            "default": "'pending'",
-            "generated": null,
-            "identity": null,
-            "name": "status",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "app"
-        },
-        {
-            "type": "text",
-            "typeSchema": null,
-            "notNull": false,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "live_deployment_id",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "app"
-        },
-        {
-            "type": "timestamp",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": "now()",
-            "generated": null,
-            "identity": null,
-            "name": "created_at",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "app"
-        },
-        {
-            "type": "timestamp",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": "now()",
-            "generated": null,
-            "identity": null,
-            "name": "updated_at",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "app"
-        },
-        {
-            "type": "timestamp",
-            "typeSchema": null,
-            "notNull": false,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "deleted_at",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "app"
-        },
-        {
-            "type": "text",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "app_id",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "app_secret"
-        },
-        {
-            "type": "text",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "name",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "app_secret"
-        },
-        {
-            "type": "text",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "value",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "app_secret"
-        },
-        {
-            "type": "timestamp",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": "now()",
-            "generated": null,
-            "identity": null,
-            "name": "created_at",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "app_secret"
-        },
-        {
-            "type": "timestamp",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": "now()",
-            "generated": null,
-            "identity": null,
-            "name": "updated_at",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "app_secret"
-        },
-        {
-            "type": "text",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "id",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "deployment"
-        },
-        {
-            "type": "text",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "app_id",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "deployment"
-        },
-        {
-            "type": "integer",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "version",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "deployment"
-        },
-        {
-            "type": "deployment_kind",
-            "typeSchema": "public",
-            "notNull": true,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "kind",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "deployment"
-        },
-        {
-            "type": "text",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "image",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "deployment"
-        },
-        {
-            "type": "text",
-            "typeSchema": null,
-            "notNull": false,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "image_digest",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "deployment"
-        },
-        {
-            "type": "integer",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": "8080",
-            "generated": null,
-            "identity": null,
-            "name": "port",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "deployment"
-        },
-        {
-            "type": "jsonb",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": "'{}'",
-            "generated": null,
-            "identity": null,
-            "name": "env",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "deployment"
-        },
-        {
-            "type": "integer",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "cpu_millis",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "deployment"
-        },
-        {
-            "type": "integer",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "memory_mb",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "deployment"
-        },
-        {
-            "type": "integer",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": "0",
-            "generated": null,
-            "identity": null,
-            "name": "min_scale",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "deployment"
-        },
-        {
-            "type": "integer",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "max_scale",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "deployment"
-        },
-        {
-            "type": "integer",
-            "typeSchema": null,
-            "notNull": false,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "concurrency_target",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "deployment"
-        },
-        {
-            "type": "text",
-            "typeSchema": null,
-            "notNull": false,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "zone",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "deployment"
-        },
-        {
-            "type": "deployment_status",
-            "typeSchema": "public",
-            "notNull": true,
-            "dimensions": 0,
-            "default": "'pending'",
-            "generated": null,
-            "identity": null,
-            "name": "status",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "deployment"
-        },
-        {
-            "type": "text",
-            "typeSchema": null,
-            "notNull": false,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "status_message",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "deployment"
-        },
-        {
-            "type": "text",
-            "typeSchema": null,
-            "notNull": false,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "created_by_id",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "deployment"
-        },
-        {
-            "type": "timestamp",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": "now()",
-            "generated": null,
-            "identity": null,
-            "name": "created_at",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "deployment"
-        },
-        {
-            "type": "timestamp",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": "now()",
-            "generated": null,
-            "identity": null,
-            "name": "updated_at",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "deployment"
-        },
-        {
-            "type": "text",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "id",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "account"
-        },
-        {
-            "type": "text",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "account_id",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "account"
-        },
-        {
-            "type": "text",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "provider_id",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "account"
-        },
-        {
-            "type": "text",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "user_id",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "account"
-        },
-        {
-            "type": "text",
-            "typeSchema": null,
-            "notNull": false,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "access_token",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "account"
-        },
-        {
-            "type": "text",
-            "typeSchema": null,
-            "notNull": false,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "refresh_token",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "account"
-        },
-        {
-            "type": "text",
-            "typeSchema": null,
-            "notNull": false,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "id_token",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "account"
-        },
-        {
-            "type": "timestamp",
-            "typeSchema": null,
-            "notNull": false,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "access_token_expires_at",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "account"
-        },
-        {
-            "type": "timestamp",
-            "typeSchema": null,
-            "notNull": false,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "refresh_token_expires_at",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "account"
-        },
-        {
-            "type": "text",
-            "typeSchema": null,
-            "notNull": false,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "scope",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "account"
-        },
-        {
-            "type": "text",
-            "typeSchema": null,
-            "notNull": false,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "password",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "account"
-        },
-        {
-            "type": "timestamp",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": "now()",
-            "generated": null,
-            "identity": null,
-            "name": "created_at",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "account"
-        },
-        {
-            "type": "timestamp",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "updated_at",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "account"
-        },
-        {
-            "type": "text",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "id",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "session"
-        },
-        {
-            "type": "timestamp",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "expires_at",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "session"
-        },
-        {
-            "type": "text",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "token",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "session"
-        },
-        {
-            "type": "timestamp",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": "now()",
-            "generated": null,
-            "identity": null,
-            "name": "created_at",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "session"
-        },
-        {
-            "type": "timestamp",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "updated_at",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "session"
-        },
-        {
-            "type": "text",
-            "typeSchema": null,
-            "notNull": false,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "ip_address",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "session"
-        },
-        {
-            "type": "text",
-            "typeSchema": null,
-            "notNull": false,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "user_agent",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "session"
-        },
-        {
-            "type": "text",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "user_id",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "session"
-        },
-        {
-            "type": "text",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "id",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "user"
-        },
-        {
-            "type": "text",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "name",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "user"
-        },
-        {
-            "type": "text",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "email",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "user"
-        },
-        {
-            "type": "boolean",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": "false",
-            "generated": null,
-            "identity": null,
-            "name": "email_verified",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "user"
-        },
-        {
-            "type": "text",
-            "typeSchema": null,
-            "notNull": false,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "image",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "user"
-        },
-        {
-            "type": "timestamp",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": "now()",
-            "generated": null,
-            "identity": null,
-            "name": "created_at",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "user"
-        },
-        {
-            "type": "timestamp",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": "now()",
-            "generated": null,
-            "identity": null,
-            "name": "updated_at",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "user"
-        },
-        {
-            "type": "text",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "id",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "verification"
-        },
-        {
-            "type": "text",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "identifier",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "verification"
-        },
-        {
-            "type": "text",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "value",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "verification"
-        },
-        {
-            "type": "timestamp",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": null,
-            "generated": null,
-            "identity": null,
-            "name": "expires_at",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "verification"
-        },
-        {
-            "type": "timestamp",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": "now()",
-            "generated": null,
-            "identity": null,
-            "name": "created_at",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "verification"
-        },
-        {
-            "type": "timestamp",
-            "typeSchema": null,
-            "notNull": true,
-            "dimensions": 0,
-            "default": "now()",
-            "generated": null,
-            "identity": null,
-            "name": "updated_at",
-            "entityType": "columns",
-            "schema": "public",
-            "table": "verification"
-        },
-        {
-            "nameExplicit": true,
-            "columns": [
-                {
-                    "value": "owner_id",
-                    "isExpression": false,
-                    "asc": true,
-                    "nullsFirst": false,
-                    "opclass": null
-                }
+    "footprints": [
+        {
+            "statementType": "create_enum",
+            "statementTarget": ["enum", "public", "app_status"],
+            "writes": [
+                "s|enum|public.app_status",
+                "n|enum|public.app_status",
+                "e|enum|public.app_status",
+                "n|type|public.app_status"
             ],
-            "isUnique": false,
-            "where": null,
-            "with": "",
-            "method": "btree",
-            "concurrently": false,
-            "name": "app_ownerId_idx",
-            "entityType": "indexes",
-            "schema": "public",
-            "table": "app"
+            "reads": ["n|sch|public"]
         },
         {
-            "nameExplicit": true,
-            "columns": [
-                {
-                    "value": "user_id",
-                    "isExpression": false,
-                    "asc": true,
-                    "nullsFirst": false,
-                    "opclass": null
-                }
+            "statementType": "create_enum",
+            "statementTarget": ["enum", "public", "deployment_kind"],
+            "writes": [
+                "s|enum|public.deployment_kind",
+                "n|enum|public.deployment_kind",
+                "e|enum|public.deployment_kind",
+                "n|type|public.deployment_kind"
             ],
-            "isUnique": false,
-            "where": null,
-            "with": "",
-            "method": "btree",
-            "concurrently": false,
-            "name": "account_userId_idx",
-            "entityType": "indexes",
-            "schema": "public",
-            "table": "account"
+            "reads": ["n|sch|public"]
         },
         {
-            "nameExplicit": true,
-            "columns": [
-                {
-                    "value": "user_id",
-                    "isExpression": false,
-                    "asc": true,
-                    "nullsFirst": false,
-                    "opclass": null
-                }
+            "statementType": "create_enum",
+            "statementTarget": ["enum", "public", "deployment_status"],
+            "writes": [
+                "s|enum|public.deployment_status",
+                "n|enum|public.deployment_status",
+                "e|enum|public.deployment_status",
+                "n|type|public.deployment_status"
             ],
-            "isUnique": false,
-            "where": null,
-            "with": "",
-            "method": "btree",
-            "concurrently": false,
-            "name": "session_userId_idx",
-            "entityType": "indexes",
-            "schema": "public",
-            "table": "session"
+            "reads": ["n|sch|public"]
         },
         {
-            "nameExplicit": true,
-            "columns": [
-                {
-                    "value": "identifier",
-                    "isExpression": false,
-                    "asc": true,
-                    "nullsFirst": false,
-                    "opclass": null
-                }
+            "statementType": "create_table",
+            "statementTarget": ["table", "public", "app"],
+            "writes": [
+                "s|tbl|public.app",
+                "n|tbl|public.app",
+                "e|tbl|public.app",
+                "n|rel|public.app",
+                "n|type|public.app",
+                "n|rel|public.app_pkey",
+                "n|rel|public.app_name_key",
+                "n|rel|public.app_hostname_key"
             ],
-            "isUnique": false,
-            "where": null,
-            "with": "",
-            "method": "btree",
-            "concurrently": false,
-            "name": "verification_identifier_idx",
-            "entityType": "indexes",
-            "schema": "public",
-            "table": "verification"
+            "reads": ["n|sch|public", "n|enum|public.app_status"]
         },
         {
-            "nameExplicit": false,
-            "columns": ["owner_id"],
-            "schemaTo": "public",
-            "tableTo": "user",
-            "columnsTo": ["id"],
-            "onUpdate": "NO ACTION",
-            "onDelete": "RESTRICT",
-            "name": "app_owner_id_user_id_fkey",
-            "entityType": "fks",
-            "schema": "public",
-            "table": "app"
+            "statementType": "create_table",
+            "statementTarget": ["table", "public", "app_secret"],
+            "writes": [
+                "s|tbl|public.app_secret",
+                "n|tbl|public.app_secret",
+                "e|tbl|public.app_secret",
+                "n|rel|public.app_secret",
+                "n|type|public.app_secret",
+                "n|rel|public.app_secret_pkey"
+            ],
+            "reads": ["n|sch|public"]
         },
         {
-            "nameExplicit": false,
-            "columns": ["live_deployment_id"],
-            "schemaTo": "public",
-            "tableTo": "deployment",
-            "columnsTo": ["id"],
-            "onUpdate": "NO ACTION",
-            "onDelete": "SET NULL",
-            "name": "app_live_deployment_id_deployment_id_fkey",
-            "entityType": "fks",
-            "schema": "public",
-            "table": "app"
+            "statementType": "create_table",
+            "statementTarget": ["table", "public", "deployment"],
+            "writes": [
+                "s|tbl|public.deployment",
+                "n|tbl|public.deployment",
+                "e|tbl|public.deployment",
+                "n|rel|public.deployment",
+                "n|type|public.deployment",
+                "n|rel|public.deployment_pkey",
+                "n|rel|public.deployment_appId_version_uq"
+            ],
+            "reads": [
+                "n|sch|public",
+                "n|enum|public.deployment_kind",
+                "n|enum|public.deployment_status"
+            ]
         },
         {
-            "nameExplicit": false,
-            "columns": ["app_id"],
-            "schemaTo": "public",
-            "tableTo": "app",
-            "columnsTo": ["id"],
-            "onUpdate": "NO ACTION",
-            "onDelete": "CASCADE",
-            "name": "app_secret_app_id_app_id_fkey",
-            "entityType": "fks",
-            "schema": "public",
-            "table": "app_secret"
+            "statementType": "create_index",
+            "statementTarget": ["index", "public", "app", "app_ownerId_idx"],
+            "writes": [
+                "s|idx|public.app_ownerId_idx",
+                "n|idx|public.app_ownerId_idx",
+                "e|idx|public.app_ownerId_idx",
+                "n|rel|public.app_ownerId_idx"
+            ],
+            "reads": [
+                "n|tbl|public.app",
+                "n|sch|public",
+                "n|col|public.app.owner_id"
+            ]
         },
         {
-            "nameExplicit": false,
-            "columns": ["app_id"],
-            "schemaTo": "public",
-            "tableTo": "app",
-            "columnsTo": ["id"],
-            "onUpdate": "NO ACTION",
-            "onDelete": "CASCADE",
-            "name": "deployment_app_id_app_id_fkey",
-            "entityType": "fks",
-            "schema": "public",
-            "table": "deployment"
+            "statementType": "create_fk",
+            "statementTarget": ["table", "public", "app"],
+            "writes": [
+                "s|fk|public.app.app_owner_id_user_id_fkey",
+                "n|fk|public.app.app_owner_id_user_id_fkey",
+                "e|fk|public.app.app_owner_id_user_id_fkey",
+                "n|con|public.app.app_owner_id_user_id_fkey"
+            ],
+            "reads": [
+                "n|tbl|public.app",
+                "n|sch|public",
+                "n|tbl|public.user",
+                "n|sch|public",
+                "n|col|public.app.owner_id",
+                "n|col|public.user.id",
+                "e|uniqueness|public.user.id"
+            ]
         },
         {
-            "nameExplicit": false,
-            "columns": ["created_by_id"],
-            "schemaTo": "public",
-            "tableTo": "user",
-            "columnsTo": ["id"],
-            "onUpdate": "NO ACTION",
-            "onDelete": "SET NULL",
-            "name": "deployment_created_by_id_user_id_fkey",
-            "entityType": "fks",
-            "schema": "public",
-            "table": "deployment"
+            "statementType": "create_fk",
+            "statementTarget": ["table", "public", "app"],
+            "writes": [
+                "s|fk|public.app.app_live_deployment_id_deployment_id_fkey",
+                "n|fk|public.app.app_live_deployment_id_deployment_id_fkey",
+                "e|fk|public.app.app_live_deployment_id_deployment_id_fkey",
+                "n|con|public.app.app_live_deployment_id_deployment_id_fkey"
+            ],
+            "reads": [
+                "n|tbl|public.app",
+                "n|sch|public",
+                "n|tbl|public.deployment",
+                "n|sch|public",
+                "n|col|public.app.live_deployment_id",
+                "n|col|public.deployment.id",
+                "e|uniqueness|public.deployment.id"
+            ]
         },
         {
-            "nameExplicit": false,
-            "columns": ["user_id"],
-            "schemaTo": "public",
-            "tableTo": "user",
-            "columnsTo": ["id"],
-            "onUpdate": "NO ACTION",
-            "onDelete": "CASCADE",
-            "name": "account_user_id_user_id_fkey",
-            "entityType": "fks",
-            "schema": "public",
-            "table": "account"
+            "statementType": "create_fk",
+            "statementTarget": ["table", "public", "app_secret"],
+            "writes": [
+                "s|fk|public.app_secret.app_secret_app_id_app_id_fkey",
+                "n|fk|public.app_secret.app_secret_app_id_app_id_fkey",
+                "e|fk|public.app_secret.app_secret_app_id_app_id_fkey",
+                "n|con|public.app_secret.app_secret_app_id_app_id_fkey"
+            ],
+            "reads": [
+                "n|tbl|public.app_secret",
+                "n|sch|public",
+                "n|tbl|public.app",
+                "n|sch|public",
+                "n|col|public.app_secret.app_id",
+                "n|col|public.app.id",
+                "e|uniqueness|public.app.id"
+            ]
         },
         {
-            "nameExplicit": false,
-            "columns": ["user_id"],
-            "schemaTo": "public",
-            "tableTo": "user",
-            "columnsTo": ["id"],
-            "onUpdate": "NO ACTION",
-            "onDelete": "CASCADE",
-            "name": "session_user_id_user_id_fkey",
-            "entityType": "fks",
-            "schema": "public",
-            "table": "session"
+            "statementType": "create_fk",
+            "statementTarget": ["table", "public", "deployment"],
+            "writes": [
+                "s|fk|public.deployment.deployment_app_id_app_id_fkey",
+                "n|fk|public.deployment.deployment_app_id_app_id_fkey",
+                "e|fk|public.deployment.deployment_app_id_app_id_fkey",
+                "n|con|public.deployment.deployment_app_id_app_id_fkey"
+            ],
+            "reads": [
+                "n|tbl|public.deployment",
+                "n|sch|public",
+                "n|tbl|public.app",
+                "n|sch|public",
+                "n|col|public.deployment.app_id",
+                "n|col|public.app.id",
+                "e|uniqueness|public.app.id"
+            ]
         },
         {
-            "columns": ["app_id", "name"],
-            "nameExplicit": false,
-            "name": "app_secret_pkey",
-            "entityType": "pks",
-            "schema": "public",
-            "table": "app_secret"
-        },
-        {
-            "columns": ["id"],
-            "nameExplicit": false,
-            "name": "app_pkey",
-            "schema": "public",
-            "table": "app",
-            "entityType": "pks"
-        },
-        {
-            "columns": ["id"],
-            "nameExplicit": false,
-            "name": "deployment_pkey",
-            "schema": "public",
-            "table": "deployment",
-            "entityType": "pks"
-        },
-        {
-            "columns": ["id"],
-            "nameExplicit": false,
-            "name": "account_pkey",
-            "schema": "public",
-            "table": "account",
-            "entityType": "pks"
-        },
-        {
-            "columns": ["id"],
-            "nameExplicit": false,
-            "name": "session_pkey",
-            "schema": "public",
-            "table": "session",
-            "entityType": "pks"
-        },
-        {
-            "columns": ["id"],
-            "nameExplicit": false,
-            "name": "user_pkey",
-            "schema": "public",
-            "table": "user",
-            "entityType": "pks"
-        },
-        {
-            "columns": ["id"],
-            "nameExplicit": false,
-            "name": "verification_pkey",
-            "schema": "public",
-            "table": "verification",
-            "entityType": "pks"
-        },
-        {
-            "nameExplicit": true,
-            "columns": ["app_id", "version"],
-            "nullsNotDistinct": false,
-            "name": "deployment_appId_version_uq",
-            "entityType": "uniques",
-            "schema": "public",
-            "table": "deployment"
-        },
-        {
-            "nameExplicit": false,
-            "columns": ["name"],
-            "nullsNotDistinct": false,
-            "name": "app_name_key",
-            "schema": "public",
-            "table": "app",
-            "entityType": "uniques"
-        },
-        {
-            "nameExplicit": false,
-            "columns": ["hostname"],
-            "nullsNotDistinct": false,
-            "name": "app_hostname_key",
-            "schema": "public",
-            "table": "app",
-            "entityType": "uniques"
-        },
-        {
-            "nameExplicit": false,
-            "columns": ["token"],
-            "nullsNotDistinct": false,
-            "name": "session_token_key",
-            "schema": "public",
-            "table": "session",
-            "entityType": "uniques"
-        },
-        {
-            "nameExplicit": false,
-            "columns": ["email"],
-            "nullsNotDistinct": false,
-            "name": "user_email_key",
-            "schema": "public",
-            "table": "user",
-            "entityType": "uniques"
-        },
-        {
-            "value": "char_length(\"name\") <= 63 and \"name\" ~ '^[a-z0-9]([-a-z0-9]*[a-z0-9])?$'",
-            "name": "app_name_dns_label",
-            "entityType": "checks",
-            "schema": "public",
-            "table": "app"
-        },
-        {
-            "value": "\"min_scale\" >= 0 and \"max_scale\" > 0 and \"min_scale\" <= \"max_scale\"",
-            "name": "deployment_scale_range",
-            "entityType": "checks",
-            "schema": "public",
-            "table": "deployment"
+            "statementType": "create_fk",
+            "statementTarget": ["table", "public", "deployment"],
+            "writes": [
+                "s|fk|public.deployment.deployment_created_by_id_user_id_fkey",
+                "n|fk|public.deployment.deployment_created_by_id_user_id_fkey",
+                "e|fk|public.deployment.deployment_created_by_id_user_id_fkey",
+                "n|con|public.deployment.deployment_created_by_id_user_id_fkey"
+            ],
+            "reads": [
+                "n|tbl|public.deployment",
+                "n|sch|public",
+                "n|tbl|public.user",
+                "n|sch|public",
+                "n|col|public.deployment.created_by_id",
+                "n|col|public.user.id",
+                "e|uniqueness|public.user.id"
+            ]
         }
     ],
-    "renames": []
+    "deltas": [
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "name": "app",
+                "isRlsEnabled": false,
+                "entityType": "tables"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "name": "app_secret",
+                "isRlsEnabled": false,
+                "entityType": "tables"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "name": "deployment",
+                "isRlsEnabled": false,
+                "entityType": "tables"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "name": "app_status",
+                "values": ["pending", "running", "sleeping", "destroying"],
+                "entityType": "enums"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "name": "deployment_kind",
+                "values": ["deploy", "config", "secrets", "rollback"],
+                "entityType": "enums"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "name": "deployment_status",
+                "values": [
+                    "pending",
+                    "deploying",
+                    "ready",
+                    "failed",
+                    "superseded"
+                ],
+                "entityType": "enums"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "app",
+                "name": "id",
+                "type": "text",
+                "typeSchema": null,
+                "notNull": true,
+                "dimensions": 0,
+                "default": null,
+                "generated": null,
+                "identity": null,
+                "entityType": "columns"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "app",
+                "name": "owner_id",
+                "type": "text",
+                "typeSchema": null,
+                "notNull": true,
+                "dimensions": 0,
+                "default": null,
+                "generated": null,
+                "identity": null,
+                "entityType": "columns"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "app",
+                "name": "name",
+                "type": "text",
+                "typeSchema": null,
+                "notNull": true,
+                "dimensions": 0,
+                "default": null,
+                "generated": null,
+                "identity": null,
+                "entityType": "columns"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "app",
+                "name": "namespace",
+                "type": "text",
+                "typeSchema": null,
+                "notNull": true,
+                "dimensions": 0,
+                "default": null,
+                "generated": null,
+                "identity": null,
+                "entityType": "columns"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "app",
+                "name": "hostname",
+                "type": "text",
+                "typeSchema": null,
+                "notNull": true,
+                "dimensions": 0,
+                "default": null,
+                "generated": null,
+                "identity": null,
+                "entityType": "columns"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "app",
+                "name": "status",
+                "type": "app_status",
+                "typeSchema": "public",
+                "notNull": true,
+                "dimensions": 0,
+                "default": "'pending'",
+                "generated": null,
+                "identity": null,
+                "entityType": "columns"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "app",
+                "name": "live_deployment_id",
+                "type": "text",
+                "typeSchema": null,
+                "notNull": false,
+                "dimensions": 0,
+                "default": null,
+                "generated": null,
+                "identity": null,
+                "entityType": "columns"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "app",
+                "name": "created_at",
+                "type": "timestamp",
+                "typeSchema": null,
+                "notNull": true,
+                "dimensions": 0,
+                "default": "now()",
+                "generated": null,
+                "identity": null,
+                "entityType": "columns"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "app",
+                "name": "updated_at",
+                "type": "timestamp",
+                "typeSchema": null,
+                "notNull": true,
+                "dimensions": 0,
+                "default": "now()",
+                "generated": null,
+                "identity": null,
+                "entityType": "columns"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "app",
+                "name": "deleted_at",
+                "type": "timestamp",
+                "typeSchema": null,
+                "notNull": false,
+                "dimensions": 0,
+                "default": null,
+                "generated": null,
+                "identity": null,
+                "entityType": "columns"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "app_secret",
+                "name": "app_id",
+                "type": "text",
+                "typeSchema": null,
+                "notNull": true,
+                "dimensions": 0,
+                "default": null,
+                "generated": null,
+                "identity": null,
+                "entityType": "columns"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "app_secret",
+                "name": "name",
+                "type": "text",
+                "typeSchema": null,
+                "notNull": true,
+                "dimensions": 0,
+                "default": null,
+                "generated": null,
+                "identity": null,
+                "entityType": "columns"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "app_secret",
+                "name": "value",
+                "type": "text",
+                "typeSchema": null,
+                "notNull": true,
+                "dimensions": 0,
+                "default": null,
+                "generated": null,
+                "identity": null,
+                "entityType": "columns"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "app_secret",
+                "name": "created_at",
+                "type": "timestamp",
+                "typeSchema": null,
+                "notNull": true,
+                "dimensions": 0,
+                "default": "now()",
+                "generated": null,
+                "identity": null,
+                "entityType": "columns"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "app_secret",
+                "name": "updated_at",
+                "type": "timestamp",
+                "typeSchema": null,
+                "notNull": true,
+                "dimensions": 0,
+                "default": "now()",
+                "generated": null,
+                "identity": null,
+                "entityType": "columns"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "deployment",
+                "name": "id",
+                "type": "text",
+                "typeSchema": null,
+                "notNull": true,
+                "dimensions": 0,
+                "default": null,
+                "generated": null,
+                "identity": null,
+                "entityType": "columns"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "deployment",
+                "name": "app_id",
+                "type": "text",
+                "typeSchema": null,
+                "notNull": true,
+                "dimensions": 0,
+                "default": null,
+                "generated": null,
+                "identity": null,
+                "entityType": "columns"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "deployment",
+                "name": "version",
+                "type": "integer",
+                "typeSchema": null,
+                "notNull": true,
+                "dimensions": 0,
+                "default": null,
+                "generated": null,
+                "identity": null,
+                "entityType": "columns"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "deployment",
+                "name": "kind",
+                "type": "deployment_kind",
+                "typeSchema": "public",
+                "notNull": true,
+                "dimensions": 0,
+                "default": null,
+                "generated": null,
+                "identity": null,
+                "entityType": "columns"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "deployment",
+                "name": "image",
+                "type": "text",
+                "typeSchema": null,
+                "notNull": true,
+                "dimensions": 0,
+                "default": null,
+                "generated": null,
+                "identity": null,
+                "entityType": "columns"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "deployment",
+                "name": "image_digest",
+                "type": "text",
+                "typeSchema": null,
+                "notNull": false,
+                "dimensions": 0,
+                "default": null,
+                "generated": null,
+                "identity": null,
+                "entityType": "columns"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "deployment",
+                "name": "port",
+                "type": "integer",
+                "typeSchema": null,
+                "notNull": true,
+                "dimensions": 0,
+                "default": "8080",
+                "generated": null,
+                "identity": null,
+                "entityType": "columns"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "deployment",
+                "name": "env",
+                "type": "jsonb",
+                "typeSchema": null,
+                "notNull": true,
+                "dimensions": 0,
+                "default": "'{}'",
+                "generated": null,
+                "identity": null,
+                "entityType": "columns"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "deployment",
+                "name": "cpu_millis",
+                "type": "integer",
+                "typeSchema": null,
+                "notNull": true,
+                "dimensions": 0,
+                "default": null,
+                "generated": null,
+                "identity": null,
+                "entityType": "columns"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "deployment",
+                "name": "memory_mb",
+                "type": "integer",
+                "typeSchema": null,
+                "notNull": true,
+                "dimensions": 0,
+                "default": null,
+                "generated": null,
+                "identity": null,
+                "entityType": "columns"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "deployment",
+                "name": "min_scale",
+                "type": "integer",
+                "typeSchema": null,
+                "notNull": true,
+                "dimensions": 0,
+                "default": "0",
+                "generated": null,
+                "identity": null,
+                "entityType": "columns"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "deployment",
+                "name": "max_scale",
+                "type": "integer",
+                "typeSchema": null,
+                "notNull": true,
+                "dimensions": 0,
+                "default": null,
+                "generated": null,
+                "identity": null,
+                "entityType": "columns"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "deployment",
+                "name": "concurrency_target",
+                "type": "integer",
+                "typeSchema": null,
+                "notNull": false,
+                "dimensions": 0,
+                "default": null,
+                "generated": null,
+                "identity": null,
+                "entityType": "columns"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "deployment",
+                "name": "zone",
+                "type": "text",
+                "typeSchema": null,
+                "notNull": false,
+                "dimensions": 0,
+                "default": null,
+                "generated": null,
+                "identity": null,
+                "entityType": "columns"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "deployment",
+                "name": "status",
+                "type": "deployment_status",
+                "typeSchema": "public",
+                "notNull": true,
+                "dimensions": 0,
+                "default": "'pending'",
+                "generated": null,
+                "identity": null,
+                "entityType": "columns"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "deployment",
+                "name": "status_message",
+                "type": "text",
+                "typeSchema": null,
+                "notNull": false,
+                "dimensions": 0,
+                "default": null,
+                "generated": null,
+                "identity": null,
+                "entityType": "columns"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "deployment",
+                "name": "created_by_id",
+                "type": "text",
+                "typeSchema": null,
+                "notNull": false,
+                "dimensions": 0,
+                "default": null,
+                "generated": null,
+                "identity": null,
+                "entityType": "columns"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "deployment",
+                "name": "created_at",
+                "type": "timestamp",
+                "typeSchema": null,
+                "notNull": true,
+                "dimensions": 0,
+                "default": "now()",
+                "generated": null,
+                "identity": null,
+                "entityType": "columns"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "deployment",
+                "name": "updated_at",
+                "type": "timestamp",
+                "typeSchema": null,
+                "notNull": true,
+                "dimensions": 0,
+                "default": "now()",
+                "generated": null,
+                "identity": null,
+                "entityType": "columns"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "app",
+                "name": "app_ownerId_idx",
+                "nameExplicit": true,
+                "columns": [
+                    {
+                        "value": "owner_id",
+                        "isExpression": false,
+                        "asc": true,
+                        "nullsFirst": false,
+                        "opclass": null
+                    }
+                ],
+                "isUnique": false,
+                "where": null,
+                "with": "",
+                "method": "btree",
+                "concurrently": false,
+                "entityType": "indexes"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "app",
+                "name": "app_owner_id_user_id_fkey",
+                "nameExplicit": false,
+                "columns": ["owner_id"],
+                "schemaTo": "public",
+                "tableTo": "user",
+                "columnsTo": ["id"],
+                "onUpdate": "NO ACTION",
+                "onDelete": "RESTRICT",
+                "entityType": "fks"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "app",
+                "name": "app_live_deployment_id_deployment_id_fkey",
+                "nameExplicit": false,
+                "columns": ["live_deployment_id"],
+                "schemaTo": "public",
+                "tableTo": "deployment",
+                "columnsTo": ["id"],
+                "onUpdate": "NO ACTION",
+                "onDelete": "SET NULL",
+                "entityType": "fks"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "app_secret",
+                "name": "app_secret_app_id_app_id_fkey",
+                "nameExplicit": false,
+                "columns": ["app_id"],
+                "schemaTo": "public",
+                "tableTo": "app",
+                "columnsTo": ["id"],
+                "onUpdate": "NO ACTION",
+                "onDelete": "CASCADE",
+                "entityType": "fks"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "deployment",
+                "name": "deployment_app_id_app_id_fkey",
+                "nameExplicit": false,
+                "columns": ["app_id"],
+                "schemaTo": "public",
+                "tableTo": "app",
+                "columnsTo": ["id"],
+                "onUpdate": "NO ACTION",
+                "onDelete": "CASCADE",
+                "entityType": "fks"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "deployment",
+                "name": "deployment_created_by_id_user_id_fkey",
+                "nameExplicit": false,
+                "columns": ["created_by_id"],
+                "schemaTo": "public",
+                "tableTo": "user",
+                "columnsTo": ["id"],
+                "onUpdate": "NO ACTION",
+                "onDelete": "SET NULL",
+                "entityType": "fks"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "app_secret",
+                "name": "app_secret_pkey",
+                "columns": ["app_id", "name"],
+                "nameExplicit": false,
+                "entityType": "pks"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "app",
+                "name": "app_pkey",
+                "columns": ["id"],
+                "nameExplicit": false,
+                "entityType": "pks"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "deployment",
+                "name": "deployment_pkey",
+                "columns": ["id"],
+                "nameExplicit": false,
+                "entityType": "pks"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "deployment",
+                "name": "deployment_appId_version_uq",
+                "nameExplicit": true,
+                "columns": ["app_id", "version"],
+                "nullsNotDistinct": false,
+                "entityType": "uniques"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "app",
+                "name": "app_name_key",
+                "nameExplicit": false,
+                "columns": ["name"],
+                "nullsNotDistinct": false,
+                "entityType": "uniques"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "app",
+                "name": "app_hostname_key",
+                "nameExplicit": false,
+                "columns": ["hostname"],
+                "nullsNotDistinct": false,
+                "entityType": "uniques"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "app",
+                "name": "app_name_dns_label",
+                "value": "char_length(\"name\") <= 63 and \"name\" ~ '^[a-z0-9]([-a-z0-9]*[a-z0-9])?$'",
+                "entityType": "checks"
+            }
+        },
+        {
+            "op": "create",
+            "row": {
+                "schema": "public",
+                "table": "deployment",
+                "name": "deployment_scale_range",
+                "value": "\"min_scale\" >= 0 and \"max_scale\" > 0 and \"min_scale\" <= \"max_scale\"",
+                "entityType": "checks"
+            }
+        }
+    ]
 }

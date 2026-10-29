@@ -18,7 +18,7 @@ import {
 } from "../services/organizations";
 import { describeImageUpload, ImageFile, invalidImage } from "./images";
 
-export const OrganizationSlug = z
+const OrganizationSlug = z
     .string()
     .min(1)
     .max(63)
@@ -33,7 +33,7 @@ export const OrganizationRef = z.object({
     ),
 });
 
-export const OrganizationSchema = z.object({
+const OrganizationSchema = z.object({
     id: z.string(),
     name: z.string(),
     slug: OrganizationSlug,

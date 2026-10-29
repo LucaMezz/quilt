@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { deleteToken, getToken, saveToken } from "./credentials";
 
@@ -24,6 +24,11 @@ vi.mock("@napi-rs/keyring", () => ({
 
 beforeEach(() => {
     keychain.clear();
+    vi.stubEnv("QUILT_TOKEN", undefined);
+});
+
+afterEach(() => {
+    vi.unstubAllEnvs();
 });
 
 describe("credentials", () => {
@@ -51,5 +56,12 @@ describe("credentials", () => {
         deleteToken("quilt.test");
 
         expect(getToken("quilt.test")).toBeUndefined();
+    });
+
+    it("prefers QUILT_TOKEN over the saved token", () => {
+        vi.stubEnv("QUILT_TOKEN", "from-env");
+        saveToken("quilt.test", "saved");
+
+        expect(getToken("quilt.test")).toBe("from-env");
     });
 });

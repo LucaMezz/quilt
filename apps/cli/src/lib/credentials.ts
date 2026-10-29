@@ -5,7 +5,7 @@ function entry(host: string) {
 }
 
 export function getToken(host: string) {
-    return entry(host).getPassword() ?? undefined;
+    return process.env.QUILT_TOKEN || (entry(host).getPassword() ?? undefined);
 }
 
 export function saveToken(host: string, token: string) {

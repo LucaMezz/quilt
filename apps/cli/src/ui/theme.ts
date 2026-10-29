@@ -2,7 +2,7 @@ import chalk from "chalk";
 
 // quilt's brand accent. chalk downsamples it to 256 or 16 colours on terminals
 // without truecolor, and drops colour entirely for NO_COLOR or piped output.
-const BRAND = "#E8692F";
+const BRAND = "#10B981";
 
 export const theme = {
     brand: chalk.hex(BRAND),

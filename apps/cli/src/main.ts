@@ -2,6 +2,7 @@ import { defineCommand } from "citty";
 
 import pkg from "../package.json" with { type: "json" };
 import health from "./commands/health";
+import login from "./commands/login";
 
 /** The root command. Kept free of side effects so the docs generator can import it. */
 export const main = defineCommand({
@@ -12,5 +13,6 @@ export const main = defineCommand({
     },
     subCommands: {
         health,
+        login,
     },
 });

@@ -16,18 +16,24 @@
         "check-types": "tsc -b ../../packages/api && tsc --noEmit",
         "compile": "bun build --compile --minify --sourcemap --bytecode ./src/index.ts --outfile build/quilt",
         "quilt": "tsx src/index.ts",
-        "start": "node dist/index.mjs"
+        "start": "node dist/index.mjs",
+        "test": "vitest run",
+        "test:watch": "vitest"
     },
     "devDependencies": {
         "@quilt/config": "workspace:*",
         "@types/node": "^26.6.5",
+        "@vitest/coverage-v8": "^5.0.5",
         "tsdown": "^0.23.1",
         "tsx": "^4.23.15",
-        "typescript": "^7.0.2"
+        "typescript": "^7.0.2",
+        "vitest": "^5.0.5"
     },
     "dependencies": {
+        "@better-auth/api-key": "1.7.10",
         "@orpc/client": "^1.15.7",
         "@quilt/api": "workspace:*",
+        "better-auth": "1.7.10",
         "chalk": "^6.0.1",
         "citty": "^0.2.2"
     }

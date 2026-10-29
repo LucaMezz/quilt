@@ -22,15 +22,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { ChevronsUpDownIcon, LogOutIcon } from "lucide-react";
 
 import { authClient } from "@/lib/auth-client";
-
-function initials(name: string) {
-  return name
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase())
-    .join("");
-}
+import { initials } from "@/lib/initials";
 
 export function NavUser({
   user,

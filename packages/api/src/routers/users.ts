@@ -5,7 +5,7 @@ import { InvalidImageError } from "../services/images";
 import { setUserImage, USER_IMAGE_DIMENSION } from "../services/users";
 import { describeImageUpload, ImageFile, invalidImage } from "./images";
 
-export const UserSchema = z.object({
+const UserSchema = z.object({
     id: z.string(),
     name: z.string(),
     email: z.string(),

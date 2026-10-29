@@ -5,7 +5,7 @@ import { BodyLimitPlugin, RPCHandler } from "@orpc/server/node";
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4";
 import { MAX_REQUEST_BODY_BYTES } from "@quilt/api";
 import { openAPIGenerateOptions } from "@quilt/api/openapi";
-import { appRouter } from "@quilt/api/routers/index";
+import { appRouter } from "@quilt/api/router";
 import type { Auth } from "@quilt/auth";
 import type { Database } from "@quilt/db";
 import type { Storage } from "@quilt/storage";

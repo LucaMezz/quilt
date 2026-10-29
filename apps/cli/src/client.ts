@@ -1,6 +1,6 @@
 import { createORPCClient } from "@orpc/client";
 import { RPCLink } from "@orpc/client/fetch";
-import type { AppRouterClient } from "@quilt/api/routers/index";
+import type { AppRouterClient } from "@quilt/api/router";
 import { API_KEY_HEADER } from "@quilt/auth/api-keys";
 
 import { getToken } from "./lib/credentials";

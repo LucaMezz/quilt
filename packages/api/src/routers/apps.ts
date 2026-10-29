@@ -21,7 +21,7 @@ import {
 import { describeImageUpload, ImageFile, invalidImage } from "./images";
 import { OrganizationRef, organizationNotFound } from "./organizations";
 
-export const AppName = z
+const AppName = z
     .string()
     .min(1)
     .max(63)
@@ -30,13 +30,13 @@ export const AppName = z
         "Identifies the app in API paths and CLI commands. Unique across all apps, not just your organization's, and can't be changed later.",
     );
 
-export const AppStatus = z
+const AppStatus = z
     .enum(["pending", "running", "sleeping", "destroying"])
     .describe(
         "`pending`: created, nothing live yet. `running`: serving traffic. `sleeping`: scaled to zero, wakes on the next request. `destroying`: being torn down.",
     );
 
-export const AppSchema = z.object({
+const AppSchema = z.object({
     id: z.string(),
     name: AppName,
     hostname: z.string().describe("Public hostname the app is served on"),

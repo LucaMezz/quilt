@@ -16,7 +16,7 @@ import {
     updateApiKey,
 } from "../services/api-keys";
 
-export const ApiKeySchema = z.object({
+const ApiKeySchema = z.object({
     id: z.string(),
     name: z.string().nullish(),
     start: z.string().nullish(),
@@ -27,7 +27,7 @@ export const ApiKeySchema = z.object({
     createdAt: z.date(),
 });
 
-export const CreatedApiKeySchema = ApiKeySchema.extend({
+const CreatedApiKeySchema = ApiKeySchema.extend({
     key: z
         .string()
         .describe(
@@ -35,7 +35,7 @@ export const CreatedApiKeySchema = ApiKeySchema.extend({
         ),
 });
 
-export const ApiKeyRef = z.object({
+const ApiKeyRef = z.object({
     id: z.string().describe("ID of one of your API keys"),
 });
 

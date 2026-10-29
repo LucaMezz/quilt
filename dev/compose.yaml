@@ -23,7 +23,7 @@ services:
     image: rustfs/rustfs:1.0.1
     container_name: quilt-storage
     environment:
-      RUSTFS_ACCESS_KEY: quilt
+      RUSTFS_ACCESS_KEY: dev-rustfs-access-key
       RUSTFS_SECRET_KEY: password
       RUSTFS_CONSOLE_ENABLE: "true"
       RUSTFS_OBS_LOG_DIRECTORY: ""
@@ -50,7 +50,7 @@ services:
       storage:
         condition: service_healthy
     environment:
-      AWS_ACCESS_KEY_ID: quilt
+      AWS_ACCESS_KEY_ID: dev-rustfs-access-key
       AWS_SECRET_ACCESS_KEY: password
       AWS_REGION: us-east-1
       AWS_ENDPOINT_URL: http://storage:9000

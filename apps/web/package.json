@@ -19,7 +19,7 @@
     },
     "dependencies": {
         "@better-auth/api-key": "1.7.10",
-        "@orpc/client": "^1.15.6",
+        "@orpc/client": "^1.15.7",
         "@orpc/tanstack-query": "^1.15.6",
         "@quilt/api": "workspace:*",
         "@quilt/ui": "workspace:*",

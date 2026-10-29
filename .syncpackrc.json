@@ -1,0 +1,17 @@
+{
+    "$schema": "./node_modules/syncpack/schema.json",
+    "versionGroups": [
+        {
+            "label": "The root package is private and unversioned",
+            "packages": ["quilt"],
+            "dependencyTypes": ["local"],
+            "isIgnored": true
+        },
+        {
+            "label": "Workspace packages are linked with workspace:*",
+            "dependencies": ["$LOCAL"],
+            "dependencyTypes": ["!local"],
+            "pinVersion": "workspace:*"
+        }
+    ]
+}

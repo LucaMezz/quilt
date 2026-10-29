@@ -50,6 +50,8 @@ jobs:
 
       - run: pnpm exec biome ci .
 
+      - run: pnpm knip
+
       - run: pnpm exec turbo boundaries
 
       - run: pnpm exec turbo run check-types build

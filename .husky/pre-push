@@ -1,1 +1,2 @@
+pnpm knip
 pnpm exec turbo run check-types test

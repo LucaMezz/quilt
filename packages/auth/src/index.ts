@@ -11,6 +11,7 @@ import {
     API_KEY_NAME_LENGTH,
     API_KEY_PREFIX,
 } from "./api-keys";
+import { deviceApiKeys } from "./device-api-keys";
 
 export type AuthConfig = {
     BETTER_AUTH_URL: string;
@@ -23,7 +24,7 @@ export function createAuth(
     database: Database,
     desktopOrigins: readonly string[] = [],
 ) {
-    return betterAuth({
+    const auth = betterAuth({
         database: drizzleAdapter(database, {
             provider: "pg",
             schema,
@@ -57,8 +58,13 @@ export function createAuth(
             deviceAuthorization({
                 verificationUri: `${env.CORS_ORIGIN}/device`,
             }),
+            deviceApiKeys(
+                (body): Promise<{ key: string }> =>
+                    auth.api.createApiKey({ body }),
+            ),
         ],
     });
+    return auth;
 }
 
 export { isAPIError } from "better-auth/api";

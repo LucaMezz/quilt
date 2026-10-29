@@ -3,7 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { deleteToken, getToken, saveToken } from "./credentials";
+import { deleteToken, getCredential, getToken, saveToken } from "./credentials";
 
 const keychain = vi.hoisted(() => ({
     entries: new Map<string, string>(),
@@ -83,6 +83,22 @@ describe("credentials", () => {
         expect(getToken("quilt.test")).toBe("from-env");
     });
 
+    it("says where each token comes from", () => {
+        saveToken("quilt.test", "saved");
+
+        expect(getCredential("quilt.test")).toEqual({
+            token: "saved",
+            source: "keychain",
+        });
+        expect(getCredential("other.test")).toBeUndefined();
+
+        vi.stubEnv("QUILT_TOKEN", "from-env");
+        expect(getCredential("quilt.test")).toEqual({
+            token: "from-env",
+            source: "QUILT_TOKEN",
+        });
+    });
+
     describe("without a keychain", () => {
         beforeEach(() => {
             keychain.available = false;
@@ -91,7 +107,10 @@ describe("credentials", () => {
         it("saves the token to a file instead", () => {
             expect(saveToken("quilt.test", "token")).toBe("file");
 
-            expect(getToken("quilt.test")).toBe("token");
+            expect(getCredential("quilt.test")).toEqual({
+                token: "token",
+                source: "file",
+            });
         });
 
         it("forgets a deleted token", () => {

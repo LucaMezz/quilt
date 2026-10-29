@@ -2,6 +2,7 @@ import { defineCommand } from "citty";
 
 import { serverHost } from "../client";
 import { canOpenBrowser, openBrowser } from "../lib/browser";
+import { saveToken } from "../lib/credentials";
 import { pollForToken, requestDeviceCode } from "../lib/device-auth";
 import { LoginError } from "../lib/login-errors";
 import { log } from "../ui/log";
@@ -50,18 +51,24 @@ async function login(browser: boolean) {
     const ticker = setInterval(() => {
         waiting.text = waitingText(expiresAt);
     }, 1000);
-    const { user } = await pollForToken(
+    const { accessToken, user } = await pollForToken(
         code.device_code,
         code.interval,
     ).finally(() => {
         clearInterval(ticker);
         waiting.stop();
     });
+    const storage = saveToken(serverHost, accessToken);
 
     log.success(
         user ? `Signed in as ${theme.heading(user.name)}` : "Signed in",
         [user?.email, serverHost].filter(Boolean).join(` ${symbols.dot} `),
     );
+    if (storage === "file") {
+        log.warn(
+            "No system keychain found, so your token is stored in a plain-text file",
+        );
+    }
 }
 
 export default defineCommand({

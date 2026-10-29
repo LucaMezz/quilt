@@ -21,12 +21,12 @@
     "devDependencies": {
         "@quilt/config": "workspace:*",
         "@types/node": "^26.6.5",
-        "tsdown": "^0.23.1",
+        "tsdown": "^0.23.2",
         "tsx": "^4.23.15",
         "typescript": "^7.0.2"
     },
     "dependencies": {
-        "@orpc/client": "^1.15.7",
+        "@orpc/client": "^1.16.1",
         "@quilt/api": "workspace:*",
         "chalk": "^6.0.1",
         "citty": "^0.2.2"

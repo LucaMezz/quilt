@@ -7,7 +7,7 @@ import { toast } from "sonner";
 
 import { ENV } from "../env";
 
-export function createQueryClient() {
+function createQueryClient() {
     return new QueryClient({
         queryCache: new QueryCache({
             onError: (error, query) => {
@@ -26,7 +26,7 @@ export function createQueryClient() {
 
 export const queryClient = createQueryClient();
 
-export const link = new RPCLink({
+const link = new RPCLink({
     url: `${ENV.VITE_SERVER_URL.replace(/\/$/, "")}/rpc`,
     fetch(url, options) {
         return fetch(url, {
@@ -36,6 +36,6 @@ export const link = new RPCLink({
     },
 });
 
-export const client: AppRouterClient = createORPCClient(link);
+const client: AppRouterClient = createORPCClient(link);
 
 export const orpc = createTanstackQueryUtils(client);

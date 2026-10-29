@@ -19,15 +19,12 @@
         "@quilt/db": "workspace:*",
         "@quilt/storage": "workspace:*",
         "controller": "workspace:*",
-        "drizzle-orm": "1.0.0-rc.4",
-        "pg": "^8.23.0",
         "server": "workspace:*",
         "varlock": "1.23.0"
     },
     "devDependencies": {
         "@quilt/config": "workspace:*",
         "@types/node": "^26.4.1",
-        "@types/pg": "^8.23.1",
         "typescript": "^7.0.2",
         "vitest": "^5.0.5"
     }

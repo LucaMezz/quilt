@@ -6,7 +6,7 @@ import { MAX_IMAGE_BYTES } from "./services/images";
 
 export const MAX_REQUEST_BODY_BYTES = MAX_IMAGE_BYTES + 1024 * 1024;
 
-export const o = os.$context<Context>().$meta<ProcedureMeta>({});
+const o = os.$context<Context>().$meta<ProcedureMeta>({});
 
 export const publicProcedure = o;
 

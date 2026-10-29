@@ -10,7 +10,8 @@ Self-hosted PaaS: pools your servers into one k3s cluster, runs apps on Knative 
 pnpm infra:start                 # Postgres 18 (:5432) + RustFS S3 (:9000) via docker compose
 pnpm dev:server                  # API on :3000 (also dev:web, dev:controller)
 pnpm check                       # biome check --write
-pnpm turbo run check-types test  # what the pre-commit hook runs
+pnpm turbo run check-types test  # what the pre-push hook runs, after knip
+pnpm knip                        # unused files, exports and deps; CI and pre-push fail on findings
 pnpm test:integration            # needs infra:start; each run creates and drops its own DB and bucket
 pnpm turbo run test -- --coverage.enabled  # lcov in <pkg>/coverage/unit (test:integration → coverage/integration)
 mise run cluster:dev:up          # k3d cluster + Knative, needed for test:e2e
@@ -65,3 +66,6 @@ pnpm --filter @quilt/db db:migrate                     # apply to the dev DB (DA
 - `e2e.yml` is not yet a required check; it runs but doesn't gate merges.
 - Pass `--coverage.enabled`, not `--coverage`, through Turborepo: the bare flag replaces the whole coverage config and drops each package's `reportsDirectory`.
 - Codecov judges PRs on patch (changed-line) coverage, informational only; see `codecov.yml`.
+- Knip can't see uses outside imports (bundled output, config files loaded by path, CLIs run via `pnpm exec`). Check for those before deleting a finding; if it's a false positive, ignore it in `knip.json` instead.
+- Knip hints to remove the `routeTree.gen` entries from `ignoreUnresolved` only because the dev server generated that file locally. Keep them: it's gitignored, so it's missing in CI and fresh clones.
+- Knip loads package configs (`drizzle.config.ts`, `vite.config.ts`) from the repo root, where varlock finds no env files. The `knip` script sets `_VARLOCK_ALLOW_EMPTY_CONFIG=1` for that reason; don't add a root `.env.schema` to silence it.

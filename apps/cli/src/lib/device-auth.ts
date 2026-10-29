@@ -1,7 +1,7 @@
 import { setTimeout as sleep } from "node:timers/promises";
-import { API_KEY_HEADER } from "@quilt/auth/api-keys";
 
 import { serverHost } from "../client";
+import { getKeySession } from "./api-key-session";
 import { authClient } from "./auth-client";
 import {
     LoginDeniedError,
@@ -42,11 +42,7 @@ export async function pollForToken(deviceCode: string, interval: number) {
             }),
         );
         if (data) {
-            const { data: session } = await authClient.getSession({
-                fetchOptions: {
-                    headers: { [API_KEY_HEADER]: data.access_token },
-                },
-            });
+            const { data: session } = await getKeySession(data.access_token);
             return { accessToken: data.access_token, user: session?.user };
         }
 

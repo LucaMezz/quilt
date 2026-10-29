@@ -1,8 +1,7 @@
-import { API_KEY_HEADER } from "@quilt/auth/api-keys";
 import { defineCommand } from "citty";
 
 import { serverHost } from "../client";
-import { authClient } from "../lib/auth-client";
+import { getKeySession } from "../lib/api-key-session";
 import { getCredential } from "../lib/credentials";
 import { log } from "../ui/log";
 import { symbols, theme } from "../ui/theme";
@@ -27,13 +26,9 @@ export default defineCommand({
             return;
         }
 
-        const result = await authClient
-            .getSession({
-                fetchOptions: {
-                    headers: { [API_KEY_HEADER]: credential.token },
-                },
-            })
-            .catch(() => undefined);
+        const result = await getKeySession(credential.token).catch(
+            () => undefined,
+        );
         if (!result) {
             log.error(`Could not reach ${serverHost}`);
             process.exitCode = 1;

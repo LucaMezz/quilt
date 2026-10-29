@@ -5,17 +5,18 @@ import { publicProcedure } from "../procedures";
 import { apiKeysRouter } from "./api-keys";
 import { appsRouter } from "./apps";
 import { organizationsRouter } from "./organizations";
-import { usersRouter } from "./users";
+import { userRouter } from "./users";
 
 export const appRouter = {
-    ...apiKeysRouter,
-    ...appsRouter,
-    ...organizationsRouter,
-    ...usersRouter,
+    apiKeys: apiKeysRouter,
+    apps: appsRouter,
+    organizations: organizationsRouter,
+    user: userRouter,
     healthCheck: publicProcedure
         .route({
             method: "GET",
             path: "/health",
+            operationId: "healthCheck",
             summary: "Health check",
             description:
                 "Reports whether the API server is up. Needs no authentication.",

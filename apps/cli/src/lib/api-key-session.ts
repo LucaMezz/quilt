@@ -11,5 +11,5 @@ export function getKeySession(key: string) {
 
 export async function revokeApiKey(key: string) {
     const { data } = await getKeySession(key);
-    if (data) await client.deleteApiKey({ id: data.session.id });
+    if (data) await client.apiKeys.delete({ id: data.session.id });
 }

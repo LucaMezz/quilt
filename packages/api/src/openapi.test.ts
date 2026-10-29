@@ -12,6 +12,33 @@ const generator = new OpenAPIGenerator({
 const spec = await generator.generate(appRouter, openAPIGenerateOptions);
 
 describe("OpenAPI spec", () => {
+    it("keeps operation IDs stable", () => {
+        const methods = ["get", "post", "put", "patch", "delete"] as const;
+        const operationIds = Object.values(spec.paths ?? {}).flatMap((item) =>
+            methods.flatMap((method) => item?.[method]?.operationId ?? []),
+        );
+
+        expect(operationIds.sort()).toEqual([
+            "createApiKey",
+            "createApp",
+            "createOrganization",
+            "deleteApiKey",
+            "deleteOrganization",
+            "destroyApp",
+            "getApiKey",
+            "getOrganization",
+            "healthCheck",
+            "listApiKeys",
+            "listApps",
+            "listOrganizations",
+            "setAppLogo",
+            "setOrganizationLogo",
+            "setUserImage",
+            "updateApiKey",
+            "updateOrganization",
+        ]);
+    });
+
     it("requires an API key for protected procedures", () => {
         const operation = spec.paths?.["/orgs/{org}/apps"]?.get;
 

@@ -7,7 +7,7 @@ import { appRouter } from "./index";
 
 function createApp(name: string) {
     return call(
-        appRouter.createApp,
+        appRouter.apps.create,
         { org: "acme", name },
         { context: stubContext() },
     );

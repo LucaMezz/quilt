@@ -26,8 +26,10 @@
         "typescript": "^7.0.2"
     },
     "dependencies": {
+        "@better-auth/api-key": "1.7.10",
         "@orpc/client": "^1.15.7",
         "@quilt/api": "workspace:*",
+        "better-auth": "1.7.10",
         "chalk": "^6.0.1",
         "citty": "^0.2.2"
     }

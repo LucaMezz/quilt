@@ -130,6 +130,15 @@ function describeArg(name: string, def: ArgDef): ArgInfo {
             ? ` <${"valueHint" in def && def.valueHint ? def.valueHint : name}>`
             : "";
 
+    if (def.type === "boolean" && def.default === true) {
+        return {
+            name,
+            flag: `--no-${name}`,
+            description: def.negativeDescription ?? def.description,
+            required: false,
+        };
+    }
+
     return {
         name,
         flag: [...aliases, `--${name}${value}`].join(", "),

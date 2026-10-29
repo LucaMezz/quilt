@@ -13,6 +13,7 @@ export const theme = {
     warning: chalk.yellow,
     error: chalk.red,
     code: chalk.hex(BRAND),
+    link: chalk.underline,
 };
 
 export const symbols = {

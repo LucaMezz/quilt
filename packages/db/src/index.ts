@@ -7,4 +7,4 @@ export function createDb(env: DatabaseConfig) {
     return drizzle(env.DATABASE_URL, { relations });
 }
 
-export type Database = ReturnType<typeof createDb>;
+export interface Database extends ReturnType<typeof createDb> {}

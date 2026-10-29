@@ -16,14 +16,15 @@ async function approvedDeviceToken(auth: Auth, headers: Headers) {
         body: { userCode: code.user_code },
         headers,
     });
-    const token = await auth.api.deviceToken({
+    const { headers: tokenHeaders } = await auth.api.deviceToken({
         body: {
             grant_type: "urn:ietf:params:oauth:grant-type:device_code",
             device_code: code.device_code,
             client_id: "quilt-cli",
         },
+        returnHeaders: true,
     });
-    return token.access_token;
+    return tokenHeaders.get("set-auth-token");
 }
 
 describe("device authorization", () => {
@@ -38,10 +39,7 @@ describe("device authorization", () => {
         );
     });
 
-    test("accepts the CLI's token as a bearer token", async ({
-        auth,
-        signUp,
-    }) => {
+    test("gives the CLI a signed bearer token", async ({ auth, signUp }) => {
         const { user, headers } = await signUp();
         const token = await approvedDeviceToken(auth, headers);
 

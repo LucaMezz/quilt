@@ -9,19 +9,12 @@ export const theme = {
     brandBold: chalk.hex(BRAND).bold,
     heading: chalk.bold,
     muted: chalk.dim,
-    success: chalk.green,
-    warning: chalk.yellow,
-    error: chalk.red,
     code: chalk.hex(BRAND),
     link: chalk.underline,
 };
 
 export const symbols = {
     logo: "◆",
-    success: "✔",
-    error: "✖",
-    warning: "▲",
-    info: "●",
     pointer: "›",
     dot: "·",
 };

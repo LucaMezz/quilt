@@ -15,7 +15,7 @@ import { Principles } from "@/components/landing/principles";
 import { Roadmap } from "@/components/landing/roadmap";
 import { ScaleToZero } from "@/components/landing/scale-to-zero";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/_marketing/")({
   component: LandingPage,
 });
 

@@ -35,6 +35,8 @@
         "@quilt/api": "workspace:*",
         "better-auth": "1.7.10",
         "chalk": "^6.0.1",
-        "citty": "^0.2.2"
+        "citty": "^0.2.2",
+        "log-symbols": "^7.0.1",
+        "ora": "^9.4.1"
     }
 }

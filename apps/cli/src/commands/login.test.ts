@@ -20,6 +20,7 @@ const deviceCode = {
 beforeEach(() => {
     vi.spyOn(console, "log").mockImplementation(() => {});
     vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.spyOn(process.stderr, "write").mockReturnValue(true);
     vi.mocked(requestDeviceCode).mockResolvedValue(deviceCode);
 });
 

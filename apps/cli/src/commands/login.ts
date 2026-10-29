@@ -47,10 +47,9 @@ async function login(browser: boolean) {
 
     const expiresAt = Date.now() + code.expires_in * 1000;
     const waiting = spinner(waitingText(expiresAt));
-    const ticker = setInterval(
-        () => waiting.update(waitingText(expiresAt)),
-        1000,
-    );
+    const ticker = setInterval(() => {
+        waiting.text = waitingText(expiresAt);
+    }, 1000);
     const { user } = await pollForToken(
         code.device_code,
         code.interval,

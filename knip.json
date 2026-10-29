@@ -1,0 +1,14 @@
+{
+    "$schema": "https://unpkg.com/knip@6/schema.json",
+    "ignore": [".claude/**"],
+    "workspaces": {
+        ".": {
+            "entry": ["tools/release/changelog-renderer.cjs"],
+            "ignoreDependencies": ["@nx/js", "@tanstack/intent"]
+        },
+        "apps/web": {
+            "entry": ["src/routes/**/*.tsx", ".storybook/vite.config.ts"],
+            "ignoreUnresolved": ["./routeTree.gen", "@/routeTree.gen"]
+        }
+    }
+}

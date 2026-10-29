@@ -30,6 +30,7 @@
         "postinstall": "pnpm run env:generate",
         "auth:generate": "pnpm --filter server run auth:generate",
         "check": "biome check --write .",
+        "knip": "knip",
         "prepare": "husky"
     },
     "dependencies": {
@@ -44,6 +45,7 @@
         "@tanstack/intent": "^0.5.5",
         "@types/node": "^26.4.1",
         "husky": "^9.1.7",
+        "knip": "^6.43.0",
         "lint-staged": "^17.6.0",
         "nx": "^23.3.0",
         "turbo": "^2.11.7",

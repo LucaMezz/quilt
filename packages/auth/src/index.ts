@@ -52,6 +52,7 @@ export function createAuth(
                 defaultPrefix: API_KEY_PREFIX,
                 apiKeyHeaders: API_KEY_HEADER,
                 rateLimit: { enabled: false },
+                enableSessionForAPIKeys: true,
             }),
             deviceAuthorization({
                 verificationUri: `${env.CORS_ORIGIN}/device`,

@@ -1,3 +1,4 @@
+import { API_KEY_HEADER } from "@quilt/auth/api-keys";
 import { describe, expect } from "vitest";
 
 import { test } from "./testing/fixtures";
@@ -37,5 +38,26 @@ describe("api keys", () => {
         });
 
         expect(result.valid).toBe(false);
+    });
+
+    test("acts for its owner on session endpoints", async ({
+        auth,
+        signUp,
+    }) => {
+        const caller = await signUp();
+        await auth.api.createOrganization({
+            body: { name: "Acme", slug: `acme-${crypto.randomUUID()}` },
+            headers: caller.headers,
+        });
+        const created = await auth.api.createApiKey({
+            body: { name: "cli" },
+            headers: caller.headers,
+        });
+
+        const organizations = await auth.api.listOrganizations({
+            headers: new Headers({ [API_KEY_HEADER]: created.key }),
+        });
+
+        expect(organizations.map((org) => org.name)).toEqual(["Acme"]);
     });
 });

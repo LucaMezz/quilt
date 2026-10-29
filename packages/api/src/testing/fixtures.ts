@@ -6,6 +6,8 @@ import { emptyBucket } from "@quilt/storage/testing";
 import { sql } from "drizzle-orm";
 import { test as baseTest, inject } from "vitest";
 
+import { resolveCaller } from "../caller";
+import type { Context } from "../context";
 import "./environment";
 
 export const test = baseTest
@@ -41,6 +43,18 @@ export const test = baseTest
                 },
                 db,
             ),
+    )
+    .extend(
+        "contextFor",
+        ({ auth, db, storage }) =>
+            async (headers: Headers): Promise<Context> => ({
+                auth,
+                db,
+                storage,
+                headers,
+                appsDomain: "example.com",
+                caller: await resolveCaller(auth, headers),
+            }),
     )
     .extend("resetDb", { auto: true }, async ({ db }) => {
         const { rows } = await db.execute<{ tablename: string }>(

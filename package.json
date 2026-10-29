@@ -31,6 +31,7 @@
         "knip": "_VARLOCK_ALLOW_EMPTY_CONFIG=1 knip",
         "depcruise": "node scripts/check-dependencies.mjs",
         "syncpack": "syncpack lint",
+        "license-check": "node scripts/check-licenses.mjs",
         "prepare": "husky"
     },
     "devDependencies": {

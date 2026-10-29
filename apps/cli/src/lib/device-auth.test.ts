@@ -1,4 +1,5 @@
 import { setTimeout as sleep } from "node:timers/promises";
+import { API_KEY_HEADER } from "@quilt/auth/api-keys";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { authClient } from "./auth-client";
@@ -92,7 +93,7 @@ describe("pollForToken", () => {
             user: undefined,
         });
         expect(getSession).toHaveBeenCalledWith({
-            fetchOptions: { headers: { authorization: "Bearer token" } },
+            fetchOptions: { headers: { [API_KEY_HEADER]: "token" } },
         });
     });
 

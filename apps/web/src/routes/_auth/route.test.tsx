@@ -49,6 +49,17 @@ describe("_auth route", () => {
     expect(router.state.location.pathname).toBe("/login");
   });
 
+  it("sends logged-out users back to where they were after login", async () => {
+    getSession.mockResolvedValue({ data: null });
+
+    const router = await loadAt("/device?user_code=WDJBMJHT");
+
+    expect(router.state.location.pathname).toBe("/login");
+    expect(router.state.location.search).toEqual({
+      redirect: "/device?user_code=WDJBMJHT",
+    });
+  });
+
   it("allows logged-in users to access /dashboard", async () => {
     getSession.mockResolvedValue({
       data: {

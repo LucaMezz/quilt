@@ -2,8 +2,10 @@ import { call } from "@orpc/server";
 import { describe, expect } from "vitest";
 
 import { createApp } from "../services/apps";
-import { getMemberOrganization } from "../services/organizations";
+import { declaredError } from "../testing/errors";
 import { test } from "../testing/fixtures";
+import { notAnImage } from "../testing/images";
+import { createOrganizationAs } from "../testing/organizations";
 import { appRouter } from "./index";
 
 const ownedTest = test.extend(
@@ -11,14 +13,10 @@ const ownedTest = test.extend(
     { auto: true },
     async ({ auth, db, signUp }) => {
         const owner = await signUp("owner");
-        await auth.api.createOrganization({
-            body: { name: "Acme", slug: "acme" },
-            headers: owner.headers,
-        });
-        const organization = await getMemberOrganization(
+        const organization = await createOrganizationAs(
+            auth,
             db,
-            owner.user.id,
-            "acme",
+            owner.headers,
         );
         await createApp(
             db,
@@ -28,16 +26,6 @@ const ownedTest = test.extend(
         return { owner, organization };
     },
 );
-
-function declared(code: string, status: number) {
-    return { code, status, defined: true };
-}
-
-function notAnImage() {
-    return new File([new TextEncoder().encode("not an image")], "logo.png", {
-        type: "image/png",
-    });
-}
 
 describe("createApp", () => {
     ownedTest(
@@ -52,7 +40,7 @@ describe("createApp", () => {
             );
 
             await expect(result).rejects.toMatchObject(
-                declared("NOT_FOUND", 404),
+                declaredError("NOT_FOUND", 404),
             );
         },
     );
@@ -73,7 +61,7 @@ describe("createApp", () => {
             );
 
             await expect(result).rejects.toMatchObject(
-                declared("CONFLICT", 409),
+                declaredError("CONFLICT", 409),
             );
         },
     );
@@ -92,7 +80,7 @@ describe("destroyApp", () => {
             );
 
             await expect(result).rejects.toMatchObject(
-                declared("NOT_FOUND", 404),
+                declaredError("NOT_FOUND", 404),
             );
         },
     );
@@ -107,7 +95,7 @@ describe("destroyApp", () => {
             );
 
             await expect(result).rejects.toMatchObject(
-                declared("NOT_FOUND", 404),
+                declaredError("NOT_FOUND", 404),
             );
         },
     );
@@ -126,7 +114,7 @@ describe("setAppLogo", () => {
             );
 
             await expect(result).rejects.toMatchObject(
-                declared("NOT_FOUND", 404),
+                declaredError("NOT_FOUND", 404),
             );
         },
     );
@@ -141,7 +129,7 @@ describe("setAppLogo", () => {
             );
 
             await expect(result).rejects.toMatchObject(
-                declared("NOT_FOUND", 404),
+                declaredError("NOT_FOUND", 404),
             );
         },
     );
@@ -156,7 +144,7 @@ describe("setAppLogo", () => {
             );
 
             await expect(result).rejects.toMatchObject(
-                declared("BAD_REQUEST", 400),
+                declaredError("BAD_REQUEST", 400),
             );
         },
     );
@@ -175,7 +163,7 @@ describe("listApps", () => {
             );
 
             await expect(result).rejects.toMatchObject(
-                declared("NOT_FOUND", 404),
+                declaredError("NOT_FOUND", 404),
             );
         },
     );

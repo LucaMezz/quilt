@@ -1,12 +1,19 @@
+import { SidebarInset, SidebarProvider } from "@quilt/ui/components/sidebar";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 
+import { AppHeader } from "@/components/app/app-header";
+import { AppSidebar } from "@/components/app/app-sidebar";
 import { authClient } from "@/lib/auth-client";
 
 export const Route = createFileRoute("/_auth")({
   component: AuthLayout,
   beforeLoad: async () => {
-    const session = await authClient.getSession();
-    if (!session.data) {
+    // This is the only ourside input to the component. To test this,
+    // we want to control the response we get from this.
+    //
+    // So we replace authClient with a fake whose answer we choose.
+    const { data: session } = await authClient.getSession();
+    if (!session) {
       throw redirect({
         to: "/login",
       });
@@ -16,5 +23,15 @@ export const Route = createFileRoute("/_auth")({
 });
 
 function AuthLayout() {
-  return <Outlet />;
+  const { session } = Route.useRouteContext();
+
+  return (
+    <SidebarProvider>
+      <AppSidebar user={session.user} />
+      <SidebarInset>
+        <AppHeader />
+        <Outlet />
+      </SidebarInset>
+    </SidebarProvider>
+  );
 }

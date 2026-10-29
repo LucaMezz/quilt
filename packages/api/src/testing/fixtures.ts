@@ -1,5 +1,5 @@
 import { type Auth, createAuth } from "@quilt/auth";
-import { createDb } from "@quilt/db";
+import { createDb, type Database } from "@quilt/db";
 import { member, organization, user } from "@quilt/db/schema/auth";
 import { closeStorage, createStorage, type Storage } from "@quilt/storage";
 import { emptyBucket } from "@quilt/storage/testing";
@@ -12,11 +12,15 @@ import "./environment";
 
 export const test = baseTest
     .extend("databaseUrl", { scope: "worker" }, () => inject("databaseUrl"))
-    .extend("db", { scope: "worker" }, ({ databaseUrl }, { onCleanup }) => {
-        const db = createDb({ DATABASE_URL: databaseUrl });
-        onCleanup(() => db.$client.end());
-        return db;
-    })
+    .extend(
+        "db",
+        { scope: "worker" },
+        ({ databaseUrl }, { onCleanup }): Database => {
+            const db = createDb({ DATABASE_URL: databaseUrl });
+            onCleanup(() => db.$client.end());
+            return db;
+        },
+    )
     .extend("storageConfig", { scope: "worker" }, () => inject("storageConfig"))
     .extend(
         "storage",

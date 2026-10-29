@@ -12,7 +12,6 @@
             "!**/.next",
             "!**/dist",
             "!**/.turbo",
-            "!**/.nx",
             "!**/dev-dist",
             "!**/.zed",
             "!**/.vscode",

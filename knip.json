@@ -6,8 +6,7 @@
     },
     "workspaces": {
         ".": {
-            "entry": ["tools/release/changelog-renderer.cjs"],
-            "ignoreDependencies": ["@nx/js", "@tanstack/intent"]
+            "ignoreDependencies": ["@tanstack/intent"]
         },
         "apps/controller": {
             "ignoreDependencies": ["drizzle-orm"]

@@ -6,6 +6,7 @@ import sharp from "sharp";
 import { describe, expect } from "vitest";
 
 import { test } from "../testing/fixtures";
+import { createOrganizationAs } from "../testing/organizations";
 import { createApp, destroyApp } from "./apps";
 import {
     createOrganization,
@@ -36,11 +37,7 @@ async function pngLogo() {
 
 const ownedOrganization = test.extend("owned", async ({ auth, db, signUp }) => {
     const owner = await signUp("owner");
-    await auth.api.createOrganization({
-        body: { name: "Acme", slug: "acme" },
-        headers: owner.headers,
-    });
-    const organization = await getMemberOrganization(db, owner.user.id, "acme");
+    const organization = await createOrganizationAs(auth, db, owner.headers);
     return { owner, organization };
 });
 

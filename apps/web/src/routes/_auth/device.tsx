@@ -3,6 +3,8 @@ import z from "zod";
 
 import { Backdrop } from "@/components/backdrop";
 import { DeviceAuthorization } from "@/components/device-authorization";
+import { authClient } from "@/lib/auth-client";
+import { toDeviceRequest } from "@/lib/device-request";
 
 export const Route = createFileRoute("/_auth/device")({
   validateSearch: z.object({
@@ -24,9 +26,21 @@ function RouteComponent() {
       <div className="w-full max-w-sm md:max-w-md">
         <DeviceAuthorization
           initialCode={user_code}
-          onVerify={async () => ({ clientId: "quilt CLI", scopes: [] })}
-          onApprove={async () => {}}
-          onDeny={async () => {}}
+          onVerify={async (userCode) => {
+            const { data, error } = await authClient.device({
+              query: { user_code: userCode },
+            });
+            if (error) throw new Error(error.error_description);
+            return toDeviceRequest(data);
+          }}
+          onApprove={async (userCode) => {
+            const { error } = await authClient.device.approve({ userCode });
+            if (error) throw new Error(error.error_description);
+          }}
+          onDeny={async (userCode) => {
+            const { error } = await authClient.device.deny({ userCode });
+            if (error) throw new Error(error.error_description);
+          }}
         />
       </div>
     </div>

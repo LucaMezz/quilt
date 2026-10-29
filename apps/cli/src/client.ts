@@ -6,6 +6,8 @@ export const serverUrl = (
     process.env.QUILT_API_URL ?? "http://localhost:3000"
 ).replace(/\/$/, "");
 
+export const serverHost = new URL(serverUrl).host;
+
 const link = new RPCLink({
     url: `${serverUrl}/rpc`,
 });

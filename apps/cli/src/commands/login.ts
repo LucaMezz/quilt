@@ -1,77 +1,12 @@
-import { setTimeout as sleep } from "node:timers/promises";
 import { defineCommand } from "citty";
 
-import { serverUrl } from "../client";
-import { authClient } from "../lib/auth-client";
+import { serverHost } from "../client";
 import { canOpenBrowser, openBrowser } from "../lib/browser";
-import {
-    LoginDeniedError,
-    LoginError,
-    LoginExpiredError,
-    LoginFailedError,
-} from "../lib/login-errors";
+import { pollForToken, requestDeviceCode } from "../lib/device-auth";
+import { LoginError } from "../lib/login-errors";
 import { log } from "../ui/log";
 import { spinner } from "../ui/spinner";
 import { symbols, theme } from "../ui/theme";
-
-const CLIENT_ID = "quilt-cli";
-const DEVICE_CODE_GRANT = "urn:ietf:params:oauth:grant-type:device_code";
-
-const host = new URL(serverUrl).host;
-
-async function callServer<T>(request: () => Promise<T>) {
-    try {
-        return await request();
-    } catch {
-        throw new LoginFailedError(`Could not reach ${host}`);
-    }
-}
-
-async function requestDeviceCode() {
-    const { data, error } = await callServer(() =>
-        authClient.device.code({ client_id: CLIENT_ID }),
-    );
-    if (error) {
-        throw new LoginFailedError(error.error_description);
-    }
-    return data;
-}
-
-async function pollForToken(deviceCode: string, interval: number) {
-    let pollingInterval = interval;
-    for (;;) {
-        await sleep(pollingInterval * 1000);
-        const { data, error } = await callServer(() =>
-            authClient.device.token({
-                grant_type: DEVICE_CODE_GRANT,
-                device_code: deviceCode,
-                client_id: CLIENT_ID,
-            }),
-        );
-        if (data) {
-            const { data: session } = await authClient.getSession({
-                fetchOptions: {
-                    headers: { authorization: `Bearer ${data.access_token}` },
-                },
-            });
-            return { accessToken: data.access_token, user: session?.user };
-        }
-
-        switch (error.error) {
-            case "authorization_pending":
-                break;
-            case "slow_down":
-                pollingInterval += 5;
-                break;
-            case "access_denied":
-                throw new LoginDeniedError();
-            case "expired_token":
-                throw new LoginExpiredError();
-            default:
-                throw new LoginFailedError(error.error_description);
-        }
-    }
-}
 
 function formatUserCode(code: string) {
     return code.length === 8 ? `${code.slice(0, 4)}-${code.slice(4)}` : code;
@@ -87,7 +22,7 @@ function printInstructions(userCode: string, url: string, opened: boolean) {
     console.error(
         [
             "",
-            `  ${theme.brandBold(`${symbols.logo} quilt`)}  ${theme.muted(`Sign in to ${host}`)}`,
+            `  ${theme.brandBold(`${symbols.logo} quilt`)}  ${theme.muted(`Sign in to ${serverHost}`)}`,
             "",
             `  ${theme.heading("Your one-time code")}   ${theme.code.bold(formatUserCode(userCode))}`,
             "",
@@ -101,7 +36,7 @@ function printInstructions(userCode: string, url: string, opened: boolean) {
 }
 
 async function login(browser: boolean) {
-    const contacting = spinner(`Contacting ${host}…`);
+    const contacting = spinner(`Contacting ${serverHost}…`);
     const code = await requestDeviceCode().finally(() => contacting.stop());
 
     const opened =
@@ -126,7 +61,7 @@ async function login(browser: boolean) {
 
     log.success(
         user ? `Signed in as ${theme.heading(user.name)}` : "Signed in",
-        [user?.email, host].filter(Boolean).join(` ${symbols.dot} `),
+        [user?.email, serverHost].filter(Boolean).join(` ${symbols.dot} `),
     );
 }
 

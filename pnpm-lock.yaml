@@ -239,6 +239,9 @@ importers:
       varlock:
         specifier: 1.23.0
         version: 1.23.0
+      yaml:
+        specifier: ^2.9.1
+        version: 2.9.1
 
   apps/cli:
     dependencies:

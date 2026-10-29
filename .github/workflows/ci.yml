@@ -60,6 +60,8 @@ jobs:
 
       - run: pnpm license-check
 
+      - run: pnpm lockfile-check
+
       - run: pnpm exec turbo run check-types build
 
       - run: pnpm exec turbo run test -- --coverage.enabled

@@ -1,4 +1,4 @@
-import type { Auth } from "@quilt/auth";
+import { type Auth, isAPIError } from "@quilt/auth";
 import { API_KEY_HEADER } from "@quilt/auth/api-keys";
 
 import type { Caller } from "./context";
@@ -7,19 +7,17 @@ export async function resolveCaller(
     auth: Auth,
     headers: Headers,
 ): Promise<Caller | null> {
-    const key = headers.get(API_KEY_HEADER);
-    if (key !== null) {
-        const { valid, key: apiKey } = await auth.api.verifyApiKey({
-            body: { key },
-        });
-        if (!valid || !apiKey) return null;
+    const session = await auth.api.getSession({ headers }).catch((error) => {
+        if (isAPIError(error)) return null;
+        throw error;
+    });
+    if (!session) return null;
+    if (headers.has(API_KEY_HEADER)) {
         return {
             kind: "apiKey",
-            userId: apiKey.referenceId,
-            apiKeyId: apiKey.id,
+            userId: session.user.id,
+            apiKeyId: session.session.id,
         };
     }
-    const session = await auth.api.getSession({ headers });
-    if (!session) return null;
     return { kind: "session", userId: session.user.id, session };
 }

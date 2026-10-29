@@ -2,14 +2,14 @@ import type { Database } from "@quilt/db";
 import { type App, app } from "@quilt/db/schema/app";
 import type { Storage } from "@quilt/storage";
 import { and, eq, isNull } from "drizzle-orm";
+import { replaceImage } from "../lib/images";
 import {
     afterCursor,
     keysetOrder,
     type Page,
     type PageParams,
     toPage,
-} from "../pagination";
-import { replaceImage } from "./images";
+} from "../lib/pagination";
 
 export class AppNotFoundError extends Error {
     constructor(name: string) {

@@ -20,10 +20,11 @@ import { AuthPanel } from "./auth-panel";
 import Loader from "./loader";
 import { Logo } from "./logo";
 
-export function LoginForm({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
+interface LoginFormProps extends React.ComponentProps<"div"> {
+  redirect: string;
+}
+
+export function LoginForm({ redirect, className, ...props }: LoginFormProps) {
   const navigate = useNavigate();
   const { isPending } = authClient.useSession();
 
@@ -40,9 +41,7 @@ export function LoginForm({
         },
         {
           onSuccess: () => {
-            navigate({
-              to: "/dashboard",
-            });
+            navigate({ href: redirect });
             toast.success("Sign in successful");
           },
           onError: (error) => {

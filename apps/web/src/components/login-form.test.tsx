@@ -33,7 +33,7 @@ describe("LoginForm", () => {
 
   it("shows validation errors and does not submit invalid input", async () => {
     const user = userEvent.setup();
-    render(<LoginForm />);
+    render(<LoginForm redirect="/dashboard" />);
 
     // Passes the browser's type="email" check (which would block submit) but
     // fails the Zod schema, which requires a TLD.
@@ -50,12 +50,12 @@ describe("LoginForm", () => {
     expect(signInEmail).not.toHaveBeenCalled();
   });
 
-  it("signs in and navigates to the dashboard on success", async () => {
+  it("signs in and navigates to the redirect target on success", async () => {
     signInEmail.mockImplementation(async (_body, { onSuccess }) => {
       onSuccess();
     });
     const user = userEvent.setup();
-    render(<LoginForm />);
+    render(<LoginForm redirect="/device?user_code=WDJBMJHT" />);
 
     await user.type(screen.getByLabelText("Email"), "ada@example.com");
     await user.type(screen.getByLabelText("Password"), "correct-horse");
@@ -65,11 +65,13 @@ describe("LoginForm", () => {
       { email: "ada@example.com", password: "correct-horse" },
       expect.any(Object),
     );
-    expect(navigate).toHaveBeenCalledWith({ to: "/dashboard" });
+    expect(navigate).toHaveBeenCalledWith({
+      href: "/device?user_code=WDJBMJHT",
+    });
   });
 
   it("links to the sign-up page", () => {
-    render(<LoginForm />);
+    render(<LoginForm redirect="/dashboard" />);
 
     expect(screen.getByRole("link", { name: /sign up/i })).toHaveAttribute(
       "href",

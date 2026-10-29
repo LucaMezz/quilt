@@ -18,7 +18,7 @@
     "dependencies": {
         "@quilt/cluster": "workspace:*",
         "@quilt/db": "workspace:*",
-        "drizzle-orm": "1.0.0-rc.4",
+        "drizzle-orm": "1.0.0-rc.5",
         "varlock": "1.23.0"
     },
     "devDependencies": {

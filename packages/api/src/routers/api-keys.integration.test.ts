@@ -20,7 +20,7 @@ describe("getApiKey", () => {
             const intruder = await signUp("intruder");
 
             const result = call(
-                appRouter.getApiKey,
+                appRouter.apiKeys.get,
                 { id: othersKey.id },
                 { context: await contextFor(intruder.headers) },
             );
@@ -39,7 +39,7 @@ describe("updateApiKey", () => {
             const intruder = await signUp("intruder");
 
             const result = call(
-                appRouter.updateApiKey,
+                appRouter.apiKeys.update,
                 { id: othersKey.id, enabled: false },
                 { context: await contextFor(intruder.headers) },
             );
@@ -58,7 +58,7 @@ describe("deleteApiKey", () => {
             const intruder = await signUp("intruder");
 
             const result = call(
-                appRouter.deleteApiKey,
+                appRouter.apiKeys.delete,
                 { id: othersKey.id },
                 { context: await contextFor(intruder.headers) },
             );

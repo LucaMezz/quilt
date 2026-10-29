@@ -6,7 +6,7 @@ import { HandlerReached, stubContext } from "../testing/procedures";
 import { appRouter } from "./index";
 
 function createOrganization(input: { name: string; slug: string }) {
-    return call(appRouter.createOrganization, input, {
+    return call(appRouter.organizations.create, input, {
         context: stubContext(),
     });
 }
@@ -57,7 +57,7 @@ describe("updateOrganization input", () => {
         async (changes) => {
             await expect(
                 call(
-                    appRouter.updateOrganization,
+                    appRouter.organizations.update,
                     { org: "acme", ...changes },
                     { context: stubContext() },
                 ),
@@ -68,7 +68,7 @@ describe("updateOrganization input", () => {
     it("rejects a request with neither a name nor a slug", async () => {
         await expect(
             call(
-                appRouter.updateOrganization,
+                appRouter.organizations.update,
                 { org: "acme" },
                 { context: stubContext() },
             ),

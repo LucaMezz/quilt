@@ -33,7 +33,7 @@ describe("example", () => {
 
     it("rejects protected procedures without a session", async () => {
         const result = call(
-            appRouter.listApps,
+            appRouter.apps.list,
             { org: "acme" },
             { context: createContext() },
         );

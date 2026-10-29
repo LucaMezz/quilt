@@ -109,11 +109,11 @@ describe("API key callers", () => {
         };
 
         const organizations = await call(
-            appRouter.listOrganizations,
+            appRouter.organizations.list,
             undefined,
             { context },
         );
-        const keys = await call(appRouter.listApiKeys, {}, { context });
+        const keys = await call(appRouter.apiKeys.list, {}, { context });
 
         expect(organizations.map((org) => org.id)).toEqual([organization.id]);
         expect(keys.items.map((key) => key.id)).toEqual([created.id]);

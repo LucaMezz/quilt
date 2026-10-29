@@ -8,7 +8,7 @@ import { appRouter } from "./index";
 const DAY = 60 * 60 * 24;
 
 function createApiKey(input: { name: string; expiresIn: number }) {
-    return call(appRouter.createApiKey, input, { context: stubContext() });
+    return call(appRouter.apiKeys.create, input, { context: stubContext() });
 }
 
 describe("createApiKey input", () => {
@@ -55,7 +55,7 @@ describe("updateApiKey input", () => {
         async (changes) => {
             await expect(
                 call(
-                    appRouter.updateApiKey,
+                    appRouter.apiKeys.update,
                     { id: "key", ...changes },
                     { context: stubContext() },
                 ),
@@ -66,7 +66,7 @@ describe("updateApiKey input", () => {
     it("rejects a request with neither a name nor an enabled state", async () => {
         await expect(
             call(
-                appRouter.updateApiKey,
+                appRouter.apiKeys.update,
                 { id: "key" },
                 { context: stubContext() },
             ),

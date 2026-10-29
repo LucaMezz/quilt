@@ -9,7 +9,7 @@ import logout from "./logout";
 
 vi.mock("../client", () => ({
     serverHost: "quilt.test",
-    client: { deleteApiKey: vi.fn() },
+    client: { apiKeys: { delete: vi.fn() } },
 }));
 vi.mock("../lib/auth-client", () => ({
     authClient: { getSession: vi.fn() },
@@ -55,7 +55,7 @@ describe("logout", () => {
         expect(getSession).toHaveBeenCalledWith({
             fetchOptions: { headers: { [API_KEY_HEADER]: "qlt_key" } },
         });
-        expect(client.deleteApiKey).toHaveBeenCalledWith({ id: "key-id" });
+        expect(client.apiKeys.delete).toHaveBeenCalledWith({ id: "key-id" });
         expect(deleteToken).toHaveBeenCalledWith("quilt.test");
         expect(console.error).toHaveBeenCalledWith(
             expect.stringContaining("Signed out of quilt.test"),
@@ -72,13 +72,15 @@ describe("logout", () => {
         expect(console.error).toHaveBeenCalledWith(
             expect.stringContaining("QUILT_TOKEN"),
         );
-        expect(client.deleteApiKey).not.toHaveBeenCalled();
+        expect(client.apiKeys.delete).not.toHaveBeenCalled();
         expect(deleteToken).not.toHaveBeenCalled();
     });
 
     it("forgets the key even when the server can't revoke it", async () => {
         signedIn();
-        vi.mocked(client.deleteApiKey).mockRejectedValue(new Error("offline"));
+        vi.mocked(client.apiKeys.delete).mockRejectedValue(
+            new Error("offline"),
+        );
 
         await runCommand(logout, { rawArgs: [] });
 

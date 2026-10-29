@@ -1,11 +1,11 @@
 import { BlurFade } from "@quilt/ui/components/blur-fade";
 import { buttonVariants } from "@quilt/ui/components/button";
 import { cn } from "@quilt/ui/lib/utils";
-import { Link } from "@tanstack/react-router";
-import { ArrowRight, Info, Star } from "lucide-react";
+import { Info, Star } from "lucide-react";
 
 import { githubUrl } from "./links";
 import { ScreenshotPlaceholder } from "./screenshot-placeholder";
+import { TryItLink } from "./try-it-link";
 
 const headline = "The open source PaaS for your own servers";
 const tagline =
@@ -41,13 +41,7 @@ export function Hero() {
 
         <BlurFade inView direction="up" delay={0.21}>
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-            <Link
-              to="/login"
-              className={cn(buttonVariants({ size: "lg" }), "h-10 px-5")}
-            >
-              Sign in and try it
-              <ArrowRight data-icon="inline-end" />
-            </Link>
+            <TryItLink />
             <a
               href={githubUrl}
               className={cn(

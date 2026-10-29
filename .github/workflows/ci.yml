@@ -54,6 +54,8 @@ jobs:
 
       - run: pnpm exec turbo boundaries
 
+      - run: pnpm depcruise
+
       - run: pnpm exec turbo run check-types build
 
       - run: pnpm exec turbo run test -- --coverage.enabled

@@ -54,7 +54,7 @@ export function createAuth(
                 rateLimit: { enabled: false },
             }),
             deviceAuthorization({
-                verificationUri: "/device",
+                verificationUri: `${env.CORS_ORIGIN}/device`,
             }),
         ],
     });

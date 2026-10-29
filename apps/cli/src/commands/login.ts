@@ -1,8 +1,9 @@
 import { defineCommand } from "citty";
 
 import { serverHost } from "../client";
+import { getKeySession, revokeApiKey } from "../lib/api-key-session";
 import { canOpenBrowser, openBrowser } from "../lib/browser";
-import { saveToken } from "../lib/credentials";
+import { getToken, saveToken } from "../lib/credentials";
 import { pollForToken, requestDeviceCode } from "../lib/device-auth";
 import { LoginError } from "../lib/login-errors";
 import { log } from "../ui/log";
@@ -36,7 +37,7 @@ function printInstructions(userCode: string, url: string, opened: boolean) {
     );
 }
 
-async function login(browser: boolean) {
+async function login(browser: boolean, previousKey: string | undefined) {
     const contacting = spinner(`Contacting ${serverHost}…`);
     const code = await requestDeviceCode().finally(() => contacting.stop());
 
@@ -59,11 +60,25 @@ async function login(browser: boolean) {
         waiting.stop();
     });
     const storage = saveToken(serverHost, accessToken);
+    const revoked = previousKey
+        ? await revokeApiKey(previousKey).then(
+              () => true,
+              () => false,
+          )
+        : true;
 
     log.success(
         user ? `Signed in as ${theme.heading(user.name)}` : "Signed in",
         [user?.email, serverHost].filter(Boolean).join(` ${symbols.dot} `),
     );
+    if (!revoked) {
+        log.warn(
+            `Signed in, but couldn't revoke your previous key on ${serverHost}`,
+        );
+        log.hint(
+            'Delete the older "quilt CLI" key under API keys in the dashboard.',
+        );
+    }
     if (storage === "file") {
         log.warn(
             "No system keychain found, so your token is stored in a plain-text file",
@@ -83,10 +98,37 @@ export default defineCommand({
             description: "Open the sign-in page in your browser",
             negativeDescription: "Print the sign-in link instead of opening it",
         },
+        force: {
+            type: "boolean",
+            default: false,
+            description: "Sign in again even if already signed in",
+        },
     },
     async run({ args }) {
+        if (process.env.QUILT_TOKEN) {
+            log.error("QUILT_TOKEN is set, so quilt uses that key instead");
+            log.hint("Unset QUILT_TOKEN to sign in with quilt login.");
+            process.exitCode = 1;
+            return;
+        }
+        const previousKey = getToken(serverHost);
+        if (previousKey && !args.force) {
+            const { data } = await getKeySession(previousKey).catch(() => ({
+                data: null,
+            }));
+            if (data) {
+                log.success(
+                    `Already signed in as ${theme.heading(data.user.name)}`,
+                    `${data.user.email} ${symbols.dot} ${serverHost}`,
+                );
+                log.hint(
+                    `Run ${theme.brand("quilt login --force")} to sign in again.`,
+                );
+                return;
+            }
+        }
         try {
-            await login(args.browser);
+            await login(args.browser, previousKey);
         } catch (error) {
             if (!(error instanceof LoginError)) throw error;
             log.error(error.message);

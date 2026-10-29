@@ -1,6 +1,10 @@
 import { type Auth, isAPIError } from "@quilt/auth";
 
-import { type Page, type PageParams, paginateInMemory } from "../pagination";
+import {
+    type Page,
+    type PageParams,
+    paginateInMemory,
+} from "../lib/pagination";
 
 export type ApiKey = Awaited<ReturnType<Auth["api"]["getApiKey"]>>;
 

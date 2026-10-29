@@ -4,7 +4,7 @@ import { user } from "@quilt/db/schema/auth";
 import type { Storage } from "@quilt/storage";
 import { eq } from "drizzle-orm";
 
-import { replaceImage } from "./images";
+import { replaceImage } from "../lib/images";
 
 export type User = typeof user.$inferSelect;
 

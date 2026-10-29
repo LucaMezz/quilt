@@ -45,7 +45,7 @@ pnpm --filter @quilt/db db:migrate                     # apply to the dev DB (DA
 - Routers stay thin: services throw typed errors (`OrganizationNotFoundError`, ...), routers map them to declared oRPC errors built with `describeErrorResponse`.
 - Org-scoped endpoints name the org in the path (`/orgs/{org}/...`) and resolve it with `getMemberOrganization`. `activeOrganizationId` is UI-only; never read it in the API.
 - Paginated endpoints use `PageInput`/`pageOf`; clients consume them with oRPC `infiniteOptions`.
-- Image uploads go through `replaceImage` (`services/images.ts`) with an `ImageSlot` prefix ending in `/`, plus `ImageFile`/`invalidImage`/`describeImageUpload` from `routers/images.ts`. The object key is what gets stored in the DB column.
+- Image uploads go through `replaceImage` (`lib/images.ts`) with an `ImageSlot` prefix ending in `/`, plus `ImageFile`/`invalidImage`/`describeImageUpload` from `routers/shared/images.ts`. The object key is what gets stored in the DB column.
 - Object storage only through `@quilt/storage` (`putObject`, `getObject`, `deleteObject`).
 - `@quilt/db/testing` and `@quilt/storage/testing` are test-only; Biome rejects them in application code.
 - API integration tests use the fixtures in `packages/api/src/testing/fixtures.ts` (`db`, `storage`, `auth`, `signUp`, `createOrganization`) and run against real Postgres, RustFS and Better Auth.

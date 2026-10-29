@@ -1,0 +1,117 @@
+import { mkdtempSync, rmSync, statSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { deleteToken, getToken, saveToken } from "./credentials";
+
+const keychain = vi.hoisted(() => ({
+    entries: new Map<string, string>(),
+    available: true,
+    check() {
+        if (!this.available) throw new Error("No keychain available");
+    },
+}));
+
+vi.mock("@napi-rs/keyring", () => ({
+    Entry: class {
+        key: string;
+        constructor(service: string, account: string) {
+            this.key = `${service}/${account}`;
+        }
+        getPassword() {
+            keychain.check();
+            return keychain.entries.get(this.key) ?? null;
+        }
+        setPassword(password: string) {
+            keychain.check();
+            keychain.entries.set(this.key, password);
+        }
+        deletePassword() {
+            keychain.check();
+            return keychain.entries.delete(this.key);
+        }
+    },
+}));
+
+let configDir: string;
+
+beforeEach(() => {
+    keychain.entries.clear();
+    keychain.available = true;
+    configDir = mkdtempSync(join(tmpdir(), "quilt-credentials-"));
+    vi.stubEnv("XDG_CONFIG_HOME", configDir);
+    vi.stubEnv("QUILT_TOKEN", undefined);
+});
+
+afterEach(() => {
+    vi.unstubAllEnvs();
+    rmSync(configDir, { recursive: true, force: true });
+});
+
+describe("credentials", () => {
+    it("has no token before one is saved", () => {
+        expect(getToken("quilt.test")).toBeUndefined();
+    });
+
+    it("returns the saved token", () => {
+        saveToken("quilt.test", "token");
+
+        expect(getToken("quilt.test")).toBe("token");
+    });
+
+    it("keeps each server's token separate", () => {
+        saveToken("one.test", "first");
+        saveToken("two.test", "second");
+
+        expect(getToken("one.test")).toBe("first");
+        expect(getToken("two.test")).toBe("second");
+    });
+
+    it("forgets a deleted token", () => {
+        saveToken("quilt.test", "token");
+
+        deleteToken("quilt.test");
+
+        expect(getToken("quilt.test")).toBeUndefined();
+    });
+
+    it("prefers QUILT_TOKEN over the saved token", () => {
+        vi.stubEnv("QUILT_TOKEN", "from-env");
+        saveToken("quilt.test", "saved");
+
+        expect(getToken("quilt.test")).toBe("from-env");
+    });
+
+    describe("without a keychain", () => {
+        beforeEach(() => {
+            keychain.available = false;
+        });
+
+        it("saves the token to a file instead", () => {
+            expect(saveToken("quilt.test", "token")).toBe("file");
+
+            expect(getToken("quilt.test")).toBe("token");
+        });
+
+        it("forgets a deleted token", () => {
+            saveToken("quilt.test", "token");
+            saveToken("other.test", "other");
+
+            deleteToken("quilt.test");
+
+            expect(getToken("quilt.test")).toBeUndefined();
+            expect(getToken("other.test")).toBe("other");
+        });
+
+        it.skipIf(process.platform === "win32")(
+            "makes the file readable only by its owner",
+            () => {
+                saveToken("quilt.test", "token");
+
+                const file = join(configDir, "quilt", "credentials.json");
+                expect(statSync(file).mode & 0o777).toBe(0o600);
+            },
+        );
+    });
+});

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { protectedProcedure, sessionProcedure } from "../index";
+import { protectedProcedure } from "../index";
 import { describeErrorResponse } from "../openapi";
 import { InvalidImageError } from "../services/images";
 import {
@@ -62,7 +62,7 @@ const updateForbidden = describeErrorResponse(
 );
 
 export const organizationsRouter = {
-    listOrganizations: sessionProcedure
+    listOrganizations: protectedProcedure
         .route({
             method: "GET",
             path: "/orgs",
@@ -75,7 +75,7 @@ export const organizationsRouter = {
         .handler(({ context }) =>
             listOrganizations(context.auth, context.headers),
         ),
-    createOrganization: sessionProcedure
+    createOrganization: protectedProcedure
         .route({
             method: "POST",
             path: "/orgs",
@@ -138,7 +138,7 @@ export const organizationsRouter = {
                 throw error;
             }
         }),
-    updateOrganization: sessionProcedure
+    updateOrganization: protectedProcedure
         .route({
             method: "PATCH",
             path: "/orgs/{org}",
@@ -167,7 +167,7 @@ export const organizationsRouter = {
             try {
                 const target = await getMemberOrganization(
                     context.db,
-                    context.session.user.id,
+                    context.caller.userId,
                     input.org,
                 );
                 return await updateOrganization(
@@ -189,7 +189,7 @@ export const organizationsRouter = {
                 throw error;
             }
         }),
-    setOrganizationLogo: sessionProcedure
+    setOrganizationLogo: protectedProcedure
         .route({
             method: "PUT",
             path: "/orgs/{org}/logo",
@@ -213,7 +213,7 @@ export const organizationsRouter = {
             try {
                 const target = await getMemberOrganization(
                     context.db,
-                    context.session.user.id,
+                    context.caller.userId,
                     input.org,
                 );
                 return await setOrganizationLogo(
@@ -236,7 +236,7 @@ export const organizationsRouter = {
                 throw error;
             }
         }),
-    deleteOrganization: sessionProcedure
+    deleteOrganization: protectedProcedure
         .route({
             method: "DELETE",
             path: "/orgs/{org}",
@@ -265,7 +265,7 @@ export const organizationsRouter = {
             try {
                 const target = await getMemberOrganization(
                     context.db,
-                    context.session.user.id,
+                    context.caller.userId,
                     input.org,
                 );
                 return await deleteOrganization(

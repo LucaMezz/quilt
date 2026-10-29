@@ -31,8 +31,10 @@
     },
     "dependencies": {
         "@better-auth/api-key": "1.7.10",
+        "@napi-rs/keyring": "^2.1.2",
         "@orpc/client": "^1.15.7",
         "@quilt/api": "workspace:*",
+        "@quilt/auth": "workspace:*",
         "better-auth": "1.7.10",
         "chalk": "^6.0.1",
         "citty": "^0.2.2",

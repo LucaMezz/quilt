@@ -1,12 +1,15 @@
 import { runCommand } from "citty";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { serverHost } from "../client";
 import { canOpenBrowser, openBrowser } from "../lib/browser";
+import { saveToken } from "../lib/credentials";
 import { pollForToken, requestDeviceCode } from "../lib/device-auth";
 import { LoginDeniedError } from "../lib/login-errors";
 import login from "./login";
 
 vi.mock("../lib/browser");
+vi.mock("../lib/credentials");
 vi.mock("../lib/device-auth");
 
 const deviceCode = {
@@ -71,5 +74,30 @@ describe("login", () => {
         await runCommand(login, { rawArgs: ["--no-browser"] });
 
         expect(openBrowser).not.toHaveBeenCalled();
+    });
+
+    it("saves the token for the server", async () => {
+        vi.mocked(pollForToken).mockResolvedValue({
+            accessToken: "token",
+            user: undefined,
+        });
+
+        await runCommand(login, { rawArgs: [] });
+
+        expect(saveToken).toHaveBeenCalledWith(serverHost, "token");
+    });
+
+    it("warns when the token is saved to a file", async () => {
+        vi.mocked(saveToken).mockReturnValue("file");
+        vi.mocked(pollForToken).mockResolvedValue({
+            accessToken: "token",
+            user: undefined,
+        });
+
+        await runCommand(login, { rawArgs: [] });
+
+        expect(console.error).toHaveBeenCalledWith(
+            expect.stringContaining("No system keychain found"),
+        );
     });
 });

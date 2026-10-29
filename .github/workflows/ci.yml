@@ -58,6 +58,8 @@ jobs:
 
       - run: pnpm syncpack
 
+      - run: pnpm license-check
+
       - run: pnpm exec turbo run check-types build
 
       - run: pnpm exec turbo run test -- --coverage.enabled

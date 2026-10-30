@@ -45,10 +45,7 @@ export function ApiKeyTable({ keys }: { keys: ApiKey[] }) {
           const writes = writableResources(key.permissions);
           return (
             <TableRow key={key.id}>
-              <th
-                scope="row"
-                className="p-2 text-left align-middle font-normal"
-              >
+              <th scope="row" className="p-2 text-left align-top font-normal">
                 <span className="block font-medium">
                   {key.name ?? "Unnamed key"}
                 </span>
@@ -58,10 +55,10 @@ export function ApiKeyTable({ keys }: { keys: ApiKey[] }) {
                   </code>
                 )}
               </th>
-              <TableCell>
+              <TableCell className="align-top">
                 <StatusBadge status={keyStatus(key)} />
               </TableCell>
-              <TableCell>
+              <TableCell className="align-top">
                 <div className="flex flex-col items-start gap-1">
                   <AccessBadge level={access} />
                   {writes.length > 0 && (
@@ -71,13 +68,13 @@ export function ApiKeyTable({ keys }: { keys: ApiKey[] }) {
                   )}
                 </div>
               </TableCell>
-              <TableCell>
+              <TableCell className="align-top">
                 <div className="flex flex-col items-start gap-1">
                   <When date={key.expiresAt} never="Never" />
                   {expiresSoon(key) && <ExpiresSoonBadge />}
                 </div>
               </TableCell>
-              <TableCell>
+              <TableCell className="align-top">
                 <When date={key.lastRequest} never="Never used" />
               </TableCell>
             </TableRow>

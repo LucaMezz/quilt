@@ -16,18 +16,21 @@ const STATUS = {
   active: {
     label: "Active",
     icon: (
-      <CircleCheckIcon className="text-emerald-600 dark:text-emerald-400" />
+      <CircleCheckIcon
+        aria-hidden="true"
+        className="text-emerald-600 dark:text-emerald-400"
+      />
     ),
     variant: "secondary",
   },
   disabled: {
     label: "Disabled",
-    icon: <CircleOffIcon />,
+    icon: <CircleOffIcon aria-hidden="true" />,
     variant: "outline",
   },
   expired: {
     label: "Expired",
-    icon: <CircleXIcon />,
+    icon: <CircleXIcon aria-hidden="true" />,
     variant: "destructive",
   },
 } as const;
@@ -36,9 +39,7 @@ export function StatusBadge({ status }: { status: KeyStatus }) {
   const { label, icon, variant } = STATUS[status];
   return (
     <Badge variant={variant}>
-      <span aria-hidden="true" className="contents">
-        {icon}
-      </span>
+      {icon}
       {label}
     </Badge>
   );
@@ -50,18 +51,16 @@ export function ExpiresSoonBadge() {
       variant="outline"
       className="border-amber-500/40 text-amber-700 dark:text-amber-400"
     >
-      <span aria-hidden="true" className="contents">
-        <ClockAlertIcon />
-      </span>
+      <ClockAlertIcon aria-hidden="true" />
       Expires soon
     </Badge>
   );
 }
 
 const ACCESS_ICONS = {
-  none: <ShieldOffIcon />,
-  read: <EyeIcon />,
-  write: <PencilIcon />,
+  none: <ShieldOffIcon aria-hidden="true" />,
+  read: <EyeIcon aria-hidden="true" />,
+  write: <PencilIcon aria-hidden="true" />,
 } as const;
 
 export function AccessBadge({ level }: { level: AccessLevel }) {
@@ -74,9 +73,7 @@ export function AccessBadge({ level }: { level: AccessLevel }) {
           : undefined
       }
     >
-      <span aria-hidden="true" className="contents">
-        {ACCESS_ICONS[level]}
-      </span>
+      {ACCESS_ICONS[level]}
       {ACCESS_LEVEL_LABELS[level]}
     </Badge>
   );

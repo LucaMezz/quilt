@@ -6,6 +6,7 @@ import {
   TableHeader,
   TableRow,
 } from "@quilt/ui/components/table";
+import { Link } from "@tanstack/react-router";
 
 import {
   accessSummary,
@@ -14,18 +15,9 @@ import {
   writableResources,
 } from "@/lib/api-keys/describe";
 import type { ApiKey } from "@/lib/api-keys/use-api-keys";
-import { relativeTime } from "@/lib/relative-time";
 
 import { AccessBadge, ExpiresSoonBadge, StatusBadge } from "./key-badges";
-
-function When({ date, never }: { date: Date | null; never: string }) {
-  if (!date) return <span className="text-muted-foreground">{never}</span>;
-  return (
-    <time dateTime={date.toISOString()} title={date.toLocaleString()}>
-      {relativeTime(date)}
-    </time>
-  );
-}
+import { When } from "./when";
 
 export function ApiKeyTable({ keys }: { keys: ApiKey[] }) {
   return (
@@ -44,11 +36,15 @@ export function ApiKeyTable({ keys }: { keys: ApiKey[] }) {
           const access = accessSummary(key.permissions);
           const writes = writableResources(key.permissions);
           return (
-            <TableRow key={key.id}>
+            <TableRow key={key.id} className="relative">
               <th scope="row" className="p-2 text-left align-top font-normal">
-                <span className="block font-medium">
+                <Link
+                  to="/settings/api-keys/$keyId"
+                  params={{ keyId: key.id }}
+                  className="block font-medium outline-none after:absolute after:inset-0 after:rounded-sm hover:underline focus-visible:after:ring-2 focus-visible:after:ring-ring"
+                >
                   {key.name ?? "Unnamed key"}
-                </span>
+                </Link>
                 {key.start && (
                   <code className="text-muted-foreground text-xs">
                     {key.start}…

@@ -11,7 +11,10 @@ const { signOut, navigate } = vi.hoisted(() => ({
 }));
 
 vi.mock("@/lib/auth-client", () => ({ authClient: { signOut } }));
-vi.mock("@tanstack/react-router", () => ({ useNavigate: () => navigate }));
+vi.mock("@tanstack/react-router", () => ({
+  useNavigate: () => navigate,
+  Link: ({ to, ...props }: { to: string }) => <a href={to} {...props} />,
+}));
 
 vi.stubGlobal("matchMedia", () => ({
   matches: false,
@@ -20,6 +23,21 @@ vi.stubGlobal("matchMedia", () => ({
 }));
 
 describe("NavUser", () => {
+  it("links to the settings page", async () => {
+    const user = userEvent.setup();
+    render(
+      <SidebarProvider>
+        <NavUser user={{ name: "Ada Lovelace", email: "ada@example.com" }} />
+      </SidebarProvider>,
+    );
+
+    await user.click(screen.getByRole("button", { name: /ada lovelace/i }));
+
+    expect(
+      await screen.findByRole("menuitem", { name: "Settings" }),
+    ).toHaveAttribute("href", "/settings");
+  });
+
   it("logs out and returns to the landing page", async () => {
     signOut.mockImplementation(async ({ fetchOptions }) => {
       fetchOptions.onSuccess();

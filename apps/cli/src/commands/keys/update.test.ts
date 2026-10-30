@@ -2,9 +2,11 @@ import { runCommand } from "citty";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { client } from "../../client";
+import { resolveKey } from "../../lib/key-ref";
 import { captureOutput, stderr, stdout } from "../../testing/output";
 import update from "./update";
 
+vi.mock("../../lib/key-ref");
 vi.mock("../../client", () => ({
     client: { apiKeys: { update: vi.fn() } },
 }));
@@ -22,6 +24,7 @@ const key = {
 
 beforeEach(() => {
     captureOutput();
+    vi.mocked(resolveKey).mockResolvedValue(key);
     vi.mocked(client.apiKeys.update).mockResolvedValue(key);
 });
 
@@ -75,6 +78,7 @@ describe("keys update", () => {
         await runCommand(update, { rawArgs: ["key-1"] });
 
         expect(client.apiKeys.update).not.toHaveBeenCalled();
+        expect(resolveKey).not.toHaveBeenCalled();
         expect(stderr()).toContain("--name, --enable or --disable");
         expect(process.exitCode).toBe(1);
     });
@@ -83,5 +87,29 @@ describe("keys update", () => {
         await runCommand(update, { rawArgs: ["key-1", "--disable", "--json"] });
 
         expect(JSON.parse(stdout())).toEqual(JSON.parse(JSON.stringify(key)));
+    });
+
+    it("looks the key up by name or ID", async () => {
+        await runCommand(update, { rawArgs: ["laptop", "--disable"] });
+
+        expect(resolveKey).toHaveBeenCalledWith("laptop");
+        expect(client.apiKeys.update).toHaveBeenCalledWith(
+            expect.objectContaining({ id: "key-1" }),
+        );
+    });
+
+    it("lets you pick the key when none is given", async () => {
+        await runCommand(update, { rawArgs: ["--disable"] });
+
+        expect(resolveKey).toHaveBeenCalledWith(undefined);
+    });
+
+    it("stops when the key can't be found", async () => {
+        vi.mocked(resolveKey).mockResolvedValue(undefined);
+
+        await runCommand(update, { rawArgs: ["nope", "--disable"] });
+
+        expect(client.apiKeys.update).not.toHaveBeenCalled();
+        expect(process.exitCode).toBe(1);
     });
 });

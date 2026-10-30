@@ -1,6 +1,7 @@
 import { defineCommand } from "citty";
 
 import { client } from "../../client";
+import { resolveKey } from "../../lib/key-ref";
 import { log } from "../../ui/log";
 import { printJson } from "../../ui/output";
 import { withSpinner } from "../../ui/spinner";
@@ -18,10 +19,11 @@ export default defineCommand({
         description: "Rename, enable or disable an API key",
     },
     args: {
-        id: {
+        key: {
             type: "positional",
-            required: true,
-            description: "ID of the key, from quilt keys list",
+            required: false,
+            description:
+                "Name or ID of the key, or the start of its ID; omit to choose from a list",
         },
         name: {
             type: "string",
@@ -56,9 +58,14 @@ export default defineCommand({
             process.exitCode = 1;
             return;
         }
+        const target = await resolveKey(args.key);
+        if (!target) {
+            process.exitCode = 1;
+            return;
+        }
         const key = await withSpinner(
             "Updating API key…",
-            client.apiKeys.update({ id: args.id, name: args.name, enabled }),
+            client.apiKeys.update({ id: target.id, name: args.name, enabled }),
         );
 
         if (args.json) {

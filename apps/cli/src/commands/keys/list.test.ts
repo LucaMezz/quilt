@@ -102,4 +102,16 @@ describe("keys list", () => {
         expect(console.log).not.toHaveBeenCalled();
         expect(stderr()).toContain("You have no API keys");
     });
+
+    it("shows short IDs", async () => {
+        vi.mocked(client.apiKeys.list).mockResolvedValue({
+            items: [key({ id: "Ab3dEfGhIjKlMnOpQrStUvWxYz012345" })],
+            nextCursor: null,
+        });
+
+        await runCommand(list, { rawArgs: [] });
+
+        expect(stdout()).toContain("Ab3dEfG ");
+        expect(stdout()).not.toContain("Ab3dEfGh");
+    });
 });

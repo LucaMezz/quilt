@@ -8,7 +8,9 @@
     },
     "scripts": {
         "build": "tsc -b",
-        "check-types": "tsc -b"
+        "check-types": "tsc -b",
+        "test": "vitest run",
+        "test:watch": "vitest"
     },
     "dependencies": {
         "@better-auth/api-key": "1.7.10",
@@ -22,6 +24,8 @@
     },
     "devDependencies": {
         "@quilt/config": "workspace:*",
-        "typescript": "^7.0.2"
+        "@vitest/coverage-v8": "^5.0.5",
+        "typescript": "^7.0.2",
+        "vitest": "^5.0.5"
     }
 }

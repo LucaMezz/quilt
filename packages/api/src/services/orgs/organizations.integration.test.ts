@@ -5,8 +5,8 @@ import { eq } from "drizzle-orm";
 import sharp from "sharp";
 import { describe, expect } from "vitest";
 
-import { test } from "../testing/fixtures";
-import { createOrganizationAs } from "../testing/organizations";
+import { test } from "../../testing/fixtures";
+import { createOrganizationAs } from "../../testing/organizations";
 import { createApp, destroyApp } from "./apps";
 import {
     createOrganization,

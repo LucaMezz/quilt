@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { InvalidImageError } from "../lib/images";
-import { PageInput, pageOf } from "../lib/pagination";
-import { describeErrorResponse } from "../openapi";
-import { protectedProcedure } from "../procedures";
+import { InvalidImageError } from "../../lib/images";
+import { PageInput, pageOf } from "../../lib/pagination";
+import { describeErrorResponse } from "../../openapi";
+import { protectedProcedure } from "../../procedures";
 import {
     APP_LOGO_DIMENSION,
     AppNameTakenError,
@@ -12,13 +12,13 @@ import {
     getOwnedApp,
     listApps,
     setAppLogo,
-} from "../services/apps";
+} from "../../services/orgs/apps";
 import {
     getMemberOrganization,
     OrganizationNotFoundError,
-} from "../services/organizations";
+} from "../../services/orgs/organizations";
+import { describeImageUpload, ImageFile, invalidImage } from "../shared/images";
 import { OrganizationRef, organizationNotFound } from "./organizations";
-import { describeImageUpload, ImageFile, invalidImage } from "./shared/images";
 
 const AppName = z
     .string()

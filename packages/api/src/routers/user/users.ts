@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { InvalidImageError } from "../lib/images";
-import { protectedProcedure } from "../procedures";
-import { setUserImage, USER_IMAGE_DIMENSION } from "../services/users";
-import { describeImageUpload, ImageFile, invalidImage } from "./shared/images";
+import { InvalidImageError } from "../../lib/images";
+import { protectedProcedure } from "../../procedures";
+import { setUserImage, USER_IMAGE_DIMENSION } from "../../services/user/users";
+import { describeImageUpload, ImageFile, invalidImage } from "../shared/images";
 
 const UserSchema = z.object({
     id: z.string(),

@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { InvalidImageError } from "../lib/images";
-import { describeErrorResponse } from "../openapi";
-import { protectedProcedure } from "../procedures";
+import { InvalidImageError } from "../../lib/images";
+import { describeErrorResponse } from "../../openapi";
+import { protectedProcedure } from "../../procedures";
 import {
     createOrganization,
     deleteOrganization,
@@ -14,8 +14,8 @@ import {
     OrganizationSlugTakenError,
     setOrganizationLogo,
     updateOrganization,
-} from "../services/organizations";
-import { describeImageUpload, ImageFile, invalidImage } from "./shared/images";
+} from "../../services/orgs/organizations";
+import { describeImageUpload, ImageFile, invalidImage } from "../shared/images";
 
 const OrganizationSlug = z
     .string()

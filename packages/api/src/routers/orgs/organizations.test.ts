@@ -1,9 +1,8 @@
 import { call } from "@orpc/server";
 import { describe, expect, it } from "vitest";
-
-import { invalidInput } from "../../testing/errors";
-import { HandlerReached, stubContext } from "../../testing/procedures";
-import { appRouter } from "../index";
+import { appRouter } from "#/routers/index";
+import { invalidInput } from "#/testing/errors";
+import { HandlerReached, stubContext } from "#/testing/procedures";
 
 function createOrganization(input: { name: string; slug: string }) {
     return call(appRouter.organizations.create, input, {

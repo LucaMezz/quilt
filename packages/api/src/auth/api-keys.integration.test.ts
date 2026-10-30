@@ -1,7 +1,7 @@
 import { API_KEY_HEADER } from "@quilt/auth/api-keys";
 import { describe, expect } from "vitest";
 
-import { test } from "../testing/fixtures";
+import { test } from "#/testing/fixtures";
 
 describe("api keys", () => {
     test("verifies a key created for a user", async ({ auth, signUp }) => {

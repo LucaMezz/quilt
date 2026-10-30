@@ -4,8 +4,8 @@ import { session } from "@quilt/db/schema/auth";
 import { eq } from "drizzle-orm";
 import { describe, expect } from "vitest";
 
-import { resolveCaller } from "../caller";
-import { test } from "../testing/fixtures";
+import { resolveCaller } from "#/caller";
+import { test } from "#/testing/fixtures";
 
 async function approvedDeviceToken(auth: Auth, headers: Headers) {
     const code = await auth.api.deviceCode({

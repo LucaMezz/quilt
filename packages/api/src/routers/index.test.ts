@@ -6,7 +6,7 @@ import type { Database } from "@quilt/db";
 import type { Storage } from "@quilt/storage";
 import { describe, expect, it } from "vitest";
 
-import type { Context } from "../context";
+import type { Context } from "#/context";
 import { appRouter } from "./index";
 
 function createContext(overrides: Partial<Context> = {}): Context {

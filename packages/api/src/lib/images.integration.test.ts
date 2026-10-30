@@ -3,7 +3,7 @@ import { listKeys } from "@quilt/storage/testing";
 import sharp from "sharp";
 import { describe, expect } from "vitest";
 
-import { test } from "../testing/fixtures";
+import { test } from "#/testing/fixtures";
 import { type ImageSlot, InvalidImageError, replaceImage } from "./images";
 
 async function pngImage() {

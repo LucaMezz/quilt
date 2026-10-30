@@ -1,9 +1,8 @@
 import { call } from "@orpc/server";
 import { describe, expect } from "vitest";
-
-import { declaredError } from "../../testing/errors";
-import { test } from "../../testing/fixtures";
-import { appRouter } from "../index";
+import { appRouter } from "#/routers/index";
+import { declaredError } from "#/testing/errors";
+import { test } from "#/testing/fixtures";
 
 const othersKeyTest = test.extend("othersKey", async ({ auth, signUp }) => {
     const owner = await signUp("owner");

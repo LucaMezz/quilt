@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm";
 import sharp from "sharp";
 import { describe, expect } from "vitest";
 
-import { test } from "../../testing/fixtures";
+import { test } from "#/testing/fixtures";
 import { getUser, setUserImage, userImagePrefix } from "./users";
 
 async function pngImage() {

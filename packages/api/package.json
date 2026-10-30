@@ -9,6 +9,9 @@
         "./openapi": "./src/openapi.ts",
         "./router": "./src/routers/index.ts"
     },
+    "imports": {
+        "#/*": "./src/*.ts"
+    },
     "scripts": {
         "build": "tsc -b",
         "check-types": "tsc -b",

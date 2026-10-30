@@ -1,7 +1,7 @@
 import type { RouterClient } from "@orpc/server";
 import { z } from "zod";
 
-import { publicProcedure } from "../procedures";
+import { publicProcedure } from "#/procedures";
 import { appsRouter } from "./orgs/apps";
 import { organizationsRouter } from "./orgs/organizations";
 import { apiKeysRouter } from "./user/api-keys";

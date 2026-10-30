@@ -21,9 +21,9 @@
         "test:integration": "vitest run --project integration --coverage.reportsDirectory=coverage/integration"
     },
     "dependencies": {
-        "@orpc/openapi": "^1.15.6",
-        "@orpc/server": "^1.15.7",
-        "@orpc/zod": "^1.15.6",
+        "@orpc/openapi": "^1.16.1",
+        "@orpc/server": "^1.16.1",
+        "@orpc/zod": "^1.16.1",
         "@quilt/auth": "workspace:*",
         "@quilt/db": "workspace:*",
         "@quilt/storage": "workspace:*",

@@ -1,7 +1,9 @@
 import { defineCommand } from "citty";
 
 import create from "./create";
+import remove from "./delete";
 import list from "./list";
+import update from "./update";
 
 export default defineCommand({
     meta: {
@@ -11,5 +13,7 @@ export default defineCommand({
     subCommands: {
         list,
         create,
+        update,
+        delete: remove,
     },
 });

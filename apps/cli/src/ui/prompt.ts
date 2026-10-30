@@ -1,4 +1,4 @@
-import { input } from "@inquirer/prompts";
+import { confirm, input } from "@inquirer/prompts";
 
 import { log } from "./log";
 import { theme } from "./theme";
@@ -7,17 +7,28 @@ function cancelledByUser(error: unknown) {
     return error instanceof Error && error.name === "ExitPromptError";
 }
 
-export async function confirmByTyping(expected: string) {
+async function falseOnCancel(prompt: Promise<boolean>) {
     try {
-        const answer = await input(
-            { message: `Type ${theme.heading(expected)} to confirm:` },
-            { output: process.stderr },
-        );
-        return answer.trim() === expected;
+        return await prompt;
     } catch (error) {
         if (cancelledByUser(error)) return false;
         throw error;
     }
+}
+
+export function confirmByTyping(expected: string) {
+    return falseOnCancel(
+        input(
+            { message: `Type ${theme.heading(expected)} to confirm:` },
+            { output: process.stderr },
+        ).then((answer) => answer.trim() === expected),
+    );
+}
+
+export function confirmYesNo(message: string) {
+    return falseOnCancel(
+        confirm({ message, default: false }, { output: process.stderr }),
+    );
 }
 
 export async function confirmed(yes: boolean, ask: () => Promise<boolean>) {

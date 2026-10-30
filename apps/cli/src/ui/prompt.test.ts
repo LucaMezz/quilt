@@ -1,8 +1,8 @@
-import { input } from "@inquirer/prompts";
+import { confirm, input } from "@inquirer/prompts";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { captureOutput, stderr } from "../testing/output";
-import { confirmByTyping, confirmed } from "./prompt";
+import { confirmByTyping, confirmed, confirmYesNo } from "./prompt";
 
 vi.mock("@inquirer/prompts");
 
@@ -50,6 +50,24 @@ describe("confirmByTyping", () => {
         vi.mocked(input).mockRejectedValue(new ExitPromptError());
 
         await expect(confirmByTyping("acme")).resolves.toBe(false);
+    });
+});
+
+describe("confirmYesNo", () => {
+    it("asks on stderr, defaulting to no", async () => {
+        vi.mocked(confirm).mockResolvedValue(true);
+
+        await expect(confirmYesNo("Delete it?")).resolves.toBe(true);
+        expect(confirm).toHaveBeenCalledWith(
+            { message: "Delete it?", default: false },
+            { output: process.stderr },
+        );
+    });
+
+    it("is false when the prompt is cancelled with Ctrl+C", async () => {
+        vi.mocked(confirm).mockRejectedValue(new ExitPromptError());
+
+        await expect(confirmYesNo("Delete it?")).resolves.toBe(false);
     });
 });
 

@@ -22,6 +22,7 @@
         "@orpc/client": "^1.15.7",
         "@orpc/tanstack-query": "^1.15.6",
         "@quilt/api": "workspace:*",
+        "@quilt/auth": "workspace:*",
         "@quilt/ui": "workspace:*",
         "@tailwindcss/vite": "^4.3.3",
         "@tanstack/react-form": "^1.33.5",

@@ -56,7 +56,10 @@ export function ApiKeyTable({ keys }: { keys: ApiKey[] }) {
                 )}
               </th>
               <TableCell className="align-top">
-                <StatusBadge status={keyStatus(key)} />
+                <div className="flex flex-wrap items-center gap-1">
+                  <StatusBadge status={keyStatus(key)} />
+                  {expiresSoon(key) && <ExpiresSoonBadge />}
+                </div>
               </TableCell>
               <TableCell className="align-top">
                 <div className="flex flex-col items-start gap-1">
@@ -69,10 +72,7 @@ export function ApiKeyTable({ keys }: { keys: ApiKey[] }) {
                 </div>
               </TableCell>
               <TableCell className="align-top">
-                <div className="flex flex-col items-start gap-1">
-                  <When date={key.expiresAt} never="Never" />
-                  {expiresSoon(key) && <ExpiresSoonBadge />}
-                </div>
+                <When date={key.expiresAt} never="Never" />
               </TableCell>
               <TableCell className="align-top">
                 <When date={key.lastRequest} never="Never used" />

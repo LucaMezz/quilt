@@ -100,7 +100,8 @@ describe("API keys settings", () => {
     expect(rowFor("expired").getByText("Expired")).toBeInTheDocument();
 
     const shortLived = rowFor("short-lived");
-    expect(shortLived.getByText("Expires soon")).toBeInTheDocument();
+    const soon = shortLived.getByText("Expires soon");
+    expect(soon.closest("td")).toHaveTextContent("Active");
     expect(shortLived.getByText("No access")).toBeInTheDocument();
   });
 });

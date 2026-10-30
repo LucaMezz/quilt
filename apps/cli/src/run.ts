@@ -63,6 +63,9 @@ export async function run(
         }
         if (error instanceof ORPCError) {
             log.error(error.message);
+            for (const issue of validationIssues(error.data)) {
+                log.hint(`${issue.path.join(".")}: ${issue.message}`);
+            }
             return;
         }
         log.error(
@@ -70,4 +73,13 @@ export async function run(
             error instanceof Error ? error.message : String(error),
         );
     }
+}
+
+type ValidationIssue = { path: (string | number)[]; message: string };
+
+function validationIssues(data: unknown): ValidationIssue[] {
+    if (typeof data !== "object" || data === null || !("issues" in data)) {
+        return [];
+    }
+    return Array.isArray(data.issues) ? data.issues : [];
 }

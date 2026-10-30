@@ -1,4 +1,5 @@
 import { stripVTControlCharacters } from "node:util";
+import { ORPCError } from "@orpc/client";
 import { type ArgsDef, type CommandDef, runCommand } from "citty";
 
 import { describeCommand, findCommand } from "./command-tree";
@@ -53,6 +54,15 @@ export async function run(
             log.hint(
                 `Run ${theme.brand([meta?.name, ...path, "--help"].join(" "))} to see usage.`,
             );
+            return;
+        }
+        if (error instanceof ORPCError && error.code === "UNAUTHORIZED") {
+            log.error("Not signed in, or your key is no longer valid");
+            log.hint(`Run ${theme.brand("quilt login")} to sign in.`);
+            return;
+        }
+        if (error instanceof ORPCError) {
+            log.error(error.message);
             return;
         }
         log.error(

@@ -1,10 +1,9 @@
 import { call } from "@orpc/server";
 import { describe, expect } from "vitest";
-
-import { declaredError } from "../../testing/errors";
-import { test } from "../../testing/fixtures";
-import { notAnImage } from "../../testing/images";
-import { appRouter } from "../index";
+import { appRouter } from "#/routers/index";
+import { declaredError } from "#/testing/errors";
+import { test } from "#/testing/fixtures";
+import { notAnImage } from "#/testing/images";
 
 describe("setUserImage", () => {
     test("responds with BAD_REQUEST when the file isn't an image", async ({

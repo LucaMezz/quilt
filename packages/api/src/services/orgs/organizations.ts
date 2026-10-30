@@ -5,7 +5,7 @@ import { member, organization } from "@quilt/db/schema/auth";
 import type { Storage } from "@quilt/storage";
 import { and, eq, getColumns, isNotNull, isNull } from "drizzle-orm";
 
-import { replaceImage } from "../../lib/images";
+import { replaceImage } from "#/lib/images";
 
 export type Organization = typeof organization.$inferSelect;
 

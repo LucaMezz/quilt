@@ -6,8 +6,8 @@ import { emptyBucket } from "@quilt/storage/testing";
 import { sql } from "drizzle-orm";
 import { test as baseTest, inject } from "vitest";
 
-import { resolveCaller } from "../caller";
-import type { Context } from "../context";
+import { resolveCaller } from "#/caller";
+import type { Context } from "#/context";
 import "./environment";
 
 export const test = baseTest

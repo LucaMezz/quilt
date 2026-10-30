@@ -1,12 +1,11 @@
 import { call } from "@orpc/server";
 import { describe, expect } from "vitest";
-
-import { createApp } from "../../services/orgs/apps";
-import { declaredError } from "../../testing/errors";
-import { test } from "../../testing/fixtures";
-import { notAnImage } from "../../testing/images";
-import { createOrganizationAs } from "../../testing/organizations";
-import { appRouter } from "../index";
+import { appRouter } from "#/routers/index";
+import { createApp } from "#/services/orgs/apps";
+import { declaredError } from "#/testing/errors";
+import { test } from "#/testing/fixtures";
+import { notAnImage } from "#/testing/images";
+import { createOrganizationAs } from "#/testing/organizations";
 
 const ownedTest = test
     .extend("owned", { auto: true }, async ({ auth, db, signUp }) => {

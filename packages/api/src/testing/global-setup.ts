@@ -10,7 +10,7 @@ import type { StorageConfig } from "@quilt/storage/config";
 import { createBucket, dropBucket } from "@quilt/storage/testing";
 import type { TestProject } from "vitest/node";
 
-import { ENV } from "../env";
+import { ENV } from "#/env";
 import "./environment";
 
 export default async function setup(project: TestProject) {

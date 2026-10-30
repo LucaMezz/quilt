@@ -2,6 +2,7 @@ import { defineCommand } from "citty";
 
 import pkg from "../package.json" with { type: "json" };
 import health from "./commands/health";
+import keys from "./commands/keys";
 import login from "./commands/login";
 import logout from "./commands/logout";
 import orgs from "./commands/orgs";
@@ -16,6 +17,7 @@ export const main = defineCommand({
     },
     subCommands: {
         health,
+        keys,
         login,
         logout,
         orgs,

@@ -1,8 +1,8 @@
-import { stripVTControlCharacters } from "node:util";
 import { runCommand } from "citty";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { client } from "../../client";
+import { captureOutput, stdout } from "../../testing/output";
 import list from "./list";
 
 vi.mock("../../client", () => ({
@@ -26,19 +26,8 @@ const organizations = [
     },
 ];
 
-function stdout() {
-    return stripVTControlCharacters(
-        vi
-            .mocked(console.log)
-            .mock.calls.map((args) => args.join(" "))
-            .join("\n"),
-    );
-}
-
 beforeEach(() => {
-    vi.spyOn(console, "log").mockImplementation(() => {});
-    vi.spyOn(console, "error").mockImplementation(() => {});
-    vi.spyOn(process.stderr, "write").mockReturnValue(true);
+    captureOutput();
 });
 
 afterEach(() => {

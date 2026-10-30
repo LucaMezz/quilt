@@ -20,12 +20,26 @@ const NO_BORDERS = {
     middle: "",
 };
 
-export function table(head: string[], rows: string[][]) {
+function render(head: string[], rows: string[][]) {
     const output = new Table({
-        head: head.map((title) => theme.heading(title)),
+        head,
         chars: NO_BORDERS,
         style: { head: [], border: [], "padding-left": 0, "padding-right": 3 },
     });
     output.push(...rows);
     return output.toString().replace(/ +$/gm, "");
+}
+
+export function table(head: string[], rows: string[][]) {
+    return render(
+        head.map((title) => theme.heading(title)),
+        rows,
+    );
+}
+
+export function details(fields: [label: string, value: string][]) {
+    return render(
+        [],
+        fields.map(([label, value]) => [theme.muted(label), value]),
+    );
 }

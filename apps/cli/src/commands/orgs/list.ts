@@ -2,7 +2,8 @@ import { defineCommand } from "citty";
 
 import { client } from "../../client";
 import { log } from "../../ui/log";
-import { spinner } from "../../ui/spinner";
+import { formatDate, printJson } from "../../ui/output";
+import { withSpinner } from "../../ui/spinner";
 import { table } from "../../ui/table";
 import { theme } from "../../ui/theme";
 
@@ -19,13 +20,13 @@ export default defineCommand({
         },
     },
     async run({ args }) {
-        const progress = spinner("Loading organizations…");
-        const organizations = await client.organizations
-            .list()
-            .finally(() => progress.stop());
+        const organizations = await withSpinner(
+            "Loading organizations…",
+            client.organizations.list(),
+        );
 
         if (args.json) {
-            console.log(JSON.stringify(organizations, null, 2));
+            printJson(organizations);
             return;
         }
         if (organizations.length === 0) {
@@ -38,9 +39,7 @@ export default defineCommand({
                 organizations.map((organization) => [
                     organization.name,
                     theme.muted(organization.slug),
-                    theme.muted(
-                        organization.createdAt.toISOString().slice(0, 10),
-                    ),
+                    theme.muted(formatDate(organization.createdAt)),
                 ]),
             ),
         );

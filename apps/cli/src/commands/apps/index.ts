@@ -1,5 +1,7 @@
 import { defineCommand } from "citty";
 
+import create from "./create";
+import destroy from "./destroy";
 import list from "./list";
 
 export default defineCommand({
@@ -9,5 +11,7 @@ export default defineCommand({
     },
     subCommands: {
         list,
+        create,
+        destroy,
     },
 });

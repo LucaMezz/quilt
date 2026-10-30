@@ -4,7 +4,7 @@ import {
     type Page,
     type PageParams,
     paginateInMemory,
-} from "../lib/pagination";
+} from "../../lib/pagination";
 
 export type ApiKey = Awaited<ReturnType<Auth["api"]["getApiKey"]>>;
 

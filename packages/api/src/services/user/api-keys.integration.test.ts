@@ -1,7 +1,7 @@
 import { describe, expect } from "vitest";
 
-import { PageInput } from "../lib/pagination";
-import { test } from "../testing/fixtures";
+import { PageInput } from "../../lib/pagination";
+import { test } from "../../testing/fixtures";
 import {
     ApiKeyNotFoundError,
     deleteApiKey,

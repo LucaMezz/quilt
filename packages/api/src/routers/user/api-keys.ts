@@ -3,9 +3,9 @@ import {
     API_KEY_NAME_LENGTH,
 } from "@quilt/auth/api-keys";
 import { z } from "zod";
-import { PageInput, pageOf } from "../lib/pagination";
-import { describeErrorResponse } from "../openapi";
-import { protectedProcedure } from "../procedures";
+import { PageInput, pageOf } from "../../lib/pagination";
+import { describeErrorResponse } from "../../openapi";
+import { protectedProcedure } from "../../procedures";
 import {
     ApiKeyNotFoundError,
     createApiKey,
@@ -13,7 +13,7 @@ import {
     getApiKey,
     listApiKeys,
     updateApiKey,
-} from "../services/api-keys";
+} from "../../services/user/api-keys";
 
 const ApiKeySchema = z.object({
     id: z.string(),

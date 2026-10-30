@@ -1,13 +1,16 @@
 import { cn } from "@quilt/ui/lib/utils";
 import { Link, type LinkProps } from "@tanstack/react-router";
-import { UserIcon } from "lucide-react";
+import { KeyRoundIcon, UserIcon } from "lucide-react";
 
 const items: {
   label: string;
   to: LinkProps["to"];
   icon: React.ReactNode;
   exact?: boolean;
-}[] = [{ label: "Profile", to: "/settings", icon: <UserIcon />, exact: true }];
+}[] = [
+  { label: "Profile", to: "/settings", icon: <UserIcon />, exact: true },
+  { label: "API keys", to: "/settings/api-keys", icon: <KeyRoundIcon /> },
+];
 
 export function SettingsNav({ className }: { className?: string }) {
   return (

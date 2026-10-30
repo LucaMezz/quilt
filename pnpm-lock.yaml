@@ -517,6 +517,9 @@ importers:
       '@quilt/api':
         specifier: workspace:*
         version: link:../../packages/api
+      '@quilt/auth':
+        specifier: workspace:*
+        version: link:../../packages/auth
       '@quilt/ui':
         specifier: workspace:*
         version: link:../../packages/ui

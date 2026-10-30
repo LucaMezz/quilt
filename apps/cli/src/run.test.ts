@@ -55,4 +55,22 @@ describe("run", () => {
         expect(printed()).not.toContain("Unexpected error");
         expect(process.exitCode).toBe(1);
     });
+
+    it("lists each invalid field the API reports", async () => {
+        const error = new ORPCError("BAD_REQUEST", {
+            message: "Input validation failed",
+            data: {
+                issues: [
+                    { path: ["slug"], message: "Invalid string" },
+                    { path: ["name"], message: "Too small" },
+                ],
+            },
+        });
+
+        await run(rootThrowing(error), ["fail"]);
+
+        expect(printed()).toContain("Input validation failed");
+        expect(printed()).toContain("slug: Invalid string");
+        expect(printed()).toContain("name: Too small");
+    });
 });

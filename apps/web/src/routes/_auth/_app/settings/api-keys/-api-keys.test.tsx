@@ -104,4 +104,14 @@ describe("API keys settings", () => {
     expect(soon.closest("td")).toHaveTextContent("Active");
     expect(shortLived.getByText("No access")).toBeInTheDocument();
   });
+
+  it("links each key to its own page", async () => {
+    showKeys([key({ id: "k1", name: "laptop" })]);
+    await renderRoute("/settings/api-keys", getSession);
+
+    expect(await screen.findByRole("link", { name: /laptop/ })).toHaveAttribute(
+      "href",
+      "/settings/api-keys/k1",
+    );
+  });
 });

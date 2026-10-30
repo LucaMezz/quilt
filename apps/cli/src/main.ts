@@ -1,6 +1,7 @@
 import { defineCommand } from "citty";
 
 import pkg from "../package.json" with { type: "json" };
+import apps from "./commands/apps";
 import health from "./commands/health";
 import keys from "./commands/keys";
 import login from "./commands/login";
@@ -16,6 +17,7 @@ export const main = defineCommand({
         description: "Self-hosted PaaS that stitches your servers together",
     },
     subCommands: {
+        apps,
         health,
         keys,
         login,

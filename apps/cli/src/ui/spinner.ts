@@ -16,3 +16,8 @@ export function spinner(text: string) {
         },
     }).start();
 }
+
+export function withSpinner<T>(text: string, task: Promise<T>) {
+    const progress = spinner(text);
+    return task.finally(() => progress.stop());
+}

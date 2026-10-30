@@ -1,8 +1,8 @@
-import { confirm, input } from "@inquirer/prompts";
+import { confirm, input, select } from "@inquirer/prompts";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { captureOutput, stderr } from "../testing/output";
-import { confirmByTyping, confirmed, confirmYesNo } from "./prompt";
+import { chooseOne, confirmByTyping, confirmed, confirmYesNo } from "./prompt";
 
 vi.mock("@inquirer/prompts");
 
@@ -68,6 +68,29 @@ describe("confirmYesNo", () => {
         vi.mocked(confirm).mockRejectedValue(new ExitPromptError());
 
         await expect(confirmYesNo("Delete it?")).resolves.toBe(false);
+    });
+});
+
+describe("chooseOne", () => {
+    const choices = [
+        { name: "laptop", value: "key-1" },
+        { name: "ci", value: "key-2" },
+    ];
+
+    it("asks on stderr and returns the chosen value", async () => {
+        vi.mocked(select).mockResolvedValue("key-2");
+
+        await expect(chooseOne("Which key?", choices)).resolves.toBe("key-2");
+        expect(select).toHaveBeenCalledWith(
+            { message: "Which key?", choices },
+            { output: process.stderr },
+        );
+    });
+
+    it("is undefined when the prompt is cancelled with Ctrl+C", async () => {
+        vi.mocked(select).mockRejectedValue(new ExitPromptError());
+
+        await expect(chooseOne("Which key?", choices)).resolves.toBeUndefined();
     });
 });
 

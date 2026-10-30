@@ -2,10 +2,15 @@ import { runCommand } from "citty";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { client } from "../../client";
+import { resolveKey } from "../../lib/key-ref";
 import { captureOutput, stderr, stdout } from "../../testing/output";
 import { confirmed, confirmYesNo } from "../../ui/prompt";
 import remove from "./delete";
 
+vi.mock("../../lib/key-ref", async (importOriginal) => ({
+    ...(await importOriginal<typeof import("../../lib/key-ref")>()),
+    resolveKey: vi.fn(),
+}));
 vi.mock("../../client", () => ({
     client: { apiKeys: { delete: vi.fn() } },
 }));
@@ -24,6 +29,7 @@ const key = {
 
 beforeEach(() => {
     captureOutput();
+    vi.mocked(resolveKey).mockResolvedValue(key);
     vi.mocked(client.apiKeys.delete).mockResolvedValue(key);
     vi.mocked(confirmed).mockResolvedValue(true);
 });
@@ -71,5 +77,28 @@ describe("keys delete", () => {
         await runCommand(remove, { rawArgs: ["key-1", "--yes", "--json"] });
 
         expect(JSON.parse(stdout())).toEqual(JSON.parse(JSON.stringify(key)));
+    });
+
+    it("looks the key up by name or ID", async () => {
+        await runCommand(remove, { rawArgs: ["ci", "--yes"] });
+
+        expect(resolveKey).toHaveBeenCalledWith("ci");
+        expect(client.apiKeys.delete).toHaveBeenCalledWith({ id: "key-1" });
+    });
+
+    it("lets you pick the key when none is given", async () => {
+        await runCommand(remove, { rawArgs: [] });
+
+        expect(resolveKey).toHaveBeenCalledWith(undefined);
+    });
+
+    it("stops before asking when the key can't be found", async () => {
+        vi.mocked(resolveKey).mockResolvedValue(undefined);
+
+        await runCommand(remove, { rawArgs: ["nope"] });
+
+        expect(confirmed).not.toHaveBeenCalled();
+        expect(client.apiKeys.delete).not.toHaveBeenCalled();
+        expect(process.exitCode).toBe(1);
     });
 });

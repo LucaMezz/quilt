@@ -1,6 +1,7 @@
 import { defineCommand } from "citty";
 
 import { client } from "../../client";
+import { shortId } from "../../lib/key-ref";
 import { allPages } from "../../lib/pages";
 import { log } from "../../ui/log";
 import { formatDate, printJson } from "../../ui/output";
@@ -54,7 +55,7 @@ export default defineCommand({
                 ["NAME", "ID", "STATUS", "EXPIRES", "LAST USED"],
                 keys.map((key) => [
                     key.name ?? "",
-                    theme.muted(key.id),
+                    theme.muted(shortId(key.id)),
                     status(key),
                     theme.muted(dateOr(key.expiresAt, "never")),
                     theme.muted(dateOr(key.lastRequest, "never")),

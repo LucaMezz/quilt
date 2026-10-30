@@ -1,4 +1,4 @@
-import { confirm, input } from "@inquirer/prompts";
+import { confirm, input, select } from "@inquirer/prompts";
 
 import { log } from "./log";
 import { theme } from "./theme";
@@ -14,6 +14,10 @@ async function falseOnCancel(prompt: Promise<boolean>) {
         if (cancelledByUser(error)) return false;
         throw error;
     }
+}
+
+export function canPrompt() {
+    return Boolean(process.stdin.isTTY);
 }
 
 export function confirmByTyping(expected: string) {
@@ -33,7 +37,7 @@ export function confirmYesNo(message: string) {
 
 export async function confirmed(yes: boolean, ask: () => Promise<boolean>) {
     if (yes) return true;
-    if (!process.stdin.isTTY) {
+    if (!canPrompt()) {
         log.error("Can't ask for confirmation without an interactive terminal");
         log.hint(`Pass ${theme.brand("--yes")} to confirm.`);
         return false;
@@ -41,4 +45,16 @@ export async function confirmed(yes: boolean, ask: () => Promise<boolean>) {
     if (await ask()) return true;
     log.error("Cancelled");
     return false;
+}
+
+export async function chooseOne<T>(
+    message: string,
+    choices: { name: string; value: T }[],
+) {
+    try {
+        return await select({ message, choices }, { output: process.stderr });
+    } catch (error) {
+        if (cancelledByUser(error)) return undefined;
+        throw error;
+    }
 }

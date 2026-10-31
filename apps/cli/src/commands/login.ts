@@ -3,7 +3,7 @@ import { defineCommand } from "citty";
 import { serverHost } from "../client";
 import { getKeySession, revokeApiKey } from "../lib/api-key-session";
 import { canOpenBrowser, openBrowser } from "../lib/browser";
-import { getToken, saveToken } from "../lib/credentials";
+import { getToken, passedKey, saveToken } from "../lib/credentials";
 import { pollForToken, requestDeviceCode } from "../lib/device-auth";
 import { LoginError } from "../lib/login-errors";
 import { log } from "../ui/log";
@@ -106,9 +106,10 @@ export default defineCommand({
         },
     },
     async run({ args }) {
-        if (process.env.QUILT_TOKEN) {
-            log.error("QUILT_TOKEN is set, so quilt uses that key instead");
-            log.hint("Unset QUILT_TOKEN to sign in with quilt login.");
+        const passed = passedKey();
+        if (passed) {
+            log.error(`${passed.reason}, so quilt uses that key instead`);
+            log.hint(`${passed.fix} to sign in with quilt login.`);
             process.exitCode = 1;
             return;
         }

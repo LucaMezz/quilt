@@ -3,7 +3,14 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { deleteToken, getCredential, getToken, saveToken } from "./credentials";
+import {
+    deleteToken,
+    getCredential,
+    getToken,
+    passedKey,
+    saveToken,
+    setApiKeyFlag,
+} from "./credentials";
 
 const keychain = vi.hoisted(() => ({
     entries: new Map<string, string>(),
@@ -46,6 +53,7 @@ beforeEach(() => {
 
 afterEach(() => {
     vi.unstubAllEnvs();
+    setApiKeyFlag(undefined);
     rmSync(configDir, { recursive: true, force: true });
 });
 
@@ -97,6 +105,28 @@ describe("credentials", () => {
             token: "from-env",
             source: "QUILT_TOKEN",
         });
+    });
+
+    it("prefers the --api-key flag over QUILT_TOKEN and the saved token", () => {
+        vi.stubEnv("QUILT_TOKEN", "from-env");
+        saveToken("quilt.test", "saved");
+        setApiKeyFlag("from-flag");
+
+        expect(getCredential("quilt.test")).toEqual({
+            token: "from-flag",
+            source: "--api-key",
+        });
+    });
+
+    it("says how to stop using a passed-in key", () => {
+        saveToken("quilt.test", "saved");
+        expect(passedKey()).toBeUndefined();
+
+        vi.stubEnv("QUILT_TOKEN", "from-env");
+        expect(passedKey()?.fix).toBe("Unset QUILT_TOKEN");
+
+        setApiKeyFlag("from-flag");
+        expect(passedKey()?.fix).toBe("Leave out --api-key");
     });
 
     describe("without a keychain", () => {

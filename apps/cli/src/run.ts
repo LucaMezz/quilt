@@ -3,6 +3,7 @@ import { ORPCError } from "@orpc/client";
 import { type ArgsDef, type CommandDef, runCommand } from "citty";
 
 import { describeCommand, findCommand } from "./command-tree";
+import { setApiKeyFlag } from "./lib/credentials";
 import { renderHelp } from "./ui/help";
 import { log } from "./ui/log";
 import { theme } from "./ui/theme";
@@ -13,8 +14,17 @@ import { theme } from "./ui/theme";
  */
 export async function run(
     root: CommandDef<ArgsDef>,
-    rawArgs = process.argv.slice(2),
+    allArgs = process.argv.slice(2),
 ) {
+    const taken = takeApiKey(allArgs);
+    if (!taken) {
+        log.error("--api-key needs a key");
+        process.exitCode = 1;
+        return;
+    }
+    const { rawArgs, apiKey } = taken;
+    setApiKeyFlag(apiKey);
+
     const meta = await (typeof root.meta === "function"
         ? root.meta()
         : root.meta);
@@ -73,6 +83,24 @@ export async function run(
             error instanceof Error ? error.message : String(error),
         );
     }
+}
+
+function takeApiKey(args: string[]) {
+    const rawArgs: string[] = [];
+    let apiKey: string | undefined;
+    for (let i = 0; i < args.length; i++) {
+        const arg = args[i] ?? "";
+        if (arg === "--api-key" || arg === "-k") {
+            apiKey = args[++i];
+            if (!apiKey || apiKey.startsWith("-")) return undefined;
+        } else if (arg.startsWith("--api-key=")) {
+            apiKey = arg.slice("--api-key=".length);
+            if (!apiKey) return undefined;
+        } else {
+            rawArgs.push(arg);
+        }
+    }
+    return { rawArgs, apiKey };
 }
 
 type ValidationIssue = { path: (string | number)[]; message: string };

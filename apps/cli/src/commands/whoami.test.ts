@@ -14,7 +14,9 @@ vi.mock("../lib/credentials");
 
 const getSession = vi.mocked(authClient.getSession);
 
-function signedIn(source: "keychain" | "file" | "QUILT_TOKEN" = "keychain") {
+function signedIn(
+    source: "keychain" | "file" | "QUILT_TOKEN" | "--api-key" = "keychain",
+) {
     vi.mocked(getCredential).mockReturnValue({ token: "qlt_key", source });
 }
 
@@ -60,6 +62,18 @@ describe("whoami", () => {
         expect(printed()).toContain("quilt.test");
         expect(printed()).toContain("system keychain");
         expect(process.exitCode).toBeUndefined();
+    });
+
+    it("says when the key was passed with --api-key", async () => {
+        signedIn("--api-key");
+        getSession.mockResolvedValue({
+            data: { user: { name: "Ada", email: "ada@example.com" } },
+            error: null,
+        } as never);
+
+        await runCommand(whoami, { rawArgs: [] });
+
+        expect(printed()).toContain("Key passed with --api-key");
     });
 
     it("says when the saved key is no longer valid", async () => {

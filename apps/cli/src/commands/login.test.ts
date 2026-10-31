@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { serverHost } from "../client";
 import { getKeySession, revokeApiKey } from "../lib/api-key-session";
 import { canOpenBrowser, openBrowser } from "../lib/browser";
-import { getToken, saveToken } from "../lib/credentials";
+import { getToken, passedKey, saveToken } from "../lib/credentials";
 import { pollForToken, requestDeviceCode } from "../lib/device-auth";
 import { LoginDeniedError } from "../lib/login-errors";
 import login from "./login";
@@ -120,8 +120,11 @@ describe("login", () => {
         );
     });
 
-    it("refuses while QUILT_TOKEN is set", async () => {
-        vi.stubEnv("QUILT_TOKEN", "qlt_env");
+    it("refuses while a key is passed in", async () => {
+        vi.mocked(passedKey).mockReturnValue({
+            reason: "QUILT_TOKEN is set",
+            fix: "Unset QUILT_TOKEN",
+        });
 
         await runCommand(login, { rawArgs: [] });
 

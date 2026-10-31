@@ -60,6 +60,7 @@ describe("run", () => {
 
         expect(printed()).toContain("Not signed in");
         expect(printed()).toContain("quilt login");
+        expect(printed()).toContain("--api-key");
         expect(printed()).not.toContain("Unexpected error");
         expect(process.exitCode).toBe(1);
     });
@@ -117,6 +118,21 @@ describe("run", () => {
 
         expect(seen).toEqual({});
         expect(printed()).toContain("--api-key needs a key");
+        expect(process.exitCode).toBe(1);
+    });
+
+    it("blames the key passed in when the API rejects it", async () => {
+        await run(rootThrowing(new ORPCError("UNAUTHORIZED")), [
+            "fail",
+            "-k",
+            "qlt_flag",
+        ]);
+
+        expect(printed()).toContain(
+            "The API key passed with --api-key isn't valid",
+        );
+        expect(printed()).toContain("Leave out --api-key");
+        expect(printed()).not.toContain("Not signed in");
         expect(process.exitCode).toBe(1);
     });
 });

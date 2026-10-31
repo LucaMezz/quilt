@@ -45,8 +45,16 @@ export function setApiKeyFlag(key: string | undefined) {
 }
 
 const PASSED_KEYS = {
-    "--api-key": { reason: "--api-key was passed", fix: "Leave out --api-key" },
-    QUILT_TOKEN: { reason: "QUILT_TOKEN is set", fix: "Unset QUILT_TOKEN" },
+    "--api-key": {
+        from: "passed with --api-key",
+        reason: "--api-key was passed",
+        fix: "Leave out --api-key",
+    },
+    QUILT_TOKEN: {
+        from: "in QUILT_TOKEN",
+        reason: "QUILT_TOKEN is set",
+        fix: "Unset QUILT_TOKEN",
+    },
 };
 
 export function passedKey() {

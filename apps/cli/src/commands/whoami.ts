@@ -3,6 +3,7 @@ import { defineCommand } from "citty";
 import { serverHost } from "../client";
 import { getKeySession } from "../lib/api-key-session";
 import { getCredential } from "../lib/credentials";
+import { hintSignIn, reportPassedKeyRejected } from "../lib/sign-in";
 import { log } from "../ui/log";
 import { symbols, theme } from "../ui/theme";
 
@@ -13,6 +14,8 @@ const SOURCES = {
     "--api-key": "Key passed with --api-key",
 };
 
+const KEY_REJECTED = [401, 403];
+
 export default defineCommand({
     meta: {
         name: "whoami",
@@ -22,7 +25,7 @@ export default defineCommand({
         const credential = getCredential(serverHost);
         if (!credential) {
             log.error(`Not signed in to ${serverHost}`);
-            log.hint(`Run ${theme.brand("quilt login")} to sign in.`);
+            hintSignIn();
             process.exitCode = 1;
             return;
         }
@@ -35,7 +38,7 @@ export default defineCommand({
             process.exitCode = 1;
             return;
         }
-        if (result.error && result.error.status !== 401) {
+        if (result.error && !KEY_REJECTED.includes(result.error.status)) {
             log.error(
                 `${serverHost} couldn't check your key`,
                 result.error.message,
@@ -44,8 +47,10 @@ export default defineCommand({
             return;
         }
         if (!result.data) {
-            log.error(`Your key for ${serverHost} is no longer valid`);
-            log.hint(`Run ${theme.brand("quilt login")} to sign in again.`);
+            if (!reportPassedKeyRejected()) {
+                log.error(`Your key for ${serverHost} is no longer valid`);
+                hintSignIn(true);
+            }
             process.exitCode = 1;
             return;
         }

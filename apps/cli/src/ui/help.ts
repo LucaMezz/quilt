@@ -42,10 +42,18 @@ export function renderHelp(root: CommandInfo, info: CommandInfo) {
         );
     }
 
+    if (info.options.length > 0) {
+        out.push(
+            "",
+            section("Options"),
+            ...table(info.options.map((arg) => [arg.flag, describe(arg)])),
+        );
+    }
+
     out.push(
         "",
-        section("Options"),
-        ...table(info.options.map((arg) => [arg.flag, describe(arg)])),
+        section("Global options"),
+        ...table(info.globalOptions.map((arg) => [arg.flag, describe(arg)])),
     );
 
     if (info.subCommands.length > 0) {

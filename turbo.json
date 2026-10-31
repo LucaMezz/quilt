@@ -55,7 +55,8 @@
             "dependsOn": [
                 "^build",
                 "@quilt/api#generate:openapi",
-                "generate:cli"
+                "generate:cli",
+                "check-types"
             ],
             "outputs": [".next/**", "!.next/cache/**"]
         },

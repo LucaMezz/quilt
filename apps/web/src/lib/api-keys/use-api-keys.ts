@@ -1,3 +1,4 @@
+import { API_KEY_PREFIX } from "@quilt/auth/api-keys";
 import type { ApiKeyPermissions } from "@quilt/auth/permissions";
 import { useCallback, useSyncExternalStore } from "react";
 
@@ -99,5 +100,36 @@ export function useApiKey(id: string): ApiKey | undefined {
 export function useDeleteApiKey() {
     return useCallback((id: string) => {
         setKeys(keys.filter((key) => key.id !== id));
+    }, []);
+}
+
+const KEY_ALPHABET =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+function newSecret() {
+    const bytes = crypto.getRandomValues(new Uint8Array(64));
+    const body = Array.from(
+        bytes,
+        (byte) => KEY_ALPHABET[byte % KEY_ALPHABET.length],
+    ).join("");
+    return `${API_KEY_PREFIX}${body}`;
+}
+
+export function useRegenerateApiKey() {
+    return useCallback((id: string, expiresInDays: number) => {
+        const secret = newSecret();
+        setKeys(
+            keys.map((key) =>
+                key.id === id
+                    ? {
+                          ...key,
+                          start: secret.slice(0, API_KEY_PREFIX.length + 2),
+                          expiresAt: daysFromNow(expiresInDays),
+                          lastRequest: null,
+                      }
+                    : key,
+            ),
+        );
+        return secret;
     }, []);
 }

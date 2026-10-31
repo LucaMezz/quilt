@@ -7,12 +7,14 @@ import {
   useApiKey,
   useApiKeys,
   useDeleteApiKey,
+  useRegenerateApiKey,
 } from "@/lib/api-keys/use-api-keys";
 import { renderRoute } from "@/test/render-route";
 
-const { getSession, deleteKey } = vi.hoisted(() => ({
+const { getSession, deleteKey, regenerateKey } = vi.hoisted(() => ({
   getSession: vi.fn(),
   deleteKey: vi.fn(),
+  regenerateKey: vi.fn(),
 }));
 
 vi.mock("@/lib/auth-client", () => ({ authClient: { getSession } }));
@@ -34,6 +36,8 @@ const deployBot: ApiKey = {
 
 const path = `/settings/api-keys/${deployBot.id}`;
 
+const NEW_SECRET = "qlt_N3wS3cretValueThatIsOnlyShownOnce";
+
 function rowFor(name: string) {
   const row = screen.getByRole("rowheader", { name }).closest("tr");
   if (!row) throw new Error(`No row for ${name}`);
@@ -44,7 +48,9 @@ beforeEach(() => {
   vi.mocked(useApiKey).mockReturnValue(deployBot);
   vi.mocked(useApiKeys).mockReturnValue({ keys: [] });
   vi.mocked(useDeleteApiKey).mockReturnValue(deleteKey);
+  vi.mocked(useRegenerateApiKey).mockReturnValue(regenerateKey);
   deleteKey.mockReset();
+  regenerateKey.mockReset().mockReturnValue(NEW_SECRET);
 });
 
 describe("API key page", () => {
@@ -120,5 +126,46 @@ describe("API key page", () => {
     await vi.waitFor(() =>
       expect(router.state.location.pathname).toBe("/settings/api-keys"),
     );
+  });
+
+  it("keeps the current key when regenerating is cancelled", async () => {
+    const user = userEvent.setup();
+    await renderRoute(path, getSession);
+
+    await user.click(
+      await screen.findByRole("button", { name: "Regenerate key" }),
+    );
+    const dialog = await screen.findByRole("dialog", {
+      name: /regenerate deploy-bot/i,
+    });
+    await user.click(within(dialog).getByRole("button", { name: "Cancel" }));
+
+    expect(regenerateKey).not.toHaveBeenCalled();
+  });
+
+  it("regenerates with the chosen expiration and shows the new key once", async () => {
+    const user = userEvent.setup();
+    await renderRoute(path, getSession);
+
+    await user.click(
+      await screen.findByRole("button", { name: "Regenerate key" }),
+    );
+    const dialog = await screen.findByRole("dialog");
+    await user.click(within(dialog).getByLabelText("Expiration"));
+    await user.click(await screen.findByRole("option", { name: "90 days" }));
+    await user.click(
+      within(dialog).getByRole("button", { name: "Regenerate key" }),
+    );
+
+    expect(regenerateKey).toHaveBeenCalledWith(deployBot.id, 90);
+    expect(await screen.findByLabelText("New key")).toHaveValue(NEW_SECRET);
+
+    await user.click(screen.getByRole("button", { name: "Done" }));
+    await user.click(
+      await screen.findByRole("button", { name: "Regenerate key" }),
+    );
+
+    expect(await screen.findByLabelText("Expiration")).toBeInTheDocument();
+    expect(screen.queryByDisplayValue(NEW_SECRET)).not.toBeInTheDocument();
   });
 });

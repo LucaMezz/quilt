@@ -7,6 +7,7 @@ import {
   StatusBadge,
 } from "@/components/api-keys/key-badges";
 import { PermissionsTable } from "@/components/api-keys/permissions-table";
+import { RegenerateApiKey } from "@/components/api-keys/regenerate-api-key";
 import { When } from "@/components/api-keys/when";
 import { expiresSoon, keyStatus } from "@/lib/api-keys/describe";
 import { useApiKey } from "@/lib/api-keys/use-api-keys";
@@ -91,6 +92,7 @@ function ApiKeyPage() {
         </div>
         <PermissionsTable permissions={apiKey.permissions} />
       </section>
+      <RegenerateApiKey apiKey={apiKey} />
       <DeleteApiKey apiKey={apiKey} />
     </div>
   );

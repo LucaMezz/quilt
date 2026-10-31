@@ -3,7 +3,7 @@ import { runCommand } from "citty";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { authClient } from "../lib/auth-client";
-import { getCredential } from "../lib/credentials";
+import { getCredential, passedKey } from "../lib/credentials";
 import whoami from "./whoami";
 
 vi.mock("../client", () => ({ serverHost: "quilt.test" }));
@@ -40,6 +40,7 @@ describe("whoami", () => {
     it("says so when not signed in", async () => {
         await runCommand(whoami, { rawArgs: [] });
 
+        expect(printed()).toContain("--api-key");
         expect(printed()).toContain("Not signed in to quilt.test");
         expect(process.exitCode).toBe(1);
         expect(getCredential).toHaveBeenCalledWith("quilt.test");
@@ -76,17 +77,42 @@ describe("whoami", () => {
         expect(printed()).toContain("Key passed with --api-key");
     });
 
-    it("says when the saved key is no longer valid", async () => {
-        signedIn();
+    it.each([401, 403])(
+        "says when the saved key is rejected with %i",
+        async (status) => {
+            signedIn();
+            getSession.mockResolvedValue({
+                data: null,
+                error: { status, message: "Invalid API key." },
+            } as never);
+
+            await runCommand(whoami, { rawArgs: [] });
+
+            expect(printed()).toContain("no longer valid");
+            expect(printed()).toContain("quilt login");
+            expect(printed()).toContain("--api-key");
+            expect(process.exitCode).toBe(1);
+        },
+    );
+
+    it("blames a passed-in key rather than the saved one", async () => {
+        signedIn("--api-key");
+        vi.mocked(passedKey).mockReturnValue({
+            from: "passed with --api-key",
+            reason: "--api-key was passed",
+            fix: "Leave out --api-key",
+        });
         getSession.mockResolvedValue({
             data: null,
-            error: { status: 401, message: "Invalid API key." },
+            error: { status: 403, message: "Invalid API key." },
         } as never);
 
         await runCommand(whoami, { rawArgs: [] });
 
-        expect(printed()).toContain("no longer valid");
-        expect(printed()).toContain("quilt login");
+        expect(printed()).toContain(
+            "The API key passed with --api-key isn't valid",
+        );
+        expect(printed()).not.toContain("to sign in again");
         expect(process.exitCode).toBe(1);
     });
 

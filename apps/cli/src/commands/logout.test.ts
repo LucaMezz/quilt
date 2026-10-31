@@ -64,6 +64,7 @@ describe("logout", () => {
 
     it("leaves a passed-in key alone", async () => {
         vi.mocked(passedKey).mockReturnValue({
+            from: "in QUILT_TOKEN",
             reason: "QUILT_TOKEN is set",
             fix: "Unset QUILT_TOKEN",
         });

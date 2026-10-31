@@ -4,6 +4,7 @@ import { type ArgsDef, type CommandDef, runCommand } from "citty";
 
 import { describeCommand, findCommand } from "./command-tree";
 import { setApiKeyFlag } from "./lib/credentials";
+import { hintSignIn, reportPassedKeyRejected } from "./lib/sign-in";
 import { renderHelp } from "./ui/help";
 import { log } from "./ui/log";
 import { theme } from "./ui/theme";
@@ -67,8 +68,10 @@ export async function run(
             return;
         }
         if (error instanceof ORPCError && error.code === "UNAUTHORIZED") {
-            log.error("Not signed in, or your key is no longer valid");
-            log.hint(`Run ${theme.brand("quilt login")} to sign in.`);
+            if (!reportPassedKeyRejected()) {
+                log.error("Not signed in, or your key is no longer valid");
+                hintSignIn();
+            }
             return;
         }
         if (error instanceof ORPCError) {

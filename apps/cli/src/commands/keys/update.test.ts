@@ -45,6 +45,16 @@ describe("keys update", () => {
         expect(stderr()).toContain("Updated API key ci");
     });
 
+    it("takes the new name with -n", async () => {
+        await runCommand(update, { rawArgs: ["key-1", "-n", "ci"] });
+
+        expect(client.apiKeys.update).toHaveBeenCalledWith({
+            id: "key-1",
+            name: "ci",
+            enabled: undefined,
+        });
+    });
+
     it("disables the key", async () => {
         await runCommand(update, { rawArgs: ["key-1", "--disable"] });
 

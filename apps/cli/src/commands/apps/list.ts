@@ -18,6 +18,7 @@ export default defineCommand({
         org: orgArg,
         json: {
             type: "boolean",
+            alias: "j",
             default: false,
             description: "Print the apps as JSON",
         },

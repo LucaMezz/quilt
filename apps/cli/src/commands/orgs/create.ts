@@ -20,11 +20,13 @@ export default defineCommand({
         },
         slug: {
             type: "string",
+            alias: "s",
             description:
                 "Identifier used in URLs and commands; derived from the name if omitted",
         },
         json: {
             type: "boolean",
+            alias: "j",
             default: false,
             description: "Print the new organization as JSON",
         },

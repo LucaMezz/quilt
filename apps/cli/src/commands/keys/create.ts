@@ -21,11 +21,13 @@ export default defineCommand({
         },
         "expires-in": {
             type: "string",
+            alias: "e",
             default: "90",
             description: "Days until the key expires, from 1 to 365",
         },
         json: {
             type: "boolean",
+            alias: "j",
             default: false,
             description: "Print the new key and its details as JSON",
         },

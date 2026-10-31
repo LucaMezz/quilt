@@ -18,6 +18,7 @@ export default defineCommand({
         },
         json: {
             type: "boolean",
+            alias: "j",
             default: false,
             description: "Print the organization as JSON",
         },

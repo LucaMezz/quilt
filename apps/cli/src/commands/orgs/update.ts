@@ -19,15 +19,18 @@ export default defineCommand({
         },
         name: {
             type: "string",
+            alias: "n",
             description: "New display name",
         },
         slug: {
             type: "string",
+            alias: "s",
             description:
                 "New slug; scripts and links using the old one stop working",
         },
         json: {
             type: "boolean",
+            alias: "j",
             default: false,
             description: "Print the updated organization as JSON",
         },

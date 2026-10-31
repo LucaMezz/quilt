@@ -27,6 +27,7 @@ export default defineCommand({
         },
         name: {
             type: "string",
+            alias: "n",
             description: "New name",
         },
         enable: {
@@ -41,6 +42,7 @@ export default defineCommand({
         },
         json: {
             type: "boolean",
+            alias: "j",
             default: false,
             description: "Print the updated key as JSON",
         },

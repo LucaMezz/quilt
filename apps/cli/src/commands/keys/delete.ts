@@ -22,11 +22,13 @@ export default defineCommand({
         },
         yes: {
             type: "boolean",
+            alias: "y",
             default: false,
             description: "Delete without asking for confirmation",
         },
         json: {
             type: "boolean",
+            alias: "j",
             default: false,
             description: "Print the deleted key as JSON",
         },

@@ -55,6 +55,18 @@ describe("keys create", () => {
         });
     });
 
+    it("takes short flags", async () => {
+        await runCommand(create, { rawArgs: ["ci", "-e", "30", "-j"] });
+
+        expect(client.apiKeys.create).toHaveBeenCalledWith({
+            name: "ci",
+            expiresIn: 30 * DAY,
+        });
+        expect(JSON.parse(stdout())).toEqual(
+            JSON.parse(JSON.stringify(created)),
+        );
+    });
+
     it("rejects a lifetime that isn't a whole number of days", async () => {
         await runCommand(create, { rawArgs: ["ci", "--expires-in", "1.5"] });
 

@@ -49,6 +49,18 @@ describe("orgs update", () => {
         });
     });
 
+    it("takes short flags", async () => {
+        await runCommand(update, {
+            rawArgs: ["acme", "-n", "Acme Labs", "-s", "acme-labs"],
+        });
+
+        expect(client.organizations.update).toHaveBeenCalledWith({
+            org: "acme",
+            name: "Acme Labs",
+            slug: "acme-labs",
+        });
+    });
+
     it("needs something to change", async () => {
         await runCommand(update, { rawArgs: ["acme"] });
 

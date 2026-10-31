@@ -160,6 +160,18 @@ describe("login", () => {
         );
     });
 
+    it("signs in again with -f", async () => {
+        signedInAs("Ada");
+        vi.mocked(pollForToken).mockResolvedValue({
+            accessToken: "qlt_new",
+            user: undefined,
+        });
+
+        await runCommand(login, { rawArgs: ["-f"] });
+
+        expect(saveToken).toHaveBeenCalledWith(serverHost, "qlt_new");
+    });
+
     it("signs in again when the saved key is no longer valid", async () => {
         vi.mocked(getToken).mockReturnValue("qlt_old");
         vi.mocked(getKeySession).mockResolvedValue({

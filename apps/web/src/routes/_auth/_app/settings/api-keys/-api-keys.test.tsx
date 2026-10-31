@@ -15,6 +15,7 @@ function key(overrides: Partial<ApiKey>): ApiKey {
   return {
     id: "key-1",
     name: "laptop",
+    description: null,
     start: "qlt_ab",
     enabled: true,
     expiresAt: new Date(Date.now() + 60 * DAY),
@@ -103,6 +104,18 @@ describe("API keys settings", () => {
     const soon = shortLived.getByText("Expires soon");
     expect(soon.closest("td")).toHaveTextContent("Active");
     expect(shortLived.getByText("No access")).toBeInTheDocument();
+  });
+
+  it("shows a key's description under its name", async () => {
+    showKeys([
+      key({ id: "k1", name: "laptop", description: "Work laptop CLI" }),
+      key({ id: "k2", name: "deploy-bot" }),
+    ]);
+    await renderRoute("/settings/api-keys", getSession);
+    await screen.findByRole("table", { name: "API keys" });
+
+    expect(rowFor("laptop").getByText("Work laptop CLI")).toBeInTheDocument();
+    expect(rowFor("deploy-bot").queryByRole("paragraph")).toBeNull();
   });
 
   it("links each key to its own page", async () => {

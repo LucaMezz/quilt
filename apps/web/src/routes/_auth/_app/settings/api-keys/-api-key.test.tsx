@@ -23,6 +23,7 @@ const DAY = 24 * 60 * 60 * 1000;
 const deployBot: ApiKey = {
   id: "NbL55QdT9wRk2HsE6mZyPc3Vx8Ga1JfU",
   name: "deploy-bot",
+  description: null,
   start: "qlt_Nb",
   enabled: true,
   expiresAt: new Date(Date.now() + 60 * DAY),
@@ -58,6 +59,18 @@ describe("API key page", () => {
     expect(screen.getByText(deployBot.id)).toBeInTheDocument();
     expect(screen.getByText("Never used")).toBeInTheDocument();
     expect(useApiKey).toHaveBeenCalledWith(deployBot.id);
+  });
+
+  it("shows the key's description when it has one", async () => {
+    vi.mocked(useApiKey).mockReturnValue({
+      ...deployBot,
+      description: "Deploys the website from CI",
+    });
+    await renderRoute(path, getSession);
+
+    expect(
+      await screen.findByText("Deploys the website from CI"),
+    ).toBeInTheDocument();
   });
 
   it("lists the access it has to every resource", async () => {

@@ -58,6 +58,13 @@ export async function describeCommand(
         description: "Show help",
         required: false,
     });
+    options.push({
+        name: "api-key",
+        flag: "-k, --api-key <key>",
+        description:
+            "API key to use instead of QUILT_TOKEN or the one saved by quilt login",
+        required: false,
+    });
     if (isRoot && meta.version) {
         options.push({
             name: "version",

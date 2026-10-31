@@ -38,7 +38,27 @@ function getKeychainToken(host: string) {
     }
 }
 
+let apiKeyFlag: string | undefined;
+
+export function setApiKeyFlag(key: string | undefined) {
+    apiKeyFlag = key;
+}
+
+const PASSED_KEYS = {
+    "--api-key": { reason: "--api-key was passed", fix: "Leave out --api-key" },
+    QUILT_TOKEN: { reason: "QUILT_TOKEN is set", fix: "Unset QUILT_TOKEN" },
+};
+
+export function passedKey() {
+    if (apiKeyFlag) return PASSED_KEYS["--api-key"];
+    if (process.env.QUILT_TOKEN) return PASSED_KEYS.QUILT_TOKEN;
+    return undefined;
+}
+
 export function getCredential(host: string) {
+    if (apiKeyFlag) {
+        return { token: apiKeyFlag, source: "--api-key" } as const;
+    }
     if (process.env.QUILT_TOKEN) {
         return {
             token: process.env.QUILT_TOKEN,

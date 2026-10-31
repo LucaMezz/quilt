@@ -2,7 +2,26 @@ import { ORPCError } from "@orpc/client";
 import { defineCommand } from "citty";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { getCredential, setApiKeyFlag } from "./lib/credentials";
 import { run } from "./run";
+
+function rootRecording() {
+    const seen: { app?: string; token?: string } = {};
+    const root = defineCommand({
+        meta: { name: "quilt" },
+        subCommands: {
+            show: defineCommand({
+                meta: { name: "show" },
+                args: { app: { type: "positional", required: true } },
+                run({ args }) {
+                    seen.app = args.app;
+                    seen.token = getCredential("quilt.test")?.token;
+                },
+            }),
+        },
+    });
+    return { root, seen };
+}
 
 function rootThrowing(error: unknown) {
     return defineCommand({
@@ -31,6 +50,7 @@ beforeEach(() => {
 
 afterEach(() => {
     vi.restoreAllMocks();
+    setApiKeyFlag(undefined);
     process.exitCode = undefined;
 });
 
@@ -72,5 +92,31 @@ describe("run", () => {
         expect(printed()).toContain("Input validation failed");
         expect(printed()).toContain("slug: Invalid string");
         expect(printed()).toContain("name: Too small");
+    });
+
+    it.each([
+        [["--api-key", "qlt_flag", "show", "blog"]],
+        [["show", "blog", "-k", "qlt_flag"]],
+        [["show", "--api-key=qlt_flag", "blog"]],
+    ])("uses the key passed in %j", async (args) => {
+        const { root, seen } = rootRecording();
+
+        await run(root, args);
+
+        expect(seen).toEqual({ app: "blog", token: "qlt_flag" });
+    });
+
+    it.each([
+        [["show", "blog", "--api-key"]],
+        [["show", "--api-key", "--json"]],
+        [["show", "blog", "--api-key="]],
+    ])("rejects %j without a key", async (args) => {
+        const { root, seen } = rootRecording();
+
+        await run(root, args);
+
+        expect(seen).toEqual({});
+        expect(printed()).toContain("--api-key needs a key");
+        expect(process.exitCode).toBe(1);
     });
 });

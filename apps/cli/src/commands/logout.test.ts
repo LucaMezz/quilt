@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { client } from "../client";
 import { authClient } from "../lib/auth-client";
-import { deleteToken, getToken } from "../lib/credentials";
+import { deleteToken, getToken, passedKey } from "../lib/credentials";
 import logout from "./logout";
 
 vi.mock("../client", () => ({
@@ -62,8 +62,11 @@ describe("logout", () => {
         );
     });
 
-    it("leaves a QUILT_TOKEN key alone", async () => {
-        vi.stubEnv("QUILT_TOKEN", "qlt_key");
+    it("leaves a passed-in key alone", async () => {
+        vi.mocked(passedKey).mockReturnValue({
+            reason: "QUILT_TOKEN is set",
+            fix: "Unset QUILT_TOKEN",
+        });
         signedIn();
 
         await runCommand(logout, { rawArgs: [] });

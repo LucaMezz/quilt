@@ -2,7 +2,7 @@ import { defineCommand } from "citty";
 
 import { serverHost } from "../client";
 import { revokeApiKey } from "../lib/api-key-session";
-import { deleteToken, getToken } from "../lib/credentials";
+import { deleteToken, getToken, passedKey } from "../lib/credentials";
 import { log } from "../ui/log";
 
 export default defineCommand({
@@ -11,11 +11,12 @@ export default defineCommand({
         description: "Sign this device out of your quilt server",
     },
     async run() {
-        if (process.env.QUILT_TOKEN) {
+        const passed = passedKey();
+        if (passed) {
             log.error(
-                "QUILT_TOKEN is set, so there's no saved sign-in to remove",
+                `${passed.reason}, so there's no saved sign-in to remove`,
             );
-            log.hint("Unset QUILT_TOKEN to use the key saved by quilt login.");
+            log.hint(`${passed.fix} to use the key saved by quilt login.`);
             process.exitCode = 1;
             return;
         }

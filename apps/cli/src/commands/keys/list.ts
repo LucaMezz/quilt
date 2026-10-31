@@ -32,6 +32,7 @@ export default defineCommand({
     args: {
         json: {
             type: "boolean",
+            alias: "j",
             default: false,
             description: "Print the keys as JSON",
         },

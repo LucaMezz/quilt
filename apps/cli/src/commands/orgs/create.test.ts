@@ -47,6 +47,15 @@ describe("orgs create", () => {
         });
     });
 
+    it("takes the slug with -s", async () => {
+        await runCommand(create, { rawArgs: ["Acme Labs", "-s", "acme"] });
+
+        expect(client.organizations.create).toHaveBeenCalledWith({
+            name: "Acme Labs",
+            slug: "acme",
+        });
+    });
+
     it("prints JSON with --json", async () => {
         await runCommand(create, { rawArgs: ["Acme Labs", "--json"] });
 

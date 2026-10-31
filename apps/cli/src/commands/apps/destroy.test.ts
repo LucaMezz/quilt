@@ -86,4 +86,11 @@ describe("apps destroy", () => {
 
         expect(JSON.parse(stdout())).toEqual(JSON.parse(JSON.stringify(app)));
     });
+
+    it("combines short flags", async () => {
+        await runCommand(destroy, { rawArgs: ["blog", "-o", "acme", "-yj"] });
+
+        expect(confirmed).toHaveBeenCalledWith(true, expect.any(Function));
+        expect(JSON.parse(stdout())).toEqual(JSON.parse(JSON.stringify(app)));
+    });
 });

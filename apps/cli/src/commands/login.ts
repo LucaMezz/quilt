@@ -100,6 +100,7 @@ export default defineCommand({
         },
         force: {
             type: "boolean",
+            alias: "f",
             default: false,
             description: "Sign in again even if already signed in",
         },

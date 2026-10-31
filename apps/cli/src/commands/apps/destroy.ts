@@ -22,11 +22,13 @@ export default defineCommand({
         org: orgArg,
         yes: {
             type: "boolean",
+            alias: "y",
             default: false,
             description: "Destroy without asking for confirmation",
         },
         json: {
             type: "boolean",
+            alias: "j",
             default: false,
             description: "Print the app as JSON",
         },

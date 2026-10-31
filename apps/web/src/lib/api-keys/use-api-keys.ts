@@ -1,9 +1,11 @@
+import { API_KEY_PREFIX } from "@quilt/auth/api-keys";
 import type { ApiKeyPermissions } from "@quilt/auth/permissions";
 import { useCallback, useSyncExternalStore } from "react";
 
 export type ApiKey = {
     id: string;
     name: string | null;
+    description: string | null;
     start: string | null;
     enabled: boolean;
     expiresAt: Date | null;
@@ -22,6 +24,7 @@ const mockKeys: ApiKey[] = [
     {
         id: "Ib60rb3kQm2VtX8pLs4N1aZcYw7Ue5Hd",
         name: "quilt CLI",
+        description: "Created by quilt login on this laptop.",
         start: "qlt_Ib",
         enabled: true,
         expiresAt: daysFromNow(83),
@@ -37,6 +40,7 @@ const mockKeys: ApiKey[] = [
     {
         id: "NbL55QdT9wRk2HsE6mZyPc3Vx8Ga1JfU",
         name: "grafana dashboard",
+        description: "Read-only access for the status board in the office.",
         start: "qlt_Nb",
         enabled: true,
         expiresAt: daysFromNow(4),
@@ -47,6 +51,7 @@ const mockKeys: ApiKey[] = [
     {
         id: "0C7JxCoNhHUgWwS0WVZbRHN2volNTjOJ",
         name: "github actions",
+        description: "Deploys apps from the main branch of the website repo.",
         start: "qlt_0C",
         enabled: false,
         expiresAt: daysFromNow(200),
@@ -57,6 +62,7 @@ const mockKeys: ApiKey[] = [
     {
         id: "Zz9yXw8vRt6Qp4Lm2Kj0Hg7Fd5Sa3Bn1",
         name: "old laptop",
+        description: null,
         start: "qlt_Zz",
         enabled: true,
         expiresAt: daysFromNow(-3),
@@ -94,5 +100,36 @@ export function useApiKey(id: string): ApiKey | undefined {
 export function useDeleteApiKey() {
     return useCallback((id: string) => {
         setKeys(keys.filter((key) => key.id !== id));
+    }, []);
+}
+
+const KEY_ALPHABET =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+function newSecret() {
+    const bytes = crypto.getRandomValues(new Uint8Array(64));
+    const body = Array.from(
+        bytes,
+        (byte) => KEY_ALPHABET[byte % KEY_ALPHABET.length],
+    ).join("");
+    return `${API_KEY_PREFIX}${body}`;
+}
+
+export function useRegenerateApiKey() {
+    return useCallback((id: string, expiresInDays: number) => {
+        const secret = newSecret();
+        setKeys(
+            keys.map((key) =>
+                key.id === id
+                    ? {
+                          ...key,
+                          start: secret.slice(0, API_KEY_PREFIX.length + 2),
+                          expiresAt: daysFromNow(expiresInDays),
+                          lastRequest: null,
+                      }
+                    : key,
+            ),
+        );
+        return secret;
     }, []);
 }

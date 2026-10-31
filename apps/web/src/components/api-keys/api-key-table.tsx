@@ -50,6 +50,11 @@ export function ApiKeyTable({ keys }: { keys: ApiKey[] }) {
                     {key.start}…
                   </code>
                 )}
+                {key.description && (
+                  <p className="max-w-xs truncate text-muted-foreground text-xs">
+                    {key.description}
+                  </p>
+                )}
               </th>
               <TableCell className="align-top">
                 <div className="flex flex-wrap items-center gap-1">

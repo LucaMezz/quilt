@@ -7,6 +7,7 @@ import {
   StatusBadge,
 } from "@/components/api-keys/key-badges";
 import { PermissionsTable } from "@/components/api-keys/permissions-table";
+import { RegenerateApiKey } from "@/components/api-keys/regenerate-api-key";
 import { When } from "@/components/api-keys/when";
 import { expiresSoon, keyStatus } from "@/lib/api-keys/describe";
 import { useApiKey } from "@/lib/api-keys/use-api-keys";
@@ -51,6 +52,9 @@ function ApiKeyPage() {
           <StatusBadge status={keyStatus(apiKey)} />
           {expiresSoon(apiKey) && <ExpiresSoonBadge />}
         </div>
+        {apiKey.description && (
+          <p className="text-muted-foreground text-sm">{apiKey.description}</p>
+        )}
         <dl className="grid grid-cols-[max-content_1fr] gap-x-6 gap-y-2 text-sm">
           <dt className="text-muted-foreground">Key</dt>
           <dd>
@@ -88,6 +92,7 @@ function ApiKeyPage() {
         </div>
         <PermissionsTable permissions={apiKey.permissions} />
       </section>
+      <RegenerateApiKey apiKey={apiKey} />
       <DeleteApiKey apiKey={apiKey} />
     </div>
   );

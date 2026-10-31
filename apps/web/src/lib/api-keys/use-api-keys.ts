@@ -1,4 +1,5 @@
 import type { ApiKeyPermissions } from "@quilt/auth/permissions";
+import { useCallback, useSyncExternalStore } from "react";
 
 export type ApiKey = {
     id: string;
@@ -65,6 +66,33 @@ const mockKeys: ApiKey[] = [
     },
 ];
 
+let keys = mockKeys;
+const listeners = new Set<() => void>();
+
+function subscribe(listener: () => void) {
+    listeners.add(listener);
+    return () => listeners.delete(listener);
+}
+
+function setKeys(next: ApiKey[]) {
+    keys = next;
+    for (const listener of listeners) listener();
+}
+
+function snapshot() {
+    return keys;
+}
+
 export function useApiKeys(): { keys: ApiKey[] } {
-    return { keys: mockKeys };
+    return { keys: useSyncExternalStore(subscribe, snapshot) };
+}
+
+export function useApiKey(id: string): ApiKey | undefined {
+    return useApiKeys().keys.find((key) => key.id === id);
+}
+
+export function useDeleteApiKey() {
+    return useCallback((id: string) => {
+        setKeys(keys.filter((key) => key.id !== id));
+    }, []);
 }

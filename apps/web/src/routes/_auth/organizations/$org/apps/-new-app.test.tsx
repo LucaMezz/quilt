@@ -49,7 +49,7 @@ describe("new app", () => {
     );
   });
 
-  it("creates the app and returns to the organization's apps", async () => {
+  it("creates the app and opens it", async () => {
     const user = userEvent.setup();
     const { router, name, submit } = await renderPage();
 
@@ -58,7 +58,9 @@ describe("new app", () => {
 
     expect(create).toHaveBeenCalledWith({ organization: "acme", name: "shop" });
     expect(toastSuccess).toHaveBeenCalledWith("Created app shop");
-    expect(router.state.location.pathname).toBe("/organizations/acme/apps");
+    expect(router.state.location.pathname).toBe(
+      "/organizations/acme/apps/shop",
+    );
   });
 
   it.each([

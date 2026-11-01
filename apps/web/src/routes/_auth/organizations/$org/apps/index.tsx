@@ -1,14 +1,18 @@
-import { Avatar, AvatarFallback } from "@quilt/ui/components/avatar";
 import { buttonVariants } from "@quilt/ui/components/button";
 import { Card } from "@quilt/ui/components/card";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { BoxesIcon, ExternalLinkIcon, PlusIcon } from "lucide-react";
+import { BoxesIcon, PlusIcon } from "lucide-react";
 
 import { PageHeader } from "@/components/app/page-header";
 import {
   AppStatusBadge,
   statusOrder,
 } from "@/components/apps/app-status-badge";
+import {
+  AppAvatar,
+  Hostname,
+  LiveDeployment,
+} from "@/components/apps/app-summary";
 import { Collection } from "@/components/collection/collection";
 import { CollectionEmpty } from "@/components/collection/collection-empty";
 import type { Column } from "@/components/collection/collection-table";
@@ -32,7 +36,7 @@ const columns: Column<App>[] = [
     cell: (app) => (
       <span className="flex items-center gap-3">
         <AppAvatar app={app} />
-        <span className="font-medium">{app.name}</span>
+        <AppLink app={app} />
       </span>
     ),
   },
@@ -115,13 +119,13 @@ function Apps() {
           />
         }
         grid={(app) => (
-          <Card className="h-full gap-4 p-5">
+          <Card className="h-full gap-4 p-5 transition-colors has-[a:hover]:bg-muted/50">
             <div className="flex items-start justify-between gap-3">
               <AppAvatar app={app} size="lg" />
               <AppStatusBadge status={app.status} />
             </div>
             <div className="flex flex-col gap-1">
-              <span className="font-medium">{app.name}</span>
+              <AppLink app={app} />
               <Hostname app={app} />
             </div>
             <div className="mt-auto text-muted-foreground text-sm">
@@ -130,10 +134,10 @@ function Apps() {
           </Card>
         )}
         list={(app) => (
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 text-sm">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 text-sm transition-colors has-[a:hover]:bg-muted/50">
             <AppAvatar app={app} />
             <div className="flex min-w-0 flex-1 flex-col">
-              <span className="font-medium">{app.name}</span>
+              <AppLink app={app} />
               <Hostname app={app} />
             </div>
             <span className="text-muted-foreground">
@@ -148,43 +152,17 @@ function Apps() {
   );
 }
 
-function AppAvatar({ app, size }: { app: App; size?: "lg" }) {
-  return (
-    <Avatar
-      className="rounded-md after:rounded-md"
-      size={size}
-      aria-hidden="true"
-    >
-      <AvatarFallback className="rounded-md">
-        {app.name.slice(0, 1).toUpperCase()}
-      </AvatarFallback>
-    </Avatar>
-  );
-}
+const linkClass =
+  "font-medium outline-none after:absolute after:inset-0 after:rounded-[inherit] focus-visible:after:ring-2 focus-visible:after:ring-ring";
 
-function Hostname({ app }: { app: App }) {
+function AppLink({ app }: { app: App }) {
   return (
-    <a
-      href={`https://${app.hostname}`}
-      target="_blank"
-      rel="noreferrer"
-      className="inline-flex w-fit min-w-0 items-center gap-1 text-muted-foreground text-sm hover:text-foreground hover:underline"
+    <Link
+      to="/organizations/$org/apps/$app"
+      params={{ org: app.organization, app: app.name }}
+      className={linkClass}
     >
-      <span className="truncate">{app.hostname}</span>
-      <ExternalLinkIcon className="size-3.5 shrink-0" aria-hidden="true" />
-      <span className="sr-only">(opens in a new tab)</span>
-    </a>
-  );
-}
-
-function LiveDeployment({ app }: { app: App }) {
-  if (!app.liveDeployment) {
-    return <span className="text-muted-foreground">No deployments yet</span>;
-  }
-  return (
-    <span>
-      v{app.liveDeployment.version} ·{" "}
-      <RelativeTime date={app.liveDeployment.deployedAt} fallback="Unknown" />
-    </span>
+      {app.name}
+    </Link>
   );
 }

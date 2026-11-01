@@ -44,7 +44,7 @@ export function SignupForm({
         {
           onSuccess: () => {
             navigate({
-              to: "/account/organizations",
+              to: "/organizations",
             });
             toast.success("Sign up successful");
           },

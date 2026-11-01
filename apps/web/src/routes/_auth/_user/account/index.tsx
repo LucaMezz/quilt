@@ -4,7 +4,7 @@ import { ProfileName } from "@/components/settings/profile-name";
 import { ProfilePicture } from "@/components/settings/profile-picture";
 import { useProfile } from "@/lib/profile/use-profile";
 
-export const Route = createFileRoute("/_auth/account/")({
+export const Route = createFileRoute("/_auth/_user/account/")({
   component: ProfileSettings,
 });
 

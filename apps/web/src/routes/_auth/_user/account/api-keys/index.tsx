@@ -19,7 +19,7 @@ import { ApiKeyTable } from "@/components/api-keys/api-key-table";
 import { SectionCard } from "@/components/settings/section-card";
 import { useApiKeys } from "@/lib/api-keys/use-api-keys";
 
-export const Route = createFileRoute("/_auth/account/api-keys/")({
+export const Route = createFileRoute("/_auth/_user/account/api-keys/")({
   component: ApiKeysSettings,
   staticData: { breadcrumb: "API keys" },
 });

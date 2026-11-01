@@ -21,15 +21,17 @@ type NavItem = {
 export function NavMain({
   sections,
 }: {
-  sections: { label: string; items: readonly NavItem[] }[];
+  sections: { label?: string; items: readonly NavItem[] }[];
 }) {
   const matchRoute = useMatchRoute();
 
   return sections.map((section, index) => (
-    <Fragment key={section.label}>
+    <Fragment key={section.label ?? index}>
       {index > 0 && <SidebarSeparator />}
       <SidebarGroup>
-        <SidebarGroupLabel>{section.label}</SidebarGroupLabel>
+        {section.label && (
+          <SidebarGroupLabel>{section.label}</SidebarGroupLabel>
+        )}
         <SidebarMenu>
           {section.items.map((item) => (
             <SidebarMenuItem key={item.title}>

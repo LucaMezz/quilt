@@ -39,7 +39,7 @@ export default function UserMenu() {
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem>{session.user.email}</DropdownMenuItem>
-          <DropdownMenuItem render={<Link to="/account/organizations" />}>
+          <DropdownMenuItem render={<Link to="/organizations" />}>
             Organizations
           </DropdownMenuItem>
           <DropdownMenuItem

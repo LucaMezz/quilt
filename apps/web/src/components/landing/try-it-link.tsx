@@ -15,7 +15,7 @@ export function TryItLink() {
 
   return (
     <Link
-      to={session ? "/account/organizations" : "/login"}
+      to={session ? "/organizations" : "/login"}
       className={cn(buttonVariants({ size: "lg" }), "h-10 px-5")}
     >
       {session ? "Open quilt" : "Sign in and try it"}

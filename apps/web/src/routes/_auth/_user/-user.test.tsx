@@ -13,7 +13,7 @@ function sidebar() {
   return within(content);
 }
 
-describe("account", () => {
+describe("user shell", () => {
   it("has its own sidebar without organization pages", async () => {
     await renderRoute("/account", getSession);
 
@@ -27,12 +27,12 @@ describe("account", () => {
   it.each([
     ["/account", "Profile", "API keys"],
     ["/account/api-keys", "API keys", "Profile"],
-    ["/account/organizations", "Organizations", "Profile"],
+    ["/organizations", "Organizations", "Profile"],
     ["/account", "Profile", "Organizations"],
   ])("marks only the current page at %s", async (path, current, other) => {
     await renderRoute(path, getSession);
 
-    await screen.findByRole("heading", { level: 1, name: "Account" });
+    await screen.findByRole("heading", { level: 1 });
     expect(sidebar().getByRole("link", { name: current })).toHaveAttribute(
       "data-active",
     );

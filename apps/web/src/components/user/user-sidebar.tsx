@@ -13,20 +13,24 @@ import { Logo } from "@/components/logo";
 
 const sections = [
   {
-    label: "Account",
     items: [
       {
         title: "Organizations",
         icon: <Building2Icon />,
-        to: "/account/organizations",
+        to: "/organizations",
       },
+    ],
+  },
+  {
+    label: "Account",
+    items: [
       { title: "Profile", icon: <UserIcon />, to: "/account", exact: true },
       { title: "API keys", icon: <KeyRoundIcon />, to: "/account/api-keys" },
     ],
   },
 ] as const;
 
-export function AccountSidebar({
+export function UserSidebar({
   user,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {

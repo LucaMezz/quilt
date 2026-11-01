@@ -9,6 +9,7 @@ import {
   useDeleteApiKey,
   useRegenerateApiKey,
   useSetApiKeyEnabled,
+  useUpdateApiKeyDetails,
   useUpdateApiKeyOrganizations,
   useUpdateApiKeyPermissions,
 } from "@/lib/api-keys/use-api-keys";
@@ -21,6 +22,8 @@ const {
   updatePermissions,
   updateOrganizations,
   setEnabled,
+  updateDetails,
+  toastSuccess,
 } = vi.hoisted(() => ({
   getSession: vi.fn(),
   deleteKey: vi.fn(),
@@ -28,10 +31,16 @@ const {
   updatePermissions: vi.fn(),
   updateOrganizations: vi.fn(),
   setEnabled: vi.fn(),
+  updateDetails: vi.fn(),
+  toastSuccess: vi.fn(),
 }));
 
 vi.mock("@/lib/auth-client", () => ({ authClient: { getSession } }));
 vi.mock("@/lib/api-keys/use-api-keys");
+vi.mock("sonner", async (original) => ({
+  ...(await original<typeof import("sonner")>()),
+  toast: { success: toastSuccess, error: vi.fn() },
+}));
 
 const DAY = 24 * 60 * 60 * 1000;
 
@@ -85,6 +94,9 @@ beforeEach(() => {
   updateOrganizations.mockReset();
   vi.mocked(useSetApiKeyEnabled).mockReturnValue(setEnabled);
   setEnabled.mockReset();
+  vi.mocked(useUpdateApiKeyDetails).mockReturnValue(updateDetails);
+  updateDetails.mockReset();
+  toastSuccess.mockReset();
   deleteKey.mockReset();
   regenerateKey.mockReset().mockReturnValue(NEW_SECRET);
 });
@@ -395,5 +407,71 @@ describe("API key page", () => {
 
     expect(await screen.findByLabelText("Expiration")).toBeInTheDocument();
     expect(screen.queryByDisplayValue(NEW_SECRET)).not.toBeInTheDocument();
+  });
+});
+
+describe("API key name and description", () => {
+  it("renames the key in place", async () => {
+    const user = userEvent.setup();
+    await renderRoute(path, getSession);
+
+    await user.click(await screen.findByRole("button", { name: "Edit name" }));
+    const input = screen.getByRole("textbox", { name: "Name" });
+    await user.clear(input);
+    await user.type(input, "ci-deploys{Enter}");
+
+    expect(updateDetails).toHaveBeenCalledWith(deployBot.id, {
+      name: "ci-deploys",
+    });
+    expect(toastSuccess).toHaveBeenCalledWith("Renamed the key to ci-deploys");
+  });
+
+  it("won't leave the key without a name", async () => {
+    const user = userEvent.setup();
+    await renderRoute(path, getSession);
+
+    await user.click(await screen.findByRole("button", { name: "Edit name" }));
+    await user.clear(screen.getByRole("textbox", { name: "Name" }));
+    await user.keyboard("{Enter}");
+
+    expect(await screen.findByText("Give the key a name")).toBeInTheDocument();
+    expect(updateDetails).not.toHaveBeenCalled();
+  });
+
+  it("adds a description to a key without one", async () => {
+    const user = userEvent.setup();
+    await renderRoute(path, getSession);
+
+    await user.click(
+      await screen.findByRole("button", { name: "Add a description" }),
+    );
+    await user.type(
+      screen.getByRole("textbox", { name: "Description" }),
+      "Deploys from CI{Enter}",
+    );
+
+    expect(updateDetails).toHaveBeenCalledWith(deployBot.id, {
+      description: "Deploys from CI",
+    });
+  });
+
+  it("removes the description when it's cleared", async () => {
+    const user = userEvent.setup();
+    vi.mocked(useApiKey).mockReturnValue({
+      ...deployBot,
+      description: "Deploys from CI",
+    });
+    await renderRoute(path, getSession);
+
+    await user.click(
+      await screen.findByRole("button", { name: "Edit description" }),
+    );
+    await user.clear(screen.getByRole("textbox", { name: "Description" }));
+    await user.keyboard("{Enter}");
+
+    expect(updateDetails).toHaveBeenCalledWith(deployBot.id, {
+      description: null,
+    });
+    expect(toastSuccess).toHaveBeenCalledWith("Removed the description");
   });
 });

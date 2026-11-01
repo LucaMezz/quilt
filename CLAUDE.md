@@ -13,6 +13,7 @@ pnpm check                       # biome check --write
 pnpm turbo run check-types test  # what the pre-push hook runs, after knip
 pnpm knip                        # unused files, exports and deps; CI and pre-push fail on findings
 pnpm test:integration            # needs infra:start; each run creates and drops its own DB and bucket
+pnpm --filter web test:storybook # every story as a test in Chromium (render + play functions)
 pnpm turbo run test -- --coverage.enabled  # lcov in <pkg>/coverage/unit (test:integration → coverage/integration)
 mise run cluster:dev:up          # k3d cluster + Knative, needed for test:e2e
 pnpm turbo boundaries            # CI fails on imports of undeclared deps or across package dirs
@@ -50,6 +51,7 @@ pnpm --filter @quilt/db db:migrate                     # apply to the dev DB (DA
 - `@quilt/db/testing` and `@quilt/storage/testing` are test-only; Biome rejects them in application code.
 - API integration tests use the fixtures in `packages/api/src/testing/fixtures.ts` (`db`, `storage`, `auth`, `signUp`, `createOrganization`) and run against real Postgres, RustFS and Better Auth.
 - Aim for roughly 80% unit, 15% integration and 5% e2e tests by count; anything that must not break gets a test.
+- Before building UI in `apps/web`, look for an existing component that already does the job: the shared ones in `apps/web/src/components` and `@quilt/ui`, most of which have Storybook stories (`pnpm --filter web storybook`). Reuse or extend it rather than writing a near-copy, and give new shared components stories.
 
 ## Workflow
 
@@ -65,6 +67,7 @@ pnpm --filter @quilt/db db:migrate                     # apply to the dev DB (DA
 - Commits are conventional and commitlint-checked; valid scopes are workspace directory names plus `infra`, `deps`, `ci`, `release`, `repo`.
 - `e2e.yml` is not yet a required check; it runs but doesn't gate merges.
 - Pass `--coverage.enabled`, not `--coverage`, through Turborepo: the bare flag replaces the whole coverage config and drops each package's `reportsDirectory`.
+- Story tests run without the Storybook UI, so `useArgs` updates do nothing there. Keep interactive story state in a component with `useState` (remount it with `key` to follow controls).
 - Codecov judges PRs on patch (changed-line) coverage, informational only; see `codecov.yml`.
 - Knip can't see uses outside imports (bundled output, config files loaded by path, CLIs run via `pnpm exec`). Check for those before deleting a finding; if it's a false positive, ignore it in `knip.json` instead.
 - Knip hints to remove the `routeTree.gen` entries from `ignoreUnresolved` only because the dev server generated that file locally. Keep them: it's gitignored, so it's missing in CI and fresh clones.

@@ -23,7 +23,7 @@ vi.stubGlobal("matchMedia", () => ({
 }));
 
 describe("NavUser", () => {
-  it("links to the settings page", async () => {
+  it("links to your account settings", async () => {
     const user = userEvent.setup();
     render(
       <SidebarProvider>
@@ -34,8 +34,8 @@ describe("NavUser", () => {
     await user.click(screen.getByRole("button", { name: /ada lovelace/i }));
 
     expect(
-      await screen.findByRole("menuitem", { name: "Settings" }),
-    ).toHaveAttribute("href", "/settings");
+      await screen.findByRole("menuitem", { name: "Account settings" }),
+    ).toHaveAttribute("href", "/account");
   });
 
   it("logs out and returns to the landing page", async () => {

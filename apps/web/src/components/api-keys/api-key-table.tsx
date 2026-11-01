@@ -32,7 +32,7 @@ export function ApiKeyTable({ keys }: { keys: ApiKey[] }) {
             <TableRow key={key.id} className="relative">
               <th scope="row" className="px-4 py-3 text-left font-normal">
                 <Link
-                  to="/settings/api-keys/$keyId"
+                  to="/account/api-keys/$keyId"
                   params={{ keyId: key.id }}
                   className="font-medium text-base outline-none after:absolute after:inset-0 after:rounded-sm hover:underline focus-visible:after:ring-2 focus-visible:after:ring-ring"
                 >

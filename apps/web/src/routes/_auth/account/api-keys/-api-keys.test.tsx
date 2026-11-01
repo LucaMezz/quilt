@@ -39,43 +39,35 @@ function rowFor(name: string) {
 }
 
 describe("API keys settings", () => {
-  it("is reachable from the settings navigation", async () => {
+  it("has an API keys heading", async () => {
     showKeys([]);
-    await renderRoute("/settings/api-keys", getSession);
+    await renderRoute("/account/api-keys", getSession);
 
     expect(
       await screen.findByRole("heading", { level: 2, name: "API keys" }),
     ).toBeInTheDocument();
-    const nav = screen.getByRole("navigation", { name: "Settings" });
-    expect(within(nav).getByRole("link", { name: "API keys" })).toHaveAttribute(
-      "aria-current",
-      "page",
-    );
-    expect(
-      within(nav).getByRole("link", { name: "Profile" }),
-    ).not.toHaveAttribute("aria-current");
   });
 
   it("explains what keys are for when there are none", async () => {
     showKeys([]);
-    await renderRoute("/settings/api-keys", getSession);
+    await renderRoute("/account/api-keys", getSession);
 
     expect(await screen.findByText("No API keys yet")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Create key" })).toHaveAttribute(
       "href",
-      "/settings/api-keys/new",
+      "/account/api-keys/new",
     );
     expect(screen.queryByRole("table")).not.toBeInTheDocument();
   });
 
   it("offers a new key and warns to keep keys secure", async () => {
     showKeys([key({})]);
-    await renderRoute("/settings/api-keys", getSession);
+    await renderRoute("/account/api-keys", getSession);
 
     const card = await screen.findByRole("region", { name: "API keys" });
     expect(within(card).getByRole("link", { name: "New key" })).toHaveAttribute(
       "href",
-      "/settings/api-keys/new",
+      "/account/api-keys/new",
     );
     expect(within(card).getByRole("note")).toHaveTextContent(
       "Keep your keys secure",
@@ -102,7 +94,7 @@ describe("API keys settings", () => {
         expiresAt: new Date(Date.now() + 2 * DAY),
       }),
     ]);
-    await renderRoute("/settings/api-keys", getSession);
+    await renderRoute("/account/api-keys", getSession);
     const table = await screen.findByRole("table", { name: "API keys" });
 
     expect(
@@ -129,11 +121,11 @@ describe("API keys settings", () => {
 
   it("links each key to its own page", async () => {
     showKeys([key({ id: "k1", name: "laptop" })]);
-    await renderRoute("/settings/api-keys", getSession);
+    await renderRoute("/account/api-keys", getSession);
 
     expect(await screen.findByRole("link", { name: /laptop/ })).toHaveAttribute(
       "href",
-      "/settings/api-keys/k1",
+      "/account/api-keys/k1",
     );
   });
 });

@@ -15,6 +15,7 @@ type NavItem = {
   title: string;
   icon: React.ReactNode;
   to?: LinkProps["to"];
+  exact?: boolean;
 };
 
 export function NavMain({
@@ -35,7 +36,9 @@ export function NavMain({
               {item.to ? (
                 <SidebarMenuButton
                   tooltip={item.title}
-                  isActive={Boolean(matchRoute({ to: item.to, fuzzy: true }))}
+                  isActive={Boolean(
+                    matchRoute({ to: item.to, fuzzy: !item.exact }),
+                  )}
                   render={<Link to={item.to} />}
                 >
                   {item.icon}

@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { toast } from "sonner";
 
 import { DeleteApiKey } from "@/components/api-keys/delete-api-key";
 import {
@@ -11,10 +12,11 @@ import { PermissionsEditor } from "@/components/api-keys/permissions-editor";
 import { RegenerateApiKey } from "@/components/api-keys/regenerate-api-key";
 import { Detail, DetailList } from "@/components/display/detail-list";
 import { RelativeTime } from "@/components/display/relative-time";
+import { EditableText } from "@/components/form/editable-text";
 import { BackLink } from "@/components/settings/back-link";
 import { SectionCard } from "@/components/settings/section-card";
 import { expiresSoon, keyStatus } from "@/lib/api-keys/describe";
-import { useApiKey } from "@/lib/api-keys/use-api-keys";
+import { useApiKey, useUpdateApiKeyDetails } from "@/lib/api-keys/use-api-keys";
 
 export const Route = createFileRoute("/_auth/_user/account/api-keys/$keyId")({
   component: ApiKeyPage,
@@ -24,6 +26,7 @@ export const Route = createFileRoute("/_auth/_user/account/api-keys/$keyId")({
 function ApiKeyPage() {
   const { keyId } = Route.useParams();
   const apiKey = useApiKey(keyId);
+  const updateDetails = useUpdateApiKeyDetails();
 
   if (!apiKey) {
     return (
@@ -42,15 +45,42 @@ function ApiKeyPage() {
       <div className="flex flex-col gap-3">
         <BackLink to="/account/api-keys">All API keys</BackLink>
         <div className="flex flex-wrap items-center gap-2">
-          <h2 className="font-semibold text-xl">
-            {apiKey.name ?? "Unnamed key"}
-          </h2>
+          <EditableText
+            label="Name"
+            value={apiKey.name ?? ""}
+            validate={(name) => (name ? undefined : "Give the key a name")}
+            className="max-w-md font-semibold md:text-xl"
+            onSave={(name) => {
+              updateDetails(apiKey.id, { name });
+              toast.success(`Renamed the key to ${name}`);
+            }}
+          >
+            <h2 className="font-semibold text-xl">
+              {apiKey.name ?? "Unnamed key"}
+            </h2>
+          </EditableText>
           <KeyStatusBadge status={keyStatus(apiKey)} />
           {expiresSoon(apiKey) && <ExpiresSoonBadge />}
         </div>
-        {apiKey.description && (
-          <p className="text-muted-foreground">{apiKey.description}</p>
-        )}
+        <div className="flex items-start gap-1">
+          <EditableText
+            label="Description"
+            value={apiKey.description ?? ""}
+            addLabel="Add a description"
+            multiline
+            className="max-w-2xl"
+            onSave={(description) => {
+              updateDetails(apiKey.id, { description: description || null });
+              toast.success(
+                description
+                  ? "Updated the description"
+                  : "Removed the description",
+              );
+            }}
+          >
+            <p className="text-muted-foreground">{apiKey.description}</p>
+          </EditableText>
+        </div>
       </div>
       <KeyStatusSection apiKey={apiKey} />
       <SectionCard level={3} title="Details">

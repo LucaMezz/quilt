@@ -8,6 +8,7 @@ import {
     useDeleteApiKey,
     useRegenerateApiKey,
     useSetApiKeyEnabled,
+    useUpdateApiKeyDetails,
     useUpdateApiKeyOrganizations,
     useUpdateApiKeyPermissions,
 } from "./use-api-keys";
@@ -147,5 +148,21 @@ describe("API key store", () => {
 
         act(() => result.current.setEnabled(first.id, true));
         expect(find()).toEqual({ ...first, enabled: true });
+    });
+
+    it("renames a key and changes only what's given", () => {
+        const { result } = renderHook(() => ({
+            keys: useApiKeys().keys,
+            update: useUpdateApiKeyDetails(),
+        }));
+        const [first] = result.current.keys;
+        if (!first) throw new Error("No mock keys");
+
+        act(() => result.current.update(first.id, { name: "renamed" }));
+
+        expect(result.current.keys.find((key) => key.id === first.id)).toEqual({
+            ...first,
+            name: "renamed",
+        });
     });
 });

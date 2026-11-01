@@ -41,8 +41,8 @@ describe("slugProblem", () => {
             "-acme",
             "Use lowercase letters, numbers and single dashes between them",
         ],
-        ["account", "That URL name is reserved by quilt"],
-        ["organizations", "That URL name is reserved by quilt"],
+        ["new", "That URL name is reserved by quilt"],
+        ["invitations", "That URL name is reserved by quilt"],
     ])("rejects %j", (slug, problem) => {
         expect(slugProblem(slug)).toBe(problem);
     });

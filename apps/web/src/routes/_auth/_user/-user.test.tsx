@@ -48,7 +48,7 @@ describe("user shell", () => {
     const dashboard = sidebar().getByRole("link", { name: "Dashboard" });
     expect(dashboard).toHaveAttribute("data-active");
     expect(sidebar().getByText("General")).toBeInTheDocument();
-    expect(sidebar().getAllByText("Soon")).toHaveLength(3);
+    expect(sidebar().getAllByText("Soon")).toHaveLength(2);
     expect(sidebar().queryByText("Account")).toBeNull();
   });
 });

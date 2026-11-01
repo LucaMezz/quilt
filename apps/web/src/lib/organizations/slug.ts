@@ -1,3 +1,4 @@
+export const MAX_NAME = 64;
 export const MAX_SLUG = 40;
 
 const RESERVED = new Set(["invitations", "new"]);

@@ -136,3 +136,13 @@ export function useDestroyApp() {
         }, TEARDOWN_MS);
     }, []);
 }
+
+export function moveApps(from: string, to: string) {
+    setApps(
+        apps.map((app) =>
+            app.organization === from
+                ? { ...app, organization: to, id: `app_${to}_${app.name}` }
+                : app,
+        ),
+    );
+}

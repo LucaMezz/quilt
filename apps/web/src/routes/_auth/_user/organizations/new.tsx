@@ -8,7 +8,7 @@ import { PageHeader } from "@/components/app/page-header";
 import { useAppForm } from "@/components/form/use-app-form";
 import { BackLink } from "@/components/settings/back-link";
 import { SectionCard } from "@/components/settings/section-card";
-import { slugify, slugProblem } from "@/lib/organizations/slug";
+import { MAX_NAME, slugify, slugProblem } from "@/lib/organizations/slug";
 import {
   useCreateOrganization,
   useOrganizations,
@@ -18,8 +18,6 @@ export const Route = createFileRoute("/_auth/_user/organizations/new")({
   component: NewOrganizationPage,
   staticData: { breadcrumb: "New organization" },
 });
-
-const MAX_NAME = 64;
 
 function schemaFor(takenSlugs: string[]) {
   return z.object({

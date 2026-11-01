@@ -8,14 +8,18 @@ import {
   useApiKeys,
   useDeleteApiKey,
   useRegenerateApiKey,
+  useUpdateApiKeyPermissions,
 } from "@/lib/api-keys/use-api-keys";
 import { renderRoute } from "@/test/render-route";
 
-const { getSession, deleteKey, regenerateKey } = vi.hoisted(() => ({
-  getSession: vi.fn(),
-  deleteKey: vi.fn(),
-  regenerateKey: vi.fn(),
-}));
+const { getSession, deleteKey, regenerateKey, updatePermissions } = vi.hoisted(
+  () => ({
+    getSession: vi.fn(),
+    deleteKey: vi.fn(),
+    regenerateKey: vi.fn(),
+    updatePermissions: vi.fn(),
+  }),
+);
 
 vi.mock("@/lib/auth-client", () => ({ authClient: { getSession } }));
 vi.mock("@/lib/api-keys/use-api-keys");
@@ -39,9 +43,15 @@ const path = `/settings/api-keys/${deployBot.id}`;
 const NEW_SECRET = "qlt_N3wS3cretValueThatIsOnlyShownOnce";
 
 function rowFor(name: string) {
-  const row = screen.getByRole("rowheader", { name }).closest("tr");
+  const row = screen
+    .getByRole("rowheader", { name: new RegExp(`^${name}`) })
+    .closest("tr");
   if (!row) throw new Error(`No row for ${name}`);
   return within(row);
+}
+
+function updateButton() {
+  return screen.getByRole("button", { name: "Update permissions" });
 }
 
 beforeEach(() => {
@@ -49,6 +59,8 @@ beforeEach(() => {
   vi.mocked(useApiKeys).mockReturnValue({ keys: [] });
   vi.mocked(useDeleteApiKey).mockReturnValue(deleteKey);
   vi.mocked(useRegenerateApiKey).mockReturnValue(regenerateKey);
+  vi.mocked(useUpdateApiKeyPermissions).mockReturnValue(updatePermissions);
+  updatePermissions.mockReset();
   deleteKey.mockReset();
   regenerateKey.mockReset().mockReturnValue(NEW_SECRET);
 });
@@ -79,14 +91,84 @@ describe("API key page", () => {
     ).toBeInTheDocument();
   });
 
-  it("lists the access it has to every resource", async () => {
+  it("lists only the resources the key can access", async () => {
     await renderRoute(path, getSession);
     await screen.findByRole("table", { name: "Permissions" });
 
-    expect(rowFor("Apps").getByText("Read and write")).toBeInTheDocument();
-    expect(rowFor("Profile").getByText("Read-only")).toBeInTheDocument();
-    expect(rowFor("Organizations").getByText("No access")).toBeInTheDocument();
-    expect(rowFor("API keys").getByText("No access")).toBeInTheDocument();
+    expect(
+      rowFor("Apps").getByRole("combobox", { name: "Apps access" }),
+    ).toHaveTextContent("Read and write");
+    expect(
+      rowFor("Profile").getByRole("combobox", { name: "Profile access" }),
+    ).toHaveTextContent("Read-only");
+    expect(
+      screen.queryByRole("rowheader", { name: /^Organizations/ }),
+    ).not.toBeInTheDocument();
+    expect(updateButton()).toBeDisabled();
+  });
+
+  it("applies level changes, removals and additions only on update", async () => {
+    const user = userEvent.setup();
+    await renderRoute(path, getSession);
+
+    await user.click(
+      await screen.findByRole("combobox", { name: "Profile access" }),
+    );
+    await user.click(
+      await screen.findByRole("option", { name: "Read and write" }),
+    );
+    await user.click(screen.getByRole("button", { name: "Remove Apps" }));
+    await user.click(screen.getByRole("button", { name: "Add permission" }));
+    const dialog = await screen.findByRole("dialog", {
+      name: "Add a permission",
+    });
+    await user.click(within(dialog).getByLabelText("Resource"));
+    await user.click(await screen.findByRole("option", { name: "API keys" }));
+    await user.click(
+      within(dialog).getByRole("button", { name: "Add permission" }),
+    );
+
+    expect(screen.getByText("You have unsaved changes.")).toBeVisible();
+    expect(
+      screen.queryByRole("rowheader", { name: /^Apps/ }),
+    ).not.toBeInTheDocument();
+    expect(updatePermissions).not.toHaveBeenCalled();
+
+    await user.click(updateButton());
+
+    expect(updatePermissions).toHaveBeenCalledExactlyOnceWith(deployBot.id, {
+      user: ["read", "write"],
+      apiKeys: ["read"],
+    });
+  });
+
+  it("discards unsaved changes", async () => {
+    const user = userEvent.setup();
+    await renderRoute(path, getSession);
+
+    await user.click(
+      await screen.findByRole("button", { name: "Remove Apps" }),
+    );
+    await user.click(screen.getByRole("button", { name: "Discard" }));
+
+    expect(screen.getByRole("rowheader", { name: /^Apps/ })).toBeVisible();
+    expect(updateButton()).toBeDisabled();
+    expect(updatePermissions).not.toHaveBeenCalled();
+  });
+
+  it("says when a key has no permissions left", async () => {
+    const user = userEvent.setup();
+    await renderRoute(path, getSession);
+
+    await user.click(
+      await screen.findByRole("button", { name: "Remove Apps" }),
+    );
+    await user.click(screen.getByRole("button", { name: "Remove Profile" }));
+
+    expect(screen.getByText("No permissions")).toBeVisible();
+    expect(
+      screen.queryByRole("table", { name: "Permissions" }),
+    ).not.toBeInTheDocument();
   });
 
   it("says when the key doesn't exist", async () => {

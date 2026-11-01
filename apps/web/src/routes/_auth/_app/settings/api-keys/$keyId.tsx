@@ -6,7 +6,7 @@ import {
   ExpiresSoonBadge,
   StatusBadge,
 } from "@/components/api-keys/key-badges";
-import { PermissionsTable } from "@/components/api-keys/permissions-table";
+import { PermissionsEditor } from "@/components/api-keys/permissions-editor";
 import { RegenerateApiKey } from "@/components/api-keys/regenerate-api-key";
 import { When } from "@/components/api-keys/when";
 import { SectionCard } from "@/components/settings/section-card";
@@ -81,13 +81,7 @@ function ApiKeyPage() {
           </dd>
         </dl>
       </SectionCard>
-      <SectionCard
-        level={3}
-        title="Permissions"
-        description="What this key can do on your behalf."
-      >
-        <PermissionsTable permissions={apiKey.permissions} />
-      </SectionCard>
+      <PermissionsEditor key={apiKey.id} apiKey={apiKey} />
       <RegenerateApiKey apiKey={apiKey} />
       <DeleteApiKey apiKey={apiKey} />
     </div>

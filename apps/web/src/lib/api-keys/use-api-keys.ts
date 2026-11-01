@@ -133,3 +133,11 @@ export function useRegenerateApiKey() {
         return secret;
     }, []);
 }
+
+export function useUpdateApiKeyPermissions() {
+    return useCallback((id: string, permissions: ApiKeyPermissions) => {
+        setKeys(
+            keys.map((key) => (key.id === id ? { ...key, permissions } : key)),
+        );
+    }, []);
+}

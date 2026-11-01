@@ -6,6 +6,7 @@ import {
     useApiKeys,
     useDeleteApiKey,
     useRegenerateApiKey,
+    useUpdateApiKeyPermissions,
 } from "./use-api-keys";
 
 describe("API key store", () => {
@@ -60,6 +61,22 @@ describe("API key store", () => {
             name: first.name,
             description: first.description,
             permissions: first.permissions,
+        });
+    });
+
+    it("replaces a key's permissions and nothing else", () => {
+        const { result } = renderHook(() => ({
+            keys: useApiKeys().keys,
+            update: useUpdateApiKeyPermissions(),
+        }));
+        const [first] = result.current.keys;
+        if (!first) throw new Error("No mock keys");
+
+        act(() => result.current.update(first.id, { apps: ["read"] }));
+
+        expect(result.current.keys.find((key) => key.id === first.id)).toEqual({
+            ...first,
+            permissions: { apps: ["read"] },
         });
     });
 });

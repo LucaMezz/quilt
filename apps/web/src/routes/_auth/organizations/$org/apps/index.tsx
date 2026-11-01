@@ -1,7 +1,8 @@
 import { Avatar, AvatarFallback } from "@quilt/ui/components/avatar";
+import { buttonVariants } from "@quilt/ui/components/button";
 import { Card } from "@quilt/ui/components/card";
-import { createFileRoute } from "@tanstack/react-router";
-import { BoxesIcon, ExternalLinkIcon } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { BoxesIcon, ExternalLinkIcon, PlusIcon } from "lucide-react";
 
 import { PageHeader } from "@/components/app/page-header";
 import {
@@ -60,6 +61,20 @@ const columns: Column<App>[] = [
   },
 ];
 
+function NewAppLink() {
+  const { org } = Route.useParams();
+  return (
+    <Link
+      to="/organizations/$org/apps/new"
+      params={{ org }}
+      className={buttonVariants()}
+    >
+      <PlusIcon data-icon="inline-start" aria-hidden="true" />
+      New app
+    </Link>
+  );
+}
+
 function Apps() {
   const { org } = Route.useParams();
   const apps = useApps(org);
@@ -72,15 +87,18 @@ function Apps() {
         title="Apps"
         description="Each app is served at its own hostname and sleeps when nobody is using it."
         actions={
-          apps.length > 0 && (
-            <ViewSwitcher
-              options={["grid", "list", "table"]}
-              value={view}
-              onValueChange={(next) =>
-                navigate({ search: { view: next }, replace: true })
-              }
-            />
-          )
+          <>
+            {apps.length > 0 && (
+              <ViewSwitcher
+                options={["grid", "list", "table"]}
+                value={view}
+                onValueChange={(next) =>
+                  navigate({ search: { view: next }, replace: true })
+                }
+              />
+            )}
+            <NewAppLink />
+          </>
         }
       />
       <Collection
@@ -93,6 +111,7 @@ function Apps() {
             icon={<BoxesIcon />}
             title="No apps yet"
             description="Create an app, then deploy an image to it from the dashboard or the quilt CLI."
+            action={<NewAppLink />}
           />
         }
         grid={(app) => (

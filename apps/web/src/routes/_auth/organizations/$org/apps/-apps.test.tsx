@@ -76,4 +76,23 @@ describe("apps", () => {
       sidebar().getByRole("link", { name: "Dashboard" }),
     ).not.toHaveAttribute("data-active");
   });
+
+  it.each([
+    ["acme", 1],
+    ["open-source", 2],
+  ])("links to creating an app from %s's apps", async (org, count) => {
+    const user = userEvent.setup();
+    const router = await renderRoute(`/organizations/${org}/apps`, getSession);
+
+    const links = await screen.findAllByRole("link", { name: "New app" });
+    expect(links).toHaveLength(count);
+    for (const link of links) {
+      expect(link).toHaveAttribute("href", `/organizations/${org}/apps/new`);
+    }
+
+    await user.click(links[links.length - 1] as HTMLElement);
+    expect(router.state.location.pathname).toBe(
+      `/organizations/${org}/apps/new`,
+    );
+  });
 });

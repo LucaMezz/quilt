@@ -1,4 +1,4 @@
-import { useMemo, useSyncExternalStore } from "react";
+import { useCallback, useMemo, useSyncExternalStore } from "react";
 
 export type AppStatus = "pending" | "running" | "sleeping" | "destroying";
 
@@ -73,7 +73,7 @@ const mockApps: App[] = [
     }),
 ];
 
-const apps = mockApps;
+let apps = mockApps;
 const listeners = new Set<() => void>();
 
 function subscribe(listener: () => void) {
@@ -90,5 +90,25 @@ export function useApps(organization: string) {
     return useMemo(
         () => all.filter((app) => app.organization === organization),
         [all, organization],
+    );
+}
+
+export function useAppNameTaken() {
+    const all = useSyncExternalStore(subscribe, snapshot);
+    return useCallback(
+        (name: string) => all.some((app) => app.name === name),
+        [all],
+    );
+}
+
+export function useCreateApp() {
+    return useCallback(
+        ({ organization, name }: { organization: string; name: string }) => {
+            const created = app(organization, name, "pending", 0);
+            apps = [...apps, created];
+            for (const listener of listeners) listener();
+            return created;
+        },
+        [],
     );
 }

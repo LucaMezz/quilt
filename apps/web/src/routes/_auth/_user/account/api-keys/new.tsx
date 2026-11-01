@@ -24,7 +24,7 @@ import {
   AddPermission,
   PermissionList,
 } from "@/components/api-keys/permission-list";
-import { SecretField } from "@/components/api-keys/secret-field";
+import { CopyField } from "@/components/display/copy-field";
 import { useAppForm } from "@/components/form/use-app-form";
 import { BackLink } from "@/components/settings/back-link";
 import { SectionCard } from "@/components/settings/section-card";
@@ -87,10 +87,12 @@ function CopyNewKey({ created }: { created: Created }) {
       description="This is the only time it's shown. Store it somewhere safe before leaving this page."
     >
       <div className="flex flex-col gap-6">
-        <SecretField
+        <CopyField
           id="new-key"
           label={created.name}
-          secret={created.secret}
+          value={created.secret}
+          copyLabel="Copy key"
+          copiedMessage="Copied the new key"
         />
         <Link
           to="/account/api-keys/$keyId"

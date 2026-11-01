@@ -14,7 +14,7 @@ export function configureProgram<T extends CommandUnknownOpts>(root: T): T {
     root.addOption(
         new Option(
             "-k, --api-key <key>",
-            "API key to use instead of QUILT_TOKEN or the one saved by quilt login",
+            "API key to use instead of QUILT_API_KEY or the one saved by quilt login",
         ).argParser(apiKey),
     );
     root.hook("preAction", (_, action) => {

@@ -5,7 +5,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@quilt/ui/components/sidebar";
-import { Boxes, LayoutDashboard, Rocket, Server } from "lucide-react";
+import { Boxes, LayoutDashboard, Rocket, Server, Settings } from "lucide-react";
 
 import type { Organization } from "@/lib/organizations/use-organizations";
 
@@ -40,6 +40,17 @@ export function AppSidebar({
         },
         { title: "Servers", icon: <Server /> },
         { title: "Deployments", icon: <Rocket /> },
+      ],
+    },
+    {
+      label: "Organization",
+      items: [
+        {
+          title: "Settings",
+          icon: <Settings />,
+          to: "/organizations/$org/settings",
+          params: { org: organization.slug },
+        },
       ],
     },
   ];

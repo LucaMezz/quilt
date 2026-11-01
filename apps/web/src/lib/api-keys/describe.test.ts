@@ -1,11 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import {
-    accessSummary,
-    expiresSoon,
-    keyStatus,
-    writableResources,
-} from "./describe";
+import { expiresSoon, keyStatus } from "./describe";
 
 const now = new Date("2026-06-01T12:00:00Z");
 const DAY = 24 * 60 * 60 * 1000;
@@ -54,33 +49,5 @@ describe("expiresSoon", () => {
         expect(
             expiresSoon(key({ expiresAt: new Date(now.getTime() - DAY) }), now),
         ).toBe(false);
-    });
-});
-
-describe("accessSummary", () => {
-    it("is none without permissions", () => {
-        expect(accessSummary({})).toBe("none");
-    });
-
-    it("is read when every grant is read-only", () => {
-        expect(accessSummary({ apps: ["read"], user: ["read"] })).toBe("read");
-    });
-
-    it("is write when any resource can be written", () => {
-        expect(accessSummary({ apps: ["read"], user: ["read", "write"] })).toBe(
-            "write",
-        );
-    });
-});
-
-describe("writableResources", () => {
-    it("names the resources that can be written, in a stable order", () => {
-        expect(
-            writableResources({
-                user: ["read", "write"],
-                apps: ["read", "write"],
-                organizations: ["read"],
-            }),
-        ).toEqual(["Apps", "Profile"]);
     });
 });

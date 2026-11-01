@@ -26,29 +26,31 @@ export function PermissionsTable({
   permissions: ApiKeyPermissions;
 }) {
   return (
-    <Table aria-label="Permissions" className="text-sm">
-      <TableHeader>
-        <TableRow>
-          <TableHead scope="col">Resource</TableHead>
-          <TableHead scope="col">Allows</TableHead>
-          <TableHead scope="col">Access</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {resources.map(([resource, { label, description }]) => (
-          <TableRow key={resource}>
-            <th scope="row" className="p-2 text-left align-top font-medium">
-              {label}
-            </th>
-            <TableCell className="whitespace-normal align-top text-muted-foreground">
-              {description}
-            </TableCell>
-            <TableCell className="align-top">
-              <AccessBadge level={accessLevel(permissions, resource)} />
-            </TableCell>
+    <div className="overflow-hidden rounded-lg border">
+      <Table aria-label="Permissions" className="text-sm">
+        <TableHeader>
+          <TableRow>
+            <TableHead scope="col">Resource</TableHead>
+            <TableHead scope="col">Allows</TableHead>
+            <TableHead scope="col">Access</TableHead>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {resources.map(([resource, { label, description }]) => (
+            <TableRow key={resource}>
+              <th scope="row" className="p-2 text-left align-top font-medium">
+                {label}
+              </th>
+              <TableCell className="whitespace-normal align-top text-muted-foreground">
+                {description}
+              </TableCell>
+              <TableCell className="align-top">
+                <AccessBadge level={accessLevel(permissions, resource)} />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
   );
 }

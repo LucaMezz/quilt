@@ -6,6 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { getCredential, setApiKeyFlag } from "./lib/credentials";
 import { configureProgram } from "./program";
 import { run } from "./run";
+import { setDebugFlag } from "./ui/log";
 
 function rootRecording() {
     const seen: { app?: string; token?: string } = {};
@@ -52,6 +53,7 @@ beforeEach(() => {
 afterEach(() => {
     vi.restoreAllMocks();
     setApiKeyFlag(undefined);
+    setDebugFlag(false);
     process.exitCode = undefined;
 });
 
@@ -189,5 +191,43 @@ describe("run", () => {
         expect(printed()).toContain("Unknown command 'shwo'");
         expect(printed()).toContain("Did you mean show?");
         expect(process.exitCode).toBe(1);
+    });
+
+    it("prints the full error with its causes and data with --debug", async () => {
+        const error = new ORPCError("NOT_FOUND", {
+            message: "Organization not found",
+            data: { org: "acme" },
+            cause: new Error("row missing"),
+        });
+
+        await run(rootThrowing(error), ["fail", "--debug", "-k", "qlt_flag"]);
+
+        expect(printed()).toContain("Organization not found");
+        expect(printed()).toContain("debug Error: Organization not found");
+        expect(printed()).toContain("debug code NOT_FOUND, status 404");
+        expect(printed()).toMatch(/debug\s+at /);
+        expect(printed()).toContain('debug data {"org":"acme"}');
+        expect(printed()).toContain("debug caused by:");
+        expect(printed()).toContain("debug Error: row missing");
+    });
+
+    it("says which server and key it uses with --debug", async () => {
+        await run(rootThrowing(new Error("boom")), [
+            "--debug",
+            "fail",
+            "--api-key",
+            "qlt_flag",
+        ]);
+
+        expect(printed()).toMatch(/debug server http/);
+        expect(printed()).toContain("debug api key --api-key");
+        expect(printed()).not.toContain("qlt_flag");
+    });
+
+    it("prints no debug output without --debug", async () => {
+        await run(rootThrowing(new Error("boom")), ["fail"]);
+
+        expect(printed()).toContain("Unexpected error");
+        expect(printed()).not.toContain("debug");
     });
 });

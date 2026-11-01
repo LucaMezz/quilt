@@ -2,6 +2,7 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/inter";
+@import "@fontsource-variable/geist-mono";
 @source "../../../apps/**/*.{ts,tsx}";
 @source "../**/*.{ts,tsx}";
 
@@ -42,7 +43,7 @@
     --sidebar-ring: oklch(0.6959 0.1491 162.4796);
     --font-sans: "Inter Variable", "Inter", "Geist", sans-serif;
     --font-serif: Georgia, serif;
-    --font-mono: "Geist Mono", "Fira Code", monospace;
+    --font-mono: "Geist Mono Variable", "Geist Mono", ui-monospace, monospace;
     --radius: 0.5rem;
     --shadow-x: 0px;
     --shadow-y: 4px;

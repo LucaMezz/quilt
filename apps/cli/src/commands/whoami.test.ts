@@ -14,7 +14,7 @@ vi.mock("../lib/credentials");
 const getSession = vi.mocked(authClient.getSession);
 
 function signedIn(
-    source: "keychain" | "file" | "QUILT_TOKEN" | "--api-key" = "keychain",
+    source: "keychain" | "file" | "QUILT_API_KEY" | "--api-key" = "keychain",
 ) {
     vi.mocked(getCredential).mockReturnValue({ token: "qlt_key", source });
 }

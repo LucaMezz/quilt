@@ -121,16 +121,16 @@ describe("login", () => {
 
     it("refuses while a key is passed in", async () => {
         vi.mocked(passedKey).mockReturnValue({
-            from: "in QUILT_TOKEN",
-            reason: "QUILT_TOKEN is set",
-            fix: "Unset QUILT_TOKEN",
+            from: "in QUILT_API_KEY",
+            reason: "QUILT_API_KEY is set",
+            fix: "Unset QUILT_API_KEY",
         });
 
         await runCommand(login, { rawArgs: [] });
 
         expect(requestDeviceCode).not.toHaveBeenCalled();
         expect(console.error).toHaveBeenCalledWith(
-            expect.stringContaining("QUILT_TOKEN"),
+            expect.stringContaining("QUILT_API_KEY"),
         );
         expect(process.exitCode).toBe(1);
     });

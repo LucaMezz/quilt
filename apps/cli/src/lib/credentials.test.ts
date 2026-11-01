@@ -48,7 +48,7 @@ beforeEach(() => {
     keychain.available = true;
     configDir = mkdtempSync(join(tmpdir(), "quilt-credentials-"));
     vi.stubEnv("XDG_CONFIG_HOME", configDir);
-    vi.stubEnv("QUILT_TOKEN", undefined);
+    vi.stubEnv("QUILT_API_KEY", undefined);
 });
 
 afterEach(() => {
@@ -84,8 +84,8 @@ describe("credentials", () => {
         expect(getToken("quilt.test")).toBeUndefined();
     });
 
-    it("prefers QUILT_TOKEN over the saved token", () => {
-        vi.stubEnv("QUILT_TOKEN", "from-env");
+    it("prefers QUILT_API_KEY over the saved token", () => {
+        vi.stubEnv("QUILT_API_KEY", "from-env");
         saveToken("quilt.test", "saved");
 
         expect(getToken("quilt.test")).toBe("from-env");
@@ -100,15 +100,15 @@ describe("credentials", () => {
         });
         expect(getCredential("other.test")).toBeUndefined();
 
-        vi.stubEnv("QUILT_TOKEN", "from-env");
+        vi.stubEnv("QUILT_API_KEY", "from-env");
         expect(getCredential("quilt.test")).toEqual({
             token: "from-env",
-            source: "QUILT_TOKEN",
+            source: "QUILT_API_KEY",
         });
     });
 
-    it("prefers the --api-key flag over QUILT_TOKEN and the saved token", () => {
-        vi.stubEnv("QUILT_TOKEN", "from-env");
+    it("prefers the --api-key flag over QUILT_API_KEY and the saved token", () => {
+        vi.stubEnv("QUILT_API_KEY", "from-env");
         saveToken("quilt.test", "saved");
         setApiKeyFlag("from-flag");
 
@@ -122,8 +122,8 @@ describe("credentials", () => {
         saveToken("quilt.test", "saved");
         expect(passedKey()).toBeUndefined();
 
-        vi.stubEnv("QUILT_TOKEN", "from-env");
-        expect(passedKey()?.fix).toBe("Unset QUILT_TOKEN");
+        vi.stubEnv("QUILT_API_KEY", "from-env");
+        expect(passedKey()?.fix).toBe("Unset QUILT_API_KEY");
 
         setApiKeyFlag("from-flag");
         expect(passedKey()?.fix).toBe("Leave out --api-key");

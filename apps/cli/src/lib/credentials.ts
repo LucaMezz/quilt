@@ -50,16 +50,16 @@ const PASSED_KEYS = {
         reason: "--api-key was passed",
         fix: "Leave out --api-key",
     },
-    QUILT_TOKEN: {
-        from: "in QUILT_TOKEN",
-        reason: "QUILT_TOKEN is set",
-        fix: "Unset QUILT_TOKEN",
+    QUILT_API_KEY: {
+        from: "in QUILT_API_KEY",
+        reason: "QUILT_API_KEY is set",
+        fix: "Unset QUILT_API_KEY",
     },
 };
 
 export function passedKey() {
     if (apiKeyFlag) return PASSED_KEYS["--api-key"];
-    if (process.env.QUILT_TOKEN) return PASSED_KEYS.QUILT_TOKEN;
+    if (process.env.QUILT_API_KEY) return PASSED_KEYS.QUILT_API_KEY;
     return undefined;
 }
 
@@ -67,10 +67,10 @@ export function getCredential(host: string) {
     if (apiKeyFlag) {
         return { token: apiKeyFlag, source: "--api-key" } as const;
     }
-    if (process.env.QUILT_TOKEN) {
+    if (process.env.QUILT_API_KEY) {
         return {
-            token: process.env.QUILT_TOKEN,
-            source: "QUILT_TOKEN",
+            token: process.env.QUILT_API_KEY,
+            source: "QUILT_API_KEY",
         } as const;
     }
     const keychainToken = getKeychainToken(host);

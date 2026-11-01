@@ -4,7 +4,7 @@ import { passedKey } from "./credentials";
 
 export function hintSignIn(again = false) {
     log.hint(
-        `Run ${theme.brand("quilt login")} to sign in${again ? " again" : ""}, or pass an API key with ${theme.brand("--api-key")} or QUILT_TOKEN.`,
+        `Run ${theme.brand("quilt login")} to sign in${again ? " again" : ""}, or pass an API key with ${theme.brand("--api-key")} or QUILT_API_KEY.`,
     );
 }
 

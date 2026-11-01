@@ -13,7 +13,7 @@ pnpm check                       # biome check --write
 pnpm turbo run check-types test  # what the pre-push hook runs, after knip
 pnpm knip                        # unused files, exports and deps; CI and pre-push fail on findings
 pnpm test:integration            # needs infra:start; each run creates and drops its own DB and bucket
-pnpm --filter web test:storybook # every story as a test in Chromium (render + play functions)
+pnpm --filter web test:storybook # every story as a test in Chromium, light and dark (render, play, axe)
 pnpm turbo run test -- --coverage.enabled  # lcov in <pkg>/coverage/unit (test:integration → coverage/integration)
 mise run cluster:dev:up          # k3d cluster + Knative, needed for test:e2e
 pnpm turbo boundaries            # CI fails on imports of undeclared deps or across package dirs
@@ -67,6 +67,7 @@ pnpm --filter @quilt/db db:migrate                     # apply to the dev DB (DA
 - Commits are conventional and commitlint-checked; valid scopes are workspace directory names plus `infra`, `deps`, `ci`, `release`, `repo`.
 - `e2e.yml` is not yet a required check; it runs but doesn't gate merges.
 - Pass `--coverage.enabled`, not `--coverage`, through Turborepo: the bare flag replaces the whole coverage config and drops each package's `reportsDirectory`.
+- Story tests run axe in both themes and fail on violations. Stories with known violations are marked `a11y: { test: "todo" }`; remove the mark when you fix one, and never add one to hide a new violation.
 - Story tests run without the Storybook UI, so `useArgs` updates do nothing there. Keep interactive story state in a component with `useState` (remount it with `key` to follow controls).
 - Codecov judges PRs on patch (changed-line) coverage, informational only; see `codecov.yml`.
 - Knip can't see uses outside imports (bundled output, config files loaded by path, CLIs run via `pnpm exec`). Check for those before deleting a finding; if it's a false positive, ignore it in `knip.json` instead.

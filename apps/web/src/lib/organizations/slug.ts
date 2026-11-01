@@ -1,20 +1,6 @@
 export const MAX_SLUG = 40;
 
-const RESERVED = new Set([
-    "account",
-    "admin",
-    "api",
-    "api-reference",
-    "dashboard",
-    "device",
-    "docs",
-    "login",
-    "new",
-    "organizations",
-    "rpc",
-    "settings",
-    "signup",
-]);
+const RESERVED = new Set(["invitations", "new"]);
 
 export function slugify(name: string) {
     return name

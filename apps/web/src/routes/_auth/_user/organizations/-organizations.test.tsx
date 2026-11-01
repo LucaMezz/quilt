@@ -17,8 +17,13 @@ vi.mock("@/lib/organizations/use-organizations", () => ({
 
 beforeEach(() => {
   organizations.current = [
-    { id: "org_1", name: "Acme", role: "owner" },
-    { id: "org_2", name: "Side projects", role: "member" },
+    { id: "org_1", name: "Acme", slug: "acme", role: "owner" },
+    {
+      id: "org_2",
+      name: "Side projects",
+      slug: "side-projects",
+      role: "member",
+    },
   ];
 });
 
@@ -72,7 +77,7 @@ describe("organizations", () => {
 
     expect(await screen.findByRole("link", { name: "Acme" })).toHaveAttribute(
       "href",
-      "/dashboard",
+      "/organizations/acme",
     );
   });
 

@@ -41,6 +41,12 @@ export function useOrganizations() {
     return useSyncExternalStore(subscribe, snapshot);
 }
 
+export function useOrganization(slug: string) {
+    return useOrganizations().find(
+        (organization) => organization.slug === slug,
+    );
+}
+
 export function useCreateOrganization() {
     return useCallback(({ name, slug }: { name: string; slug: string }) => {
         const organization: Organization = {

@@ -42,7 +42,7 @@ describe("user shell", () => {
   });
 
   it("leaves account pages out of the organization sidebar", async () => {
-    await renderRoute("/dashboard", getSession);
+    await renderRoute("/organizations/acme", getSession);
 
     await screen.findByRole("heading", { level: 1 });
     const dashboard = sidebar().getByRole("link", { name: "Dashboard" });

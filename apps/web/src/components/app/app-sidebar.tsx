@@ -5,51 +5,47 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@quilt/ui/components/sidebar";
-import {
-  Boxes,
-  Building2,
-  LayoutDashboard,
-  Rocket,
-  Server,
-} from "lucide-react";
+import { Boxes, LayoutDashboard, Rocket, Server } from "lucide-react";
 
-import { NavMain } from "./nav-main";
+import type { Organization } from "@/lib/organizations/use-organizations";
+
+import { NavMain, type NavSection } from "./nav-main";
 import { NavUser } from "./nav-user";
-import { TeamSwitcher } from "./team-switcher";
-
-const teams = [
-  {
-    name: "My organization",
-    logo: <Building2 />,
-    plan: "Organization",
-  },
-];
-
-const sections = [
-  {
-    label: "General",
-    items: [
-      { title: "Dashboard", icon: <LayoutDashboard />, to: "/dashboard" },
-      { title: "Apps", icon: <Boxes /> },
-      { title: "Servers", icon: <Server /> },
-      { title: "Deployments", icon: <Rocket /> },
-    ],
-  },
-] as const;
+import { OrganizationSwitcher } from "./organization-switcher";
 
 export function AppSidebar({
+  organization,
   user,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
+  organization: Organization;
   user: React.ComponentProps<typeof NavUser>["user"];
 }) {
+  const sections: NavSection[] = [
+    {
+      label: "General",
+      items: [
+        {
+          title: "Dashboard",
+          icon: <LayoutDashboard />,
+          to: "/organizations/$org",
+          params: { org: organization.slug },
+          exact: true,
+        },
+        { title: "Apps", icon: <Boxes /> },
+        { title: "Servers", icon: <Server /> },
+        { title: "Deployments", icon: <Rocket /> },
+      ],
+    },
+  ];
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={teams} />
+        <OrganizationSwitcher current={organization} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain sections={[...sections]} />
+        <NavMain sections={sections} />
       </SidebarContent>
       <SidebarFooter className="border-sidebar-border border-t">
         <NavUser user={user} />

@@ -108,8 +108,8 @@ function NewOrganizationPage() {
                   description={
                     <>
                       Used in links to the organization, like{" "}
-                      <code>/{field.state.value || "acme"}</code>. Lowercase
-                      letters, numbers and dashes.
+                      <code>/organizations/{field.state.value || "acme"}</code>.
+                      Lowercase letters, numbers and dashes.
                     </>
                   }
                 />

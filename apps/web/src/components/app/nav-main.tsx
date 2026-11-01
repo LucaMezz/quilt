@@ -15,14 +15,13 @@ type NavItem = {
   title: string;
   icon: React.ReactNode;
   to?: LinkProps["to"];
+  params?: LinkProps["params"];
   exact?: boolean;
 };
 
-export function NavMain({
-  sections,
-}: {
-  sections: { label?: string; items: readonly NavItem[] }[];
-}) {
+export type NavSection = { label?: string; items: readonly NavItem[] };
+
+export function NavMain({ sections }: { sections: NavSection[] }) {
   const matchRoute = useMatchRoute();
 
   return sections.map((section, index) => (
@@ -39,9 +38,13 @@ export function NavMain({
                 <SidebarMenuButton
                   tooltip={item.title}
                   isActive={Boolean(
-                    matchRoute({ to: item.to, fuzzy: !item.exact }),
+                    matchRoute({
+                      to: item.to,
+                      params: item.params,
+                      fuzzy: !item.exact,
+                    }),
                   )}
-                  render={<Link to={item.to} />}
+                  render={<Link to={item.to} params={item.params} />}
                 >
                   {item.icon}
                   <span>{item.title}</span>

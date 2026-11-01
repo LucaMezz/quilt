@@ -130,7 +130,11 @@ function NewOrganizationLink() {
 
 function OrganizationLink({ organization }: { organization: Organization }) {
   return (
-    <Link to="/dashboard" className={`font-medium ${linkClass}`}>
+    <Link
+      to="/organizations/$org"
+      params={{ org: organization.slug }}
+      className={`font-medium ${linkClass}`}
+    >
       {organization.name}
     </Link>
   );

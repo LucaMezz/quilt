@@ -1,10 +1,11 @@
-import { Badge } from "@quilt/ui/components/badge";
 import { Button } from "@quilt/ui/components/button";
 import { Card } from "@quilt/ui/components/card";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { PlusIcon, ServerIcon } from "lucide-react";
 import { useState } from "react";
 import { expect, userEvent, within } from "storybook/test";
+
+import { StatusBadge } from "@/components/display/status-badge";
 
 import { Collection } from "./collection";
 import { CollectionEmpty } from "./collection-empty";
@@ -56,11 +57,11 @@ const servers: Server[] = [
   },
 ];
 
-function StatusBadge({ status }: { status: Server["status"] }) {
+function ServerStatus({ status }: { status: Server["status"] }) {
   return (
-    <Badge variant={status === "Ready" ? "secondary" : "outline"}>
+    <StatusBadge tone={status === "Ready" ? "success" : "warning"}>
       {status}
-    </Badge>
+    </StatusBadge>
   );
 }
 
@@ -69,7 +70,7 @@ function ServerCard({ server }: { server: Server }) {
     <Card className="h-full gap-3 p-5">
       <div className="flex items-start justify-between gap-3">
         <span className="font-medium text-sm">{server.name}</span>
-        <StatusBadge status={server.status} />
+        <ServerStatus status={server.status} />
       </div>
       <p className="text-muted-foreground text-sm">
         {server.region} · {server.cpus} CPUs · {server.memoryGb} GB
@@ -87,7 +88,7 @@ function ServerRow({ server }: { server: Server }) {
           {server.region} · {server.cpus} CPUs · {server.memoryGb} GB
         </span>
       </div>
-      <StatusBadge status={server.status} />
+      <ServerStatus status={server.status} />
     </div>
   );
 }
@@ -121,7 +122,7 @@ const columns: Column<Server>[] = [
   {
     key: "status",
     header: "Status",
-    cell: (server) => <StatusBadge status={server.status} />,
+    cell: (server) => <ServerStatus status={server.status} />,
   },
 ];
 

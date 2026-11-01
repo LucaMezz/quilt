@@ -1,9 +1,8 @@
 import { API_KEY_HEADER } from "@quilt/auth/api-keys";
-import { runCommand } from "citty";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-
 import { authClient } from "../lib/auth-client";
 import { getCredential, passedKey } from "../lib/credentials";
+import { runCommand } from "../testing/command";
 import whoami from "./whoami";
 
 vi.mock("../client", () => ({ serverHost: "quilt.test" }));

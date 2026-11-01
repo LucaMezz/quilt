@@ -1,4 +1,4 @@
-import { defineCommand } from "citty";
+import { Command } from "@commander-js/extra-typings";
 
 import { serverHost } from "../client";
 import { getKeySession, revokeApiKey } from "../lib/api-key-session";
@@ -86,26 +86,11 @@ async function login(browser: boolean, previousKey: string | undefined) {
     }
 }
 
-export default defineCommand({
-    meta: {
-        name: "login",
-        description: "Sign in to your quilt server from this device",
-    },
-    args: {
-        browser: {
-            type: "boolean",
-            default: true,
-            description: "Open the sign-in page in your browser",
-            negativeDescription: "Print the sign-in link instead of opening it",
-        },
-        force: {
-            type: "boolean",
-            alias: "f",
-            default: false,
-            description: "Sign in again even if already signed in",
-        },
-    },
-    async run({ args }) {
+export default new Command("login")
+    .description("Sign in to your quilt server from this device")
+    .option("--no-browser", "Print the sign-in link instead of opening it")
+    .option("-f, --force", "Sign in again even if already signed in")
+    .action(async (args) => {
         const passed = passedKey();
         if (passed) {
             log.error(`${passed.reason}, so quilt uses that key instead`);
@@ -137,5 +122,4 @@ export default defineCommand({
             log.hint(`Run ${theme.brand("quilt login")} to try again.`);
             process.exitCode = 1;
         }
-    },
-});
+    });

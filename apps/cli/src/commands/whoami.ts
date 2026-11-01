@@ -1,4 +1,4 @@
-import { defineCommand } from "citty";
+import { Command } from "@commander-js/extra-typings";
 
 import { serverHost } from "../client";
 import { getKeySession } from "../lib/api-key-session";
@@ -16,12 +16,9 @@ const SOURCES = {
 
 const KEY_REJECTED = [401, 403];
 
-export default defineCommand({
-    meta: {
-        name: "whoami",
-        description: "Show who you're signed in as on your quilt server",
-    },
-    async run() {
+export default new Command("whoami")
+    .description("Show who you're signed in as on your quilt server")
+    .action(async () => {
         const credential = getCredential(serverHost);
         if (!credential) {
             log.error(`Not signed in to ${serverHost}`);
@@ -59,5 +56,4 @@ export default defineCommand({
             `${result.data.user.email} ${symbols.dot} ${serverHost}`,
         );
         log.hint(SOURCES[credential.source]);
-    },
-});
+    });

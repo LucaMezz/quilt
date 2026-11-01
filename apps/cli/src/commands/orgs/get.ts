@@ -1,32 +1,18 @@
-import { defineCommand } from "citty";
+import { Command } from "@commander-js/extra-typings";
 
 import { client } from "../../client";
 import { formatDate, printJson } from "../../ui/output";
 import { withSpinner } from "../../ui/spinner";
 import { details } from "../../ui/table";
 
-export default defineCommand({
-    meta: {
-        name: "get",
-        description: "Show an organization you're a member of",
-    },
-    args: {
-        org: {
-            type: "positional",
-            required: true,
-            description: "Slug of the organization",
-        },
-        json: {
-            type: "boolean",
-            alias: "j",
-            default: false,
-            description: "Print the organization as JSON",
-        },
-    },
-    async run({ args }) {
+export default new Command("get")
+    .description("Show an organization you're a member of")
+    .argument("<org>", "Slug of the organization")
+    .option("-j, --json", "Print the organization as JSON")
+    .action(async (org, args) => {
         const organization = await withSpinner(
             "Loading organization…",
-            client.organizations.get({ org: args.org }),
+            client.organizations.get({ org }),
         );
 
         if (args.json) {
@@ -41,5 +27,4 @@ export default defineCommand({
                 ["Created", formatDate(organization.createdAt)],
             ]),
         );
-    },
-});
+    });

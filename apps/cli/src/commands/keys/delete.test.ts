@@ -1,8 +1,7 @@
-import { runCommand } from "citty";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-
 import { client } from "../../client";
 import { resolveKey } from "../../lib/key-ref";
+import { runCommand } from "../../testing/command";
 import { captureOutput, stderr, stdout } from "../../testing/output";
 import { confirmed, confirmYesNo } from "../../ui/prompt";
 import remove from "./delete";
@@ -51,7 +50,7 @@ describe("keys delete", () => {
         await runCommand(remove, { rawArgs: ["key-1"] });
 
         const [yes, ask] = vi.mocked(confirmed).mock.calls[0] ?? [];
-        expect(yes).toBe(false);
+        expect(yes).toBeFalsy();
         await ask?.();
         expect(confirmYesNo).toHaveBeenCalledWith(
             expect.stringContaining("key-1"),

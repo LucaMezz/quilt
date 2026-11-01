@@ -1,4 +1,4 @@
-import { defineCommand } from "citty";
+import { Command } from "@commander-js/extra-typings";
 
 import { client } from "../../client";
 import { log } from "../../ui/log";
@@ -7,20 +7,10 @@ import { withSpinner } from "../../ui/spinner";
 import { table } from "../../ui/table";
 import { theme } from "../../ui/theme";
 
-export default defineCommand({
-    meta: {
-        name: "list",
-        description: "List the organizations you're a member of",
-    },
-    args: {
-        json: {
-            type: "boolean",
-            alias: "j",
-            default: false,
-            description: "Print the organizations as JSON",
-        },
-    },
-    async run({ args }) {
+export default new Command("list")
+    .description("List the organizations you're a member of")
+    .option("-j, --json", "Print the organizations as JSON")
+    .action(async (args) => {
         const organizations = await withSpinner(
             "Loading organizations…",
             client.organizations.list(),
@@ -44,5 +34,4 @@ export default defineCommand({
                 ]),
             ),
         );
-    },
-});
+    });

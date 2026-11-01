@@ -1,4 +1,4 @@
-import { defineCommand } from "citty";
+import { Command } from "@commander-js/extra-typings";
 
 import { client } from "../../client";
 import { resolveKey, shortId } from "../../lib/key-ref";
@@ -8,33 +8,16 @@ import { confirmed, confirmYesNo } from "../../ui/prompt";
 import { withSpinner } from "../../ui/spinner";
 import { theme } from "../../ui/theme";
 
-export default defineCommand({
-    meta: {
-        name: "delete",
-        description: "Delete an API key so it stops working",
-    },
-    args: {
-        key: {
-            type: "positional",
-            required: false,
-            description:
-                "Name or ID of the key, or the start of its ID; omit to choose from a list",
-        },
-        yes: {
-            type: "boolean",
-            alias: "y",
-            default: false,
-            description: "Delete without asking for confirmation",
-        },
-        json: {
-            type: "boolean",
-            alias: "j",
-            default: false,
-            description: "Print the deleted key as JSON",
-        },
-    },
-    async run({ args }) {
-        const target = await resolveKey(args.key);
+export default new Command("delete")
+    .description("Delete an API key so it stops working")
+    .argument(
+        "[key]",
+        "Name or ID of the key, or the start of its ID; omit to choose from a list",
+    )
+    .option("-y, --yes", "Delete without asking for confirmation")
+    .option("-j, --json", "Print the deleted key as JSON")
+    .action(async (ref, args) => {
+        const target = await resolveKey(ref);
         if (!target) {
             process.exitCode = 1;
             return;
@@ -60,5 +43,4 @@ export default defineCommand({
             `Deleted API key ${theme.heading(key.name ?? key.id)}`,
             key.id,
         );
-    },
-});
+    });

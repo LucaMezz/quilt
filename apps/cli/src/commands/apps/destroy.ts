@@ -1,50 +1,28 @@
-import { defineCommand } from "citty";
+import { Command } from "@commander-js/extra-typings";
 
 import { client } from "../../client";
-import { orgArg, selectedOrg } from "../../lib/org";
+import { orgOption, selectedOrg } from "../../lib/org";
 import { log } from "../../ui/log";
 import { printJson } from "../../ui/output";
 import { confirmByTyping, confirmed } from "../../ui/prompt";
 import { withSpinner } from "../../ui/spinner";
 import { theme } from "../../ui/theme";
 
-export default defineCommand({
-    meta: {
-        name: "destroy",
-        description: "Destroy an app and tear down everything it runs",
-    },
-    args: {
-        name: {
-            type: "positional",
-            required: true,
-            description: "Name of the app",
-        },
-        org: orgArg,
-        yes: {
-            type: "boolean",
-            alias: "y",
-            default: false,
-            description: "Destroy without asking for confirmation",
-        },
-        json: {
-            type: "boolean",
-            alias: "j",
-            default: false,
-            description: "Print the app as JSON",
-        },
-    },
-    async run({ args }) {
+export default new Command("destroy")
+    .description("Destroy an app and tear down everything it runs")
+    .argument("<name>", "Name of the app")
+    .addOption(orgOption())
+    .option("-y, --yes", "Destroy without asking for confirmation")
+    .option("-j, --json", "Print the app as JSON")
+    .action(async (name, args) => {
         const org = selectedOrg(args.org);
-        if (
-            !org ||
-            !(await confirmed(args.yes, () => confirmByTyping(args.name)))
-        ) {
+        if (!org || !(await confirmed(args.yes, () => confirmByTyping(name)))) {
             process.exitCode = 1;
             return;
         }
         const app = await withSpinner(
             "Destroying app…",
-            client.apps.destroy({ org, name: args.name }),
+            client.apps.destroy({ org, name }),
         );
 
         if (args.json) {
@@ -55,5 +33,4 @@ export default defineCommand({
             `Destroying app ${theme.heading(app.name)}`,
             "its workloads are being torn down",
         );
-    },
-});
+    });

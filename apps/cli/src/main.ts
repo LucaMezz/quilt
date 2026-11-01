@@ -1,4 +1,4 @@
-import { defineCommand } from "citty";
+import { Command } from "@commander-js/extra-typings";
 
 import pkg from "../package.json" with { type: "json" };
 import apps from "./commands/apps";
@@ -8,21 +8,18 @@ import login from "./commands/login";
 import logout from "./commands/logout";
 import orgs from "./commands/orgs";
 import whoami from "./commands/whoami";
+import { configureProgram } from "./program";
 
 /** The root command. Kept free of side effects so the docs generator can import it. */
-export const main = defineCommand({
-    meta: {
-        name: "quilt",
-        version: pkg.version,
-        description: "Self-hosted PaaS that stitches your servers together",
-    },
-    subCommands: {
-        apps,
-        health,
-        keys,
-        login,
-        logout,
-        orgs,
-        whoami,
-    },
-});
+export const main = configureProgram(
+    new Command("quilt")
+        .description("Self-hosted PaaS that stitches your servers together")
+        .version(pkg.version, "-v, --version", "Show version")
+        .addCommand(apps)
+        .addCommand(health)
+        .addCommand(keys)
+        .addCommand(login)
+        .addCommand(logout)
+        .addCommand(orgs)
+        .addCommand(whoami),
+);

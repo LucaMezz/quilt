@@ -1,4 +1,4 @@
-import { defineCommand } from "citty";
+import { Command } from "@commander-js/extra-typings";
 
 import { client } from "../../client";
 import { slugify } from "../../lib/slug";
@@ -7,36 +7,20 @@ import { printJson } from "../../ui/output";
 import { withSpinner } from "../../ui/spinner";
 import { theme } from "../../ui/theme";
 
-export default defineCommand({
-    meta: {
-        name: "create",
-        description: "Create an organization with you as its owner",
-    },
-    args: {
-        name: {
-            type: "positional",
-            required: true,
-            description: "Display name of the organization",
-        },
-        slug: {
-            type: "string",
-            alias: "s",
-            description:
-                "Identifier used in URLs and commands; derived from the name if omitted",
-        },
-        json: {
-            type: "boolean",
-            alias: "j",
-            default: false,
-            description: "Print the new organization as JSON",
-        },
-    },
-    async run({ args }) {
+export default new Command("create")
+    .description("Create an organization with you as its owner")
+    .argument("<name>", "Display name of the organization")
+    .option(
+        "-s, --slug <slug>",
+        "Identifier used in URLs and commands; derived from the name if omitted",
+    )
+    .option("-j, --json", "Print the new organization as JSON")
+    .action(async (name, args) => {
         const organization = await withSpinner(
             "Creating organization…",
             client.organizations.create({
-                name: args.name,
-                slug: args.slug ?? slugify(args.name),
+                name,
+                slug: args.slug ?? slugify(name),
             }),
         );
 
@@ -48,5 +32,4 @@ export default defineCommand({
             `Created organization ${theme.heading(organization.name)}`,
             organization.slug,
         );
-    },
-});
+    });

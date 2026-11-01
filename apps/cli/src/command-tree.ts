@@ -1,11 +1,8 @@
-import type { ArgDef, ArgsDef, CommandDef } from "citty";
-
-export type AnyCommand = CommandDef<ArgsDef>;
-
-type Resolvable<T> = T | Promise<T> | (() => T | Promise<T>);
-
-const resolve = async <T>(value: Resolvable<T>): Promise<T> =>
-    typeof value === "function" ? (value as () => T | Promise<T>)() : value;
+import type {
+    Argument,
+    CommandUnknownOpts,
+    Option,
+} from "@commander-js/extra-typings";
 
 export interface ArgInfo {
     name: string;
@@ -28,81 +25,41 @@ export interface CommandInfo {
     subCommands: CommandInfo[];
 }
 
-export const globalOptions: ArgInfo[] = [
-    {
-        name: "api-key",
-        flag: "-k, --api-key <key>",
-        description:
-            "API key to use instead of QUILT_TOKEN or the one saved by quilt login",
-        required: false,
-    },
-    {
-        name: "help",
-        flag: "-h, --help",
-        description: "Show help",
-        required: false,
-    },
-];
-
 /**
- * Resolves a citty command (and its subcommands) into plain data. Both the
+ * Resolves a Commander command (and its subcommands) into plain data. Both the
  * `--help` screen and the generated docs are rendered from this, so they always
  * agree.
  */
-export async function describeCommand(
-    cmd: AnyCommand,
-    parentPath: string[] = [],
-): Promise<CommandInfo> {
-    const meta = await resolve(cmd.meta ?? {});
-    const path = [...parentPath, meta.name ?? ""];
-    const isRoot = parentPath.length === 0;
-    const args = Object.entries(
-        (await resolve(cmd.args ?? {})) as Record<string, ArgDef>,
+export function describeCommand(cmd: CommandUnknownOpts): CommandInfo {
+    const root = rootOf(cmd);
+    const inherited = root.options.filter(
+        (option) => option.attributeName() !== "version",
     );
-    const subCommands = await Promise.all(
-        Object.values(await resolve(cmd.subCommands ?? {})).map(async (sub) =>
-            describeCommand(await resolve(sub), path),
-        ),
-    );
-
-    const options = args
-        .filter(([, def]) => def.type !== "positional")
-        .map(([name, def]) => describeArg(name, def));
-    if (isRoot && meta.version) {
-        options.push({
-            name: "version",
-            flag: "-v, --version",
-            description: "Show version",
-            required: false,
-        });
-    }
+    const visible = cmd.createHelp().visibleOptions(cmd);
+    const help = visible.filter((option) => !cmd.options.includes(option));
 
     return {
-        path,
-        description: meta.description,
-        version: isRoot ? meta.version : undefined,
-        positionals: args
-            .filter(([, def]) => def.type === "positional")
-            .map(([name, def]) => describeArg(name, def)),
-        options,
-        globalOptions,
-        subCommands,
+        path: pathOf(cmd),
+        description: cmd.description() || undefined,
+        version: cmd === root ? root.version() : undefined,
+        positionals: cmd.registeredArguments.map(describeArgument),
+        options: visible
+            .filter(
+                (option) =>
+                    cmd.options.includes(option) && !inherited.includes(option),
+            )
+            .map(describeOption),
+        globalOptions: [...inherited, ...help].map(describeOption),
+        subCommands: cmd.commands.map(describeCommand),
     };
 }
 
-/** Finds the command that `rawArgs` points at, e.g. `health --help` → health. */
-export async function findCommand(root: AnyCommand, rawArgs: string[]) {
-    let cmd = root;
-    const path: string[] = [];
-    for (const arg of rawArgs) {
-        if (arg.startsWith("-")) continue;
-        const subCommands = await resolve(cmd.subCommands ?? {});
-        const sub = subCommands[arg];
-        if (!sub) break;
-        cmd = await resolve(sub);
-        path.push(arg);
-    }
-    return { cmd, path };
+export function pathOf(cmd: CommandUnknownOpts): string[] {
+    return cmd.parent ? [...pathOf(cmd.parent), cmd.name()] : [cmd.name()];
+}
+
+export function rootOf(cmd: CommandUnknownOpts): CommandUnknownOpts {
+    return cmd.parent ? rootOf(cmd.parent) : cmd;
 }
 
 /** e.g. `quilt <command> <name> [options]` */
@@ -117,45 +74,30 @@ export function usageLine(info: CommandInfo) {
         .join(" ");
 }
 
-function describeArg(name: string, def: ArgDef): ArgInfo {
-    if (def.type === "positional") {
-        return {
-            name,
-            flag: `<${name}>`,
-            description: def.description,
-            required: def.required !== false && def.default === undefined,
-            default:
-                def.default === undefined ? undefined : String(def.default),
-        };
-    }
-
-    const aliases = (
-        "alias" in def && def.alias
-            ? Array.isArray(def.alias)
-                ? def.alias
-                : [def.alias]
-            : []
-    ).map((alias) => (alias.length === 1 ? `-${alias}` : `--${alias}`));
-    const value =
-        def.type === "string" || def.type === "enum"
-            ? ` <${"valueHint" in def && def.valueHint ? def.valueHint : name}>`
-            : "";
-
-    if (def.type === "boolean" && def.default === true) {
-        return {
-            name,
-            flag: `--no-${name}`,
-            description: def.negativeDescription ?? def.description,
-            required: false,
-        };
-    }
-
+function describeArgument(argument: Argument): ArgInfo {
     return {
-        name,
-        flag: [...aliases, `--${name}${value}`].join(", "),
-        description: def.description,
-        required: def.required === true,
-        default: def.default === undefined ? undefined : String(def.default),
-        choices: def.type === "enum" ? def.options : undefined,
+        name: argument.name(),
+        flag: argument.required
+            ? `<${argument.name()}>`
+            : `[${argument.name()}]`,
+        description: argument.description || undefined,
+        required: argument.required,
+        default: stringOrUndefined(argument.defaultValue),
+        choices: argument.argChoices,
     };
+}
+
+function describeOption(option: Option): ArgInfo {
+    return {
+        name: option.name(),
+        flag: option.flags,
+        description: option.description || undefined,
+        required: option.mandatory,
+        default: stringOrUndefined(option.defaultValue),
+        choices: option.argChoices,
+    };
+}
+
+function stringOrUndefined(value: unknown) {
+    return value === undefined ? undefined : String(value);
 }

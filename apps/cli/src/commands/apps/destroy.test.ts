@@ -1,7 +1,6 @@
-import { runCommand } from "citty";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-
 import { client } from "../../client";
+import { runCommand } from "../../testing/command";
 import { captureOutput, stderr, stdout } from "../../testing/output";
 import { confirmByTyping, confirmed } from "../../ui/prompt";
 import destroy from "./destroy";
@@ -49,7 +48,7 @@ describe("apps destroy", () => {
         await runCommand(destroy, { rawArgs: ["blog", "--org", "acme"] });
 
         const [yes, ask] = vi.mocked(confirmed).mock.calls[0] ?? [];
-        expect(yes).toBe(false);
+        expect(yes).toBeFalsy();
         await ask?.();
         expect(confirmByTyping).toHaveBeenCalledWith("blog");
     });

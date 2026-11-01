@@ -1,50 +1,51 @@
+import { stripVTControlCharacters } from "node:util";
+import { Command } from "@commander-js/extra-typings";
 import { ORPCError } from "@orpc/client";
-import { defineCommand } from "citty";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { getCredential, setApiKeyFlag } from "./lib/credentials";
+import { configureProgram } from "./program";
 import { run } from "./run";
 
 function rootRecording() {
     const seen: { app?: string; token?: string } = {};
-    const root = defineCommand({
-        meta: { name: "quilt" },
-        subCommands: {
-            show: defineCommand({
-                meta: { name: "show" },
-                args: { app: { type: "positional", required: true } },
-                run({ args }) {
-                    seen.app = args.app;
+    const root = configureProgram(
+        new Command("quilt").version("1.2.3", "-v, --version").addCommand(
+            new Command("show")
+                .description("Show an app")
+                .argument("<app>")
+                .action((app) => {
+                    seen.app = app;
                     seen.token = getCredential("quilt.test")?.token;
-                },
-            }),
-        },
-    });
+                }),
+        ),
+    );
     return { root, seen };
 }
 
 function rootThrowing(error: unknown) {
-    return defineCommand({
-        meta: { name: "quilt" },
-        subCommands: {
-            fail: defineCommand({
-                meta: { name: "fail" },
-                run() {
-                    throw error;
-                },
+    return configureProgram(
+        new Command("quilt").addCommand(
+            new Command("fail").action(() => {
+                throw error;
             }),
-        },
-    });
+        ),
+    );
 }
 
-function printed() {
-    return vi
-        .mocked(console.error)
-        .mock.calls.map((args) => args.join(" "))
-        .join("\n");
+function output(stream: "log" | "error") {
+    return stripVTControlCharacters(
+        vi
+            .mocked(console[stream])
+            .mock.calls.map((args) => args.join(" "))
+            .join("\n"),
+    );
 }
+
+const printed = () => output("error");
 
 beforeEach(() => {
+    vi.spyOn(console, "log").mockImplementation(() => {});
     vi.spyOn(console, "error").mockImplementation(() => {});
 });
 
@@ -117,7 +118,8 @@ describe("run", () => {
         await run(root, args);
 
         expect(seen).toEqual({});
-        expect(printed()).toContain("--api-key needs a key");
+        expect(printed()).toContain("--api-key <key>");
+        expect(printed()).toContain("quilt --help");
         expect(process.exitCode).toBe(1);
     });
 
@@ -133,6 +135,59 @@ describe("run", () => {
         );
         expect(printed()).toContain("Leave out --api-key");
         expect(printed()).not.toContain("Not signed in");
+        expect(process.exitCode).toBe(1);
+    });
+
+    it.each([[[]], [["--help"]]])(
+        "prints help for %j to stdout",
+        async (args) => {
+            const { root } = rootRecording();
+
+            await run(root, args);
+
+            expect(output("log")).toContain("Usage");
+            expect(output("log")).toContain("Show an app");
+            expect(process.exitCode).toBe(0);
+        },
+    );
+
+    it("prints a command's help", async () => {
+        const { root, seen } = rootRecording();
+
+        await run(root, ["show", "-h"]);
+
+        expect(output("log")).toContain("quilt show <app> [options]");
+        expect(seen).toEqual({});
+        expect(process.exitCode).toBe(0);
+    });
+
+    it("prints the version", async () => {
+        const { root } = rootRecording();
+
+        await run(root, ["-v"]);
+
+        expect(output("log")).toBe("1.2.3");
+        expect(process.exitCode).toBe(0);
+    });
+
+    it("points at the command's help when it's used wrongly", async () => {
+        const { root, seen } = rootRecording();
+
+        await run(root, ["show"]);
+
+        expect(seen).toEqual({});
+        expect(printed()).toContain("Missing required argument 'app'");
+        expect(printed()).toContain("Run quilt show --help to see usage.");
+        expect(process.exitCode).toBe(1);
+    });
+
+    it("suggests the closest command for a typo", async () => {
+        const { root } = rootRecording();
+
+        await run(root, ["shwo"]);
+
+        expect(printed()).toContain("Unknown command 'shwo'");
+        expect(printed()).toContain("Did you mean show?");
         expect(process.exitCode).toBe(1);
     });
 });

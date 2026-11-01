@@ -32,7 +32,12 @@ export function AppSidebar({
           params: { org: organization.slug },
           exact: true,
         },
-        { title: "Apps", icon: <Boxes /> },
+        {
+          title: "Apps",
+          icon: <Boxes />,
+          to: "/organizations/$org/apps",
+          params: { org: organization.slug },
+        },
         { title: "Servers", icon: <Server /> },
         { title: "Deployments", icon: <Rocket /> },
       ],

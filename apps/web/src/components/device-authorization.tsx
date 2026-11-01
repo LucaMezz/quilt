@@ -19,12 +19,11 @@ import {
   InputOTPSlot,
 } from "@quilt/ui/components/input-otp";
 import { cn } from "@quilt/ui/lib/utils";
-import { useForm } from "@tanstack/react-form";
 import { CircleCheck, CircleX, ShieldAlert } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import z from "zod";
-
+import { useAppForm } from "@/components/form/use-app-form";
 import {
   formatUserCode,
   isCompleteUserCode,
@@ -136,7 +135,7 @@ function EnterCode({
 }) {
   const [verifyError, setVerifyError] = useState<string>();
 
-  const form = useForm({
+  const form = useAppForm({
     defaultValues: {
       userCode: normalizeUserCode(initialCode ?? ""),
     },
@@ -212,20 +211,13 @@ function EnterCode({
             );
           }}
         </form.Field>
-        <form.Subscribe
-          selector={(state) => ({
-            canSubmit: state.canSubmit,
-            isSubmitting: state.isSubmitting,
-          })}
-        >
-          {({ canSubmit, isSubmitting }) => (
-            <Field>
-              <Button type="submit" disabled={!canSubmit || isSubmitting}>
-                {isSubmitting ? "Checking..." : "Continue"}
-              </Button>
-            </Field>
-          )}
-        </form.Subscribe>
+        <Field>
+          <form.AppForm>
+            <form.SubmitButton pending="Checking...">
+              Continue
+            </form.SubmitButton>
+          </form.AppForm>
+        </Field>
         <FieldDescription className="text-center">
           Run <code className="font-mono">quilt login</code> to get a new code.
         </FieldDescription>

@@ -111,7 +111,8 @@ describe("name", () => {
     const card = within(screen.getByRole("region", { name: "Name" }));
     return {
       input: card.getByRole("textbox", { name: "Name" }),
-      save: card.getByRole("button", { name: "Save" }),
+      save: card.getByRole("button", { name: "Update name" }),
+      discard: card.getByRole("button", { name: "Discard" }),
     };
   }
 
@@ -139,6 +140,19 @@ describe("name", () => {
 
     expect(updateName).toHaveBeenCalledWith("Ada King");
     expect(toastSuccess).toHaveBeenCalledWith("Name updated");
+  });
+
+  it("discards an edit back to the saved name", async () => {
+    const user = userEvent.setup();
+    const { input, save, discard } = await renderName();
+
+    await user.clear(input);
+    await user.type(input, "Ada King");
+    await user.click(discard);
+
+    expect(input).toHaveValue("Ada Lovelace");
+    expect(save).toBeDisabled();
+    expect(updateName).not.toHaveBeenCalled();
   });
 
   it.each([

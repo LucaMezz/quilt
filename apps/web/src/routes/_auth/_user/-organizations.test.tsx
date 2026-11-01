@@ -1,18 +1,26 @@
-import { screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { renderRoute } from "@/test/render-route";
 
-const { getSession } = vi.hoisted(() => ({ getSession: vi.fn() }));
+const { getSession, organizations } = vi.hoisted(() => ({
+  getSession: vi.fn(),
+  organizations: { current: [] as unknown[] },
+}));
 
 vi.mock("@/lib/auth-client", () => ({ authClient: { getSession } }));
 
 vi.mock("@/lib/organizations/use-organizations", () => ({
-  useOrganizations: () => [
+  useOrganizations: () => organizations.current,
+}));
+
+beforeEach(() => {
+  organizations.current = [
     { id: "org_1", name: "Acme", role: "owner" },
     { id: "org_2", name: "Side projects", role: "member" },
-  ],
-}));
+  ];
+});
 
 describe("organizations", () => {
   it("has its own heading rather than the account one", async () => {
@@ -24,22 +32,55 @@ describe("organizations", () => {
     expect(screen.queryByRole("heading", { name: "Account" })).toBeNull();
   });
 
-  it("lists every organization you belong to with your role", async () => {
+  it("shows each organization with your role as a grid by default", async () => {
     await renderRoute("/organizations", getSession);
 
-    const acme = await screen.findByRole("link", { name: /Acme/ });
+    const list = await screen.findByRole("list", { name: "Organizations" });
+    const [acme, side] = within(list).getAllByRole("listitem");
+    expect(acme).toHaveTextContent("Acme");
     expect(acme).toHaveTextContent("Owner");
+    expect(side).toHaveTextContent("Member");
+    const views = screen.getByRole("group", { name: "View" });
+    expect(within(views).getByRole("button", { name: "Grid" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+  });
+
+  it("opens in the view named in the URL", async () => {
+    await renderRoute("/organizations?view=table", getSession);
+
+    const table = await screen.findByRole("table", { name: "Organizations" });
     expect(
-      screen.getByRole("link", { name: /Side projects/ }),
-    ).toHaveTextContent("Member");
+      within(table).getByRole("rowheader", { name: "Acme" }),
+    ).toBeVisible();
+  });
+
+  it("keeps the view you switch to in the URL", async () => {
+    const router = await renderRoute("/organizations", getSession);
+
+    await userEvent.click(await screen.findByRole("button", { name: "Table" }));
+
+    expect(router.state.location.search).toEqual({ view: "table" });
+    expect(
+      screen.getByRole("table", { name: "Organizations" }),
+    ).toBeInTheDocument();
   });
 
   it("opens an organization's dashboard", async () => {
-    await renderRoute("/organizations", getSession);
+    await renderRoute("/organizations?view=list", getSession);
 
-    expect(await screen.findByRole("link", { name: /Acme/ })).toHaveAttribute(
+    expect(await screen.findByRole("link", { name: "Acme" })).toHaveAttribute(
       "href",
       "/dashboard",
     );
+  });
+
+  it("explains what organizations are when you have none", async () => {
+    organizations.current = [];
+    await renderRoute("/organizations", getSession);
+
+    expect(await screen.findByText("No organizations yet")).toBeInTheDocument();
+    expect(screen.queryByRole("group", { name: "View" })).toBeNull();
   });
 });

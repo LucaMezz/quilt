@@ -28,6 +28,7 @@ describe("describeCommand", () => {
         ]);
         expect(flags(show?.globalOptions ?? [])).toEqual([
             "-k, --api-key <key>",
+            "--debug",
             "-h, --help",
         ]);
     });

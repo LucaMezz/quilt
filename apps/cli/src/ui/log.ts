@@ -4,6 +4,17 @@ import { symbols, theme } from "./theme";
 
 // Everything here is meant for people, so it goes to stderr and stdout stays
 // free for data that scripts consume.
+let debugFlag = false;
+
+export function setDebugFlag(on: boolean) {
+    debugFlag = on;
+}
+
+export function isDebugging() {
+    const env = process.env.QUILT_DEBUG;
+    return debugFlag || (!!env && env !== "0" && env !== "false");
+}
+
 export const log = {
     success(message: string, detail?: string) {
         console.error(line(logSymbols.success, message, detail));
@@ -16,6 +27,12 @@ export const log = {
     },
     error(message: string, detail?: string) {
         console.error(line(logSymbols.error, message, detail));
+    },
+    debug(message: string) {
+        if (!isDebugging()) return;
+        for (const text of message.split("\n")) {
+            console.error(theme.muted(`debug ${text}`));
+        }
     },
     hint(message: string) {
         console.error(`  ${theme.muted(`${symbols.pointer} ${message}`)}`);

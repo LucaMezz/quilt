@@ -25,7 +25,7 @@ describe("renderHelp", () => {
 
         expect(text).toMatch(/Options\n\s+--json\s+Print JSON\n/);
         expect(text).toMatch(
-            /Global options\n\s+-k, --api-key <key>\s.*\n\s+-h, --help\s+Show help\n/,
+            /Global options\n\s+-k, --api-key <key>\s.*\n\s+--debug\s.*\n\s+-h, --help\s+Show help\n/,
         );
     });
 

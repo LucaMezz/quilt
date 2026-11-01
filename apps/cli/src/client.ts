@@ -4,6 +4,7 @@ import type { AppRouterClient } from "@quilt/api/router";
 import { API_KEY_HEADER } from "@quilt/auth/api-keys";
 
 import { getToken } from "./lib/credentials";
+import { debugFetch } from "./lib/debug-fetch";
 
 export const serverUrl = (
     process.env.QUILT_API_URL ?? "http://localhost:3000"
@@ -13,6 +14,7 @@ export const serverHost = new URL(serverUrl).host;
 
 const link = new RPCLink({
     url: `${serverUrl}/rpc`,
+    fetch: (request, init) => debugFetch(request, init),
     headers: () => {
         const token = getToken(serverHost);
         return token ? { [API_KEY_HEADER]: token } : {};

@@ -3,11 +3,11 @@ import {
     InvalidArgumentError,
     Option,
 } from "@commander-js/extra-typings";
-
+import { serverHost, serverUrl } from "./client";
 import { describeCommand, pathOf, rootOf } from "./command-tree";
-import { setApiKeyFlag } from "./lib/credentials";
+import { getCredential, setApiKeyFlag } from "./lib/credentials";
 import { renderHelp } from "./ui/help";
-import { log } from "./ui/log";
+import { isDebugging, log, setDebugFlag } from "./ui/log";
 import { theme } from "./ui/theme";
 
 export function configureProgram<T extends CommandUnknownOpts>(root: T): T {
@@ -17,9 +17,18 @@ export function configureProgram<T extends CommandUnknownOpts>(root: T): T {
             "API key to use instead of QUILT_API_KEY or the one saved by quilt login",
         ).argParser(apiKey),
     );
+    root.option(
+        "--debug",
+        "Print each API request and full errors to stderr; same as QUILT_DEBUG=1",
+    );
     root.hook("preAction", (_, action) => {
-        const { apiKey } = action.optsWithGlobals();
+        const { apiKey, debug } = action.optsWithGlobals();
         setApiKeyFlag(typeof apiKey === "string" ? apiKey : undefined);
+        setDebugFlag(debug === true);
+        if (isDebugging()) {
+            log.debug(`server ${serverUrl}`);
+            log.debug(`api key ${getCredential(serverHost)?.source ?? "none"}`);
+        }
     });
     configure(root);
     return root;

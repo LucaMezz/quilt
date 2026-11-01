@@ -1,5 +1,6 @@
 import ora from "ora";
 
+import { isDebugging } from "./log";
 import { theme } from "./theme";
 
 const FRAMES = ["◒", "◐", "◓", "◑"];
@@ -9,7 +10,8 @@ export function spinner(text: string) {
         text,
         color: false,
         discardStdin: false,
-        isEnabled: process.stderr.columns === 0 ? false : undefined,
+        isEnabled:
+            process.stderr.columns === 0 || isDebugging() ? false : undefined,
         spinner: {
             frames: FRAMES.map((frame) => theme.brand(frame)),
             interval: 80,

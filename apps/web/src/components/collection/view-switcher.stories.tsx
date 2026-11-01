@@ -1,9 +1,23 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { useArgs } from "storybook/preview-api";
-import { expect, fn, userEvent, waitFor, within } from "storybook/test";
+import { useState } from "react";
+import { expect, fn, userEvent, within } from "storybook/test";
 
 import { ViewSwitcher } from "./view-switcher";
 import type { View } from "./views";
+
+function Switcher(props: React.ComponentProps<typeof ViewSwitcher>) {
+  const [value, setValue] = useState<View>(props.value);
+  return (
+    <ViewSwitcher
+      {...props}
+      value={value}
+      onValueChange={(next) => {
+        setValue(next);
+        props.onValueChange(next);
+      }}
+    />
+  );
+}
 
 const meta = {
   title: "web/collection/ViewSwitcher",
@@ -17,18 +31,7 @@ const meta = {
   argTypes: {
     value: { control: "inline-radio", options: ["grid", "list", "table"] },
   },
-  render: function Render(args) {
-    const [, updateArgs] = useArgs();
-    return (
-      <ViewSwitcher
-        {...args}
-        onValueChange={(value: View) => {
-          args.onValueChange(value);
-          updateArgs({ value });
-        }}
-      />
-    );
-  },
+  render: (args) => <Switcher key={args.value} {...args} />,
   parameters: {
     layout: "centered",
     docs: {
@@ -59,19 +62,19 @@ export const TwoViews: Story = {
 };
 
 export const SwitchesView: Story = {
-  name: "when a view is clicked, marks it as the only pressed view",
+  name: "when a view is clicked, reports it and marks it the only pressed view",
   tags: ["!dev", "!autodocs"],
-  play: async ({ canvasElement }) => {
+  play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement);
     const button = (name: string) => canvas.getByRole("button", { name });
 
     await userEvent.click(button("Table"));
-    await waitFor(() =>
-      expect(button("Table")).toHaveAttribute("aria-pressed", "true"),
-    );
+    await expect(args.onValueChange).toHaveBeenCalledWith("table");
+    await expect(button("Table")).toHaveAttribute("aria-pressed", "true");
     await expect(button("Grid")).toHaveAttribute("aria-pressed", "false");
 
     await userEvent.click(button("Table"));
+    await expect(args.onValueChange).toHaveBeenCalledOnce();
     await expect(button("Table")).toHaveAttribute("aria-pressed", "true");
   },
 };

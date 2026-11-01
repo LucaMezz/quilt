@@ -4,6 +4,8 @@
 [tools]
 k3d = "5.9.0"
 kubectl = "1.37.1"
+uv = "0.13.6"
+"pipx:schemathesis" = "4.32.7"
 
 [env]
 _.file = ["cluster/versions.env", "cluster/project.env"]

@@ -42,6 +42,11 @@
             "cache": false,
             "persistent": true
         },
+        "@quilt/api#test:fuzz": {
+            "dependsOn": ["generate:openapi"],
+            "cache": false,
+            "passThroughEnv": ["QUILT_API_KEY"]
+        },
         "generate:openapi": {
             "inputs": ["src/**", "scripts/**"],
             "outputs": ["openapi.json"]

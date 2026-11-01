@@ -27,4 +27,5 @@ mise.local.toml
 coverage/
 apps/web/src/routeTree.gen.ts
 packages/api/openapi.json
+packages/api/.schemathesis/
 

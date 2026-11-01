@@ -3,13 +3,14 @@ import { createFileRoute } from "@tanstack/react-router";
 import { DeleteApiKey } from "@/components/api-keys/delete-api-key";
 import {
   ExpiresSoonBadge,
-  StatusBadge,
+  KeyStatusBadge,
 } from "@/components/api-keys/key-badges";
 import { KeyStatusSection } from "@/components/api-keys/key-status";
 import { OrganizationAccessEditor } from "@/components/api-keys/organization-access-editor";
 import { PermissionsEditor } from "@/components/api-keys/permissions-editor";
 import { RegenerateApiKey } from "@/components/api-keys/regenerate-api-key";
-import { When } from "@/components/api-keys/when";
+import { Detail, DetailList } from "@/components/display/detail-list";
+import { RelativeTime } from "@/components/display/relative-time";
 import { BackLink } from "@/components/settings/back-link";
 import { SectionCard } from "@/components/settings/section-card";
 import { expiresSoon, keyStatus } from "@/lib/api-keys/describe";
@@ -44,7 +45,7 @@ function ApiKeyPage() {
           <h2 className="font-semibold text-xl">
             {apiKey.name ?? "Unnamed key"}
           </h2>
-          <StatusBadge status={keyStatus(apiKey)} />
+          <KeyStatusBadge status={keyStatus(apiKey)} />
           {expiresSoon(apiKey) && <ExpiresSoonBadge />}
         </div>
         {apiKey.description && (
@@ -53,28 +54,23 @@ function ApiKeyPage() {
       </div>
       <KeyStatusSection apiKey={apiKey} />
       <SectionCard level={3} title="Details">
-        <dl className="grid grid-cols-[max-content_1fr] gap-x-6 gap-y-2 text-sm">
-          <dt className="text-muted-foreground">Key</dt>
-          <dd>
+        <DetailList>
+          <Detail label="Key">
             <code>{apiKey.start ? `${apiKey.start}…` : "Hidden"}</code>
-          </dd>
-          <dt className="text-muted-foreground">ID</dt>
-          <dd className="min-w-0 break-all">
-            <code>{apiKey.id}</code>
-          </dd>
-          <dt className="text-muted-foreground">Created</dt>
-          <dd>
-            <When date={apiKey.createdAt} never="Unknown" />
-          </dd>
-          <dt className="text-muted-foreground">Expires</dt>
-          <dd>
-            <When date={apiKey.expiresAt} never="Never" />
-          </dd>
-          <dt className="text-muted-foreground">Last used</dt>
-          <dd>
-            <When date={apiKey.lastRequest} never="Never used" />
-          </dd>
-        </dl>
+          </Detail>
+          <Detail label="ID">
+            <code className="break-all">{apiKey.id}</code>
+          </Detail>
+          <Detail label="Created">
+            <RelativeTime date={apiKey.createdAt} fallback="Unknown" />
+          </Detail>
+          <Detail label="Expires">
+            <RelativeTime date={apiKey.expiresAt} fallback="Never" />
+          </Detail>
+          <Detail label="Last used">
+            <RelativeTime date={apiKey.lastRequest} fallback="Never used" />
+          </Detail>
+        </DetailList>
       </SectionCard>
       <OrganizationAccessEditor
         key={`${apiKey.id}-organizations`}

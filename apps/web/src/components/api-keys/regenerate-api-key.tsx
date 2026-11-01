@@ -23,11 +23,10 @@ import {
 import { useState } from "react";
 import { toast } from "sonner";
 
+import { CopyField } from "@/components/display/copy-field";
 import { SectionCard } from "@/components/settings/section-card";
 import { EXPIRATIONS, expiryDate } from "@/lib/api-keys/expiration";
 import { type ApiKey, useRegenerateApiKey } from "@/lib/api-keys/use-api-keys";
-
-import { SecretField } from "./secret-field";
 
 export function RegenerateApiKey({ apiKey }: { apiKey: ApiKey }) {
   const regenerate = useRegenerateApiKey();
@@ -117,10 +116,12 @@ export function RegenerateApiKey({ apiKey }: { apiKey: ApiKey }) {
                     before closing this dialog.
                   </DialogDescription>
                 </DialogHeader>
-                <SecretField
+                <CopyField
                   id="regenerated-key"
                   label="New key"
-                  secret={secret}
+                  value={secret}
+                  copyLabel="Copy key"
+                  copiedMessage="Copied the new key"
                 />
                 <DialogFooter>
                   <Button onClick={() => onOpenChange(false)}>Done</Button>

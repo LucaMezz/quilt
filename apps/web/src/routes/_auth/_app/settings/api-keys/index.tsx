@@ -9,6 +9,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { KeyRoundIcon } from "lucide-react";
 
 import { ApiKeyTable } from "@/components/api-keys/api-key-table";
+import { SectionCard } from "@/components/settings/section-card";
 import { useApiKeys } from "@/lib/api-keys/use-api-keys";
 
 export const Route = createFileRoute("/_auth/_app/settings/api-keys/")({
@@ -20,16 +21,10 @@ function ApiKeysSettings() {
   const { keys } = useApiKeys();
 
   return (
-    <section aria-labelledby="api-keys-heading" className="flex flex-col gap-6">
-      <div className="flex flex-col gap-1">
-        <h2 id="api-keys-heading" className="font-semibold text-lg">
-          API keys
-        </h2>
-        <p className="text-muted-foreground text-sm">
-          Keys let the quilt CLI and your scripts act as you. Each key can only
-          do what you grant it.
-        </p>
-      </div>
+    <SectionCard
+      title="API keys"
+      description="Keys let the quilt CLI and your scripts act as you. Each key can only do what you grant it."
+    >
       {keys.length === 0 ? (
         <Empty className="border">
           <EmptyHeader>
@@ -45,6 +40,6 @@ function ApiKeysSettings() {
       ) : (
         <ApiKeyTable keys={keys} />
       )}
-    </section>
+    </SectionCard>
   );
 }

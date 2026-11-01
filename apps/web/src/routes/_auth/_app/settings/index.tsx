@@ -5,6 +5,7 @@ import {
 } from "@quilt/ui/components/avatar";
 import { createFileRoute } from "@tanstack/react-router";
 
+import { SectionCard } from "@/components/settings/section-card";
 import { initials } from "@/lib/initials";
 
 export const Route = createFileRoute("/_auth/_app/settings/")({
@@ -16,15 +17,10 @@ function ProfileSettings() {
   const { user } = session;
 
   return (
-    <section aria-labelledby="profile-heading" className="flex flex-col gap-6">
-      <div className="flex flex-col gap-1">
-        <h2 id="profile-heading" className="font-semibold text-lg">
-          Profile
-        </h2>
-        <p className="text-muted-foreground text-sm">
-          How you appear to the people you work with.
-        </p>
-      </div>
+    <SectionCard
+      title="Profile"
+      description="How you appear to the people you work with."
+    >
       <div className="flex items-center gap-4">
         <Avatar className="size-16">
           {user.image && <AvatarImage src={user.image} alt="" />}
@@ -39,6 +35,6 @@ function ProfileSettings() {
           <dd className="text-muted-foreground">{user.email}</dd>
         </dl>
       </div>
-    </section>
+    </SectionCard>
   );
 }

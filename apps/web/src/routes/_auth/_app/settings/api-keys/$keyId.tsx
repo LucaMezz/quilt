@@ -9,6 +9,7 @@ import {
 import { PermissionsTable } from "@/components/api-keys/permissions-table";
 import { RegenerateApiKey } from "@/components/api-keys/regenerate-api-key";
 import { When } from "@/components/api-keys/when";
+import { SectionCard } from "@/components/settings/section-card";
 import { expiresSoon, keyStatus } from "@/lib/api-keys/describe";
 import { useApiKey } from "@/lib/api-keys/use-api-keys";
 
@@ -39,7 +40,7 @@ function ApiKeyPage() {
   }
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-3">
         <Link to="/settings/api-keys" className={backLink}>
           <ChevronLeftIcon aria-hidden="true" className="size-4" />
@@ -55,6 +56,8 @@ function ApiKeyPage() {
         {apiKey.description && (
           <p className="text-muted-foreground">{apiKey.description}</p>
         )}
+      </div>
+      <SectionCard level={3} title="Details">
         <dl className="grid grid-cols-[max-content_1fr] gap-x-6 gap-y-2 text-sm">
           <dt className="text-muted-foreground">Key</dt>
           <dd>
@@ -77,21 +80,14 @@ function ApiKeyPage() {
             <When date={apiKey.lastRequest} never="Never used" />
           </dd>
         </dl>
-      </div>
-      <section
-        aria-labelledby="permissions-heading"
-        className="flex flex-col gap-3"
+      </SectionCard>
+      <SectionCard
+        level={3}
+        title="Permissions"
+        description="What this key can do on your behalf."
       >
-        <div className="flex flex-col gap-1">
-          <h3 id="permissions-heading" className="font-medium">
-            Permissions
-          </h3>
-          <p className="text-muted-foreground text-sm">
-            What this key can do on your behalf.
-          </p>
-        </div>
         <PermissionsTable permissions={apiKey.permissions} />
-      </section>
+      </SectionCard>
       <RegenerateApiKey apiKey={apiKey} />
       <DeleteApiKey apiKey={apiKey} />
     </div>

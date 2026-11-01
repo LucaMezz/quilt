@@ -82,5 +82,16 @@ describe("organizations", () => {
 
     expect(await screen.findByText("No organizations yet")).toBeInTheDocument();
     expect(screen.queryByRole("group", { name: "View" })).toBeNull();
+    expect(
+      screen.getAllByRole("link", { name: "New organization" }),
+    ).toHaveLength(2);
+  });
+
+  it("always offers to create an organization", async () => {
+    await renderRoute("/organizations", getSession);
+
+    expect(
+      await screen.findByRole("link", { name: "New organization" }),
+    ).toHaveAttribute("href", "/organizations/new");
   });
 });

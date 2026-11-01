@@ -1,8 +1,9 @@
 import { Avatar, AvatarFallback } from "@quilt/ui/components/avatar";
 import { Badge } from "@quilt/ui/components/badge";
+import { buttonVariants } from "@quilt/ui/components/button";
 import { Card } from "@quilt/ui/components/card";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Building2Icon, ChevronRightIcon } from "lucide-react";
+import { Building2Icon, ChevronRightIcon, PlusIcon } from "lucide-react";
 
 import { PageHeader } from "@/components/app/page-header";
 import { Collection } from "@/components/collection/collection";
@@ -11,17 +12,16 @@ import type { Column } from "@/components/collection/collection-table";
 import { ViewSwitcher } from "@/components/collection/view-switcher";
 import { viewSearch } from "@/components/collection/views";
 import {
+  type Organization,
   type Role,
   useOrganizations,
 } from "@/lib/organizations/use-organizations";
 
-export const Route = createFileRoute("/_auth/_user/organizations")({
+export const Route = createFileRoute("/_auth/_user/organizations/")({
   component: Organizations,
   validateSearch: viewSearch,
   staticData: { breadcrumb: "Organizations" },
 });
-
-type Organization = ReturnType<typeof useOrganizations>[number];
 
 const roleLabels: Record<Role, string> = {
   owner: "Owner",
@@ -64,15 +64,18 @@ function Organizations() {
         title="Organizations"
         description="Each organization has its own apps, servers and members. Open one to manage it."
         actions={
-          organizations.length > 0 && (
-            <ViewSwitcher
-              options={["grid", "list", "table"]}
-              value={view}
-              onValueChange={(next) =>
-                navigate({ search: { view: next }, replace: true })
-              }
-            />
-          )
+          <>
+            {organizations.length > 0 && (
+              <ViewSwitcher
+                options={["grid", "list", "table"]}
+                value={view}
+                onValueChange={(next) =>
+                  navigate({ search: { view: next }, replace: true })
+                }
+              />
+            )}
+            <NewOrganizationLink />
+          </>
         }
       />
       <Collection
@@ -84,7 +87,8 @@ function Organizations() {
           <CollectionEmpty
             icon={<Building2Icon />}
             title="No organizations yet"
-            description="Organizations hold your apps, servers and members. Once you create or join one it appears here."
+            description="Organizations hold your apps, servers and members. Create one to start deploying, or ask to be invited to an existing one."
+            action={<NewOrganizationLink />}
           />
         }
         grid={(organization) => (
@@ -112,6 +116,15 @@ function Organizations() {
         table={columns}
       />
     </>
+  );
+}
+
+function NewOrganizationLink() {
+  return (
+    <Link to="/organizations/new" className={buttonVariants()}>
+      <PlusIcon data-icon="inline-start" aria-hidden="true" />
+      New organization
+    </Link>
   );
 }
 

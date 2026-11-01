@@ -31,4 +31,22 @@ describe("settings", () => {
     expect(within(main).getByText("Ada Lovelace")).toBeInTheDocument();
     expect(within(main).getByText("ada@example.com")).toBeInTheDocument();
   });
+
+  it("marks Settings as the current section in the sidebar", async () => {
+    await renderRoute("/settings", getSession);
+
+    await screen.findByRole("heading", { level: 1, name: "Settings" });
+    const sidebar = screen
+      .getByText("Account")
+      .closest("[data-sidebar=content]");
+    if (!(sidebar instanceof HTMLElement)) throw new Error("No sidebar");
+    const settings = within(sidebar).getByRole("link", { name: "Settings" });
+    expect(settings).toHaveAttribute("href", "/settings");
+    expect(settings).toHaveAttribute("data-active");
+    expect(
+      within(sidebar).getByRole("link", { name: "Dashboard" }),
+    ).not.toHaveAttribute("data-active");
+    expect(within(sidebar).getByText("General")).toBeInTheDocument();
+    expect(within(sidebar).getAllByText("Soon")).toHaveLength(3);
+  });
 });

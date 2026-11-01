@@ -1,7 +1,12 @@
-import { renderHook } from "@testing-library/react";
+import { act, renderHook } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { APPS_DOMAIN, useApps } from "./use-apps";
+import {
+    APPS_DOMAIN,
+    useAppNameTaken,
+    useApps,
+    useCreateApp,
+} from "./use-apps";
 
 describe("app store", () => {
     it("lists only the organization's apps", () => {
@@ -22,5 +27,35 @@ describe("app store", () => {
         const { result } = renderHook(() => useApps("open-source"));
 
         expect(result.current).toEqual([]);
+    });
+
+    it("knows names taken in any organization", () => {
+        const { result } = renderHook(() => useAppNameTaken());
+
+        expect(result.current("blog")).toBe(true);
+        expect(result.current("shop")).toBe(false);
+    });
+
+    it("creates an app that hasn't been deployed yet", () => {
+        const { result } = renderHook(() => ({
+            create: useCreateApp(),
+            apps: useApps("open-source"),
+        }));
+
+        act(() => {
+            result.current.create({
+                organization: "open-source",
+                name: "shop",
+            });
+        });
+
+        expect(result.current.apps).toMatchObject([
+            {
+                name: "shop",
+                hostname: `shop.${APPS_DOMAIN}`,
+                status: "pending",
+                liveDeployment: null,
+            },
+        ]);
     });
 });

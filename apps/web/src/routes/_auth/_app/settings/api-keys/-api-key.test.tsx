@@ -8,18 +8,27 @@ import {
   useApiKeys,
   useDeleteApiKey,
   useRegenerateApiKey,
+  useSetApiKeyEnabled,
+  useUpdateApiKeyOrganizations,
   useUpdateApiKeyPermissions,
 } from "@/lib/api-keys/use-api-keys";
 import { renderRoute } from "@/test/render-route";
 
-const { getSession, deleteKey, regenerateKey, updatePermissions } = vi.hoisted(
-  () => ({
-    getSession: vi.fn(),
-    deleteKey: vi.fn(),
-    regenerateKey: vi.fn(),
-    updatePermissions: vi.fn(),
-  }),
-);
+const {
+  getSession,
+  deleteKey,
+  regenerateKey,
+  updatePermissions,
+  updateOrganizations,
+  setEnabled,
+} = vi.hoisted(() => ({
+  getSession: vi.fn(),
+  deleteKey: vi.fn(),
+  regenerateKey: vi.fn(),
+  updatePermissions: vi.fn(),
+  updateOrganizations: vi.fn(),
+  setEnabled: vi.fn(),
+}));
 
 vi.mock("@/lib/auth-client", () => ({ authClient: { getSession } }));
 vi.mock("@/lib/api-keys/use-api-keys");
@@ -35,6 +44,7 @@ const deployBot: ApiKey = {
   expiresAt: new Date(Date.now() + 60 * DAY),
   lastRequest: null,
   createdAt: new Date(Date.now() - 10 * DAY),
+  organizations: "all",
   permissions: { apps: ["read", "write"], user: ["read"] },
 };
 
@@ -50,6 +60,16 @@ function rowFor(name: string) {
   return within(row);
 }
 
+function headerBadges() {
+  const heading = screen.getByRole("heading", { level: 2 });
+  if (!heading.parentElement) throw new Error("No key header");
+  return heading.parentElement;
+}
+
+async function statusCard() {
+  return within(await screen.findByRole("region", { name: "Status" }));
+}
+
 function updateButton() {
   return screen.getByRole("button", { name: "Update permissions" });
 }
@@ -61,6 +81,10 @@ beforeEach(() => {
   vi.mocked(useRegenerateApiKey).mockReturnValue(regenerateKey);
   vi.mocked(useUpdateApiKeyPermissions).mockReturnValue(updatePermissions);
   updatePermissions.mockReset();
+  vi.mocked(useUpdateApiKeyOrganizations).mockReturnValue(updateOrganizations);
+  updateOrganizations.mockReset();
+  vi.mocked(useSetApiKeyEnabled).mockReturnValue(setEnabled);
+  setEnabled.mockReset();
   deleteKey.mockReset();
   regenerateKey.mockReset().mockReturnValue(NEW_SECRET);
 });
@@ -72,7 +96,6 @@ describe("API key page", () => {
     expect(
       await screen.findByRole("heading", { level: 2, name: /deploy-bot/ }),
     ).toBeInTheDocument();
-    expect(screen.getByText("Active")).toBeInTheDocument();
     expect(screen.getByText("qlt_Nb…")).toBeInTheDocument();
     expect(screen.getByText(deployBot.id)).toBeInTheDocument();
     expect(screen.getByText("Never used")).toBeInTheDocument();
@@ -149,7 +172,12 @@ describe("API key page", () => {
     await user.click(
       await screen.findByRole("button", { name: "Remove Apps" }),
     );
-    await user.click(screen.getByRole("button", { name: "Discard" }));
+    await user.click(
+      within(screen.getByRole("region", { name: "Permissions" })).getByRole(
+        "button",
+        { name: "Discard" },
+      ),
+    );
 
     expect(screen.getByRole("rowheader", { name: /^Apps/ })).toBeVisible();
     expect(updateButton()).toBeDisabled();
@@ -169,6 +197,124 @@ describe("API key page", () => {
     expect(
       screen.queryByRole("table", { name: "Permissions" }),
     ).not.toBeInTheDocument();
+  });
+
+  it("limits a key to chosen organizations only on update", async () => {
+    const user = userEvent.setup();
+    await renderRoute(path, getSession);
+    const card = within(
+      await screen.findByRole("region", { name: "Organization access" }),
+    );
+    const update = card.getByRole("button", {
+      name: "Update organization access",
+    });
+
+    expect(
+      card.getByRole("radio", { name: /All organizations/ }),
+    ).toBeChecked();
+    await user.click(card.getByRole("radio", { name: /Only selected/ }));
+
+    expect(card.getByText("Choose at least one organization")).toBeVisible();
+    expect(update).toBeDisabled();
+
+    await user.click(card.getByRole("checkbox", { name: "Acme" }));
+    expect(updateOrganizations).not.toHaveBeenCalled();
+    await user.click(update);
+
+    expect(updateOrganizations).toHaveBeenCalledExactlyOnceWith(deployBot.id, [
+      "org_7Hq2",
+    ]);
+  });
+
+  it("shows a key's selected organizations and can widen it to all", async () => {
+    vi.mocked(useApiKey).mockReturnValue({
+      ...deployBot,
+      organizations: ["org_K9vD"],
+    });
+    const user = userEvent.setup();
+    await renderRoute(path, getSession);
+    const card = within(
+      await screen.findByRole("region", { name: "Organization access" }),
+    );
+
+    expect(card.getByRole("checkbox", { name: "Side projects" })).toBeChecked();
+    expect(card.getByRole("checkbox", { name: "Acme" })).not.toBeChecked();
+
+    await user.click(card.getByRole("radio", { name: /All organizations/ }));
+    await user.click(
+      card.getByRole("button", { name: "Update organization access" }),
+    );
+
+    expect(updateOrganizations).toHaveBeenCalledExactlyOnceWith(
+      deployBot.id,
+      "all",
+    );
+  });
+
+  it("discards organization changes", async () => {
+    const user = userEvent.setup();
+    await renderRoute(path, getSession);
+    const card = within(
+      await screen.findByRole("region", { name: "Organization access" }),
+    );
+
+    await user.click(card.getByRole("radio", { name: /Only selected/ }));
+    await user.click(card.getByRole("button", { name: "Discard" }));
+
+    expect(
+      card.getByRole("radio", { name: /All organizations/ }),
+    ).toBeChecked();
+    expect(card.queryByRole("checkbox")).not.toBeInTheDocument();
+  });
+
+  it("disables an active key", async () => {
+    const user = userEvent.setup();
+    await renderRoute(path, getSession);
+
+    const status = await statusCard();
+    expect(headerBadges()).toHaveTextContent("Active");
+    expect(status.getByText(/accepted until it expires/)).toBeVisible();
+    await user.click(status.getByRole("button", { name: "Disable key" }));
+
+    expect(setEnabled).toHaveBeenCalledExactlyOnceWith(deployBot.id, false);
+  });
+
+  it("enables a disabled key", async () => {
+    vi.mocked(useApiKey).mockReturnValue({ ...deployBot, enabled: false });
+    const user = userEvent.setup();
+    await renderRoute(path, getSession);
+
+    const status = await statusCard();
+    expect(headerBadges()).toHaveTextContent("Disabled");
+    expect(status.getByText(/rejected until you enable it/)).toBeVisible();
+    await user.click(status.getByRole("button", { name: "Enable key" }));
+
+    expect(setEnabled).toHaveBeenCalledExactlyOnceWith(deployBot.id, true);
+  });
+
+  it("points an expired key to regeneration instead of a toggle", async () => {
+    vi.mocked(useApiKey).mockReturnValue({
+      ...deployBot,
+      expiresAt: new Date(Date.now() - DAY),
+    });
+    await renderRoute(path, getSession);
+
+    const status = await statusCard();
+    expect(headerBadges()).toHaveTextContent("Expired");
+    expect(status.getByText(/Regenerate it to use it again/)).toBeVisible();
+    expect(status.queryByRole("button")).not.toBeInTheDocument();
+  });
+
+  it("warns when an active key expires soon", async () => {
+    vi.mocked(useApiKey).mockReturnValue({
+      ...deployBot,
+      expiresAt: new Date(Date.now() + 2 * DAY),
+    });
+    await renderRoute(path, getSession);
+
+    const status = await statusCard();
+    expect(headerBadges()).toHaveTextContent("Expires soon");
+    expect(status.getByText(/Regenerate it to keep using it/)).toBeVisible();
   });
 
   it("says when the key doesn't exist", async () => {

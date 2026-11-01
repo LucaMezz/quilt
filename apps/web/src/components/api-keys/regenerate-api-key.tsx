@@ -14,40 +14,20 @@ import {
   FieldLabel,
 } from "@quilt/ui/components/field";
 import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupButton,
-  InputGroupInput,
-} from "@quilt/ui/components/input-group";
-import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@quilt/ui/components/select";
-import { CopyIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
 import { SectionCard } from "@/components/settings/section-card";
+import { EXPIRATIONS, expiryDate } from "@/lib/api-keys/expiration";
 import { type ApiKey, useRegenerateApiKey } from "@/lib/api-keys/use-api-keys";
 
-const EXPIRATIONS = [
-  { value: 7, label: "7 days" },
-  { value: 30, label: "30 days" },
-  { value: 60, label: "60 days" },
-  { value: 90, label: "90 days" },
-  { value: 365, label: "1 year" },
-];
-
-const DAY = 24 * 60 * 60 * 1000;
-
-function expiryDate(days: number) {
-  return new Date(Date.now() + days * DAY).toLocaleDateString(undefined, {
-    dateStyle: "long",
-  });
-}
+import { SecretField } from "./secret-field";
 
 export function RegenerateApiKey({ apiKey }: { apiKey: ApiKey }) {
   const regenerate = useRegenerateApiKey();
@@ -61,15 +41,6 @@ export function RegenerateApiKey({ apiKey }: { apiKey: ApiKey }) {
     if (!next) {
       setSecret(null);
       setDays(30);
-    }
-  }
-
-  async function copy(value: string) {
-    try {
-      await navigator.clipboard.writeText(value);
-      toast.success("Copied the new key");
-    } catch {
-      toast.error("Couldn't copy the key. Select it and copy it instead.");
     }
   }
 
@@ -146,27 +117,11 @@ export function RegenerateApiKey({ apiKey }: { apiKey: ApiKey }) {
                     before closing this dialog.
                   </DialogDescription>
                 </DialogHeader>
-                <Field>
-                  <FieldLabel htmlFor="regenerated-key">New key</FieldLabel>
-                  <InputGroup>
-                    <InputGroupInput
-                      id="regenerated-key"
-                      readOnly
-                      value={secret}
-                      className="font-mono"
-                      onFocus={(event) => event.currentTarget.select()}
-                    />
-                    <InputGroupAddon align="inline-end">
-                      <InputGroupButton
-                        size="icon-xs"
-                        aria-label="Copy key"
-                        onClick={() => copy(secret)}
-                      >
-                        <CopyIcon aria-hidden="true" />
-                      </InputGroupButton>
-                    </InputGroupAddon>
-                  </InputGroup>
-                </Field>
+                <SecretField
+                  id="regenerated-key"
+                  label="New key"
+                  secret={secret}
+                />
                 <DialogFooter>
                   <Button onClick={() => onOpenChange(false)}>Done</Button>
                 </DialogFooter>

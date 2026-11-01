@@ -4,8 +4,11 @@ import { describe, expect, it } from "vitest";
 import {
     useApiKey,
     useApiKeys,
+    useCreateApiKey,
     useDeleteApiKey,
     useRegenerateApiKey,
+    useSetApiKeyEnabled,
+    useUpdateApiKeyOrganizations,
     useUpdateApiKeyPermissions,
 } from "./use-api-keys";
 
@@ -78,5 +81,71 @@ describe("API key store", () => {
             ...first,
             permissions: { apps: ["read"] },
         });
+    });
+
+    it("adds a created key first and returns its only copy of the secret", () => {
+        const { result } = renderHook(() => ({
+            keys: useApiKeys().keys,
+            create: useCreateApiKey(),
+        }));
+
+        let created = { id: "", secret: "" };
+        act(() => {
+            created = result.current.create({
+                name: "ci",
+                description: null,
+                expiresInDays: 7,
+                organizations: ["org_7Hq2"],
+                permissions: { apps: ["read"] },
+            });
+        });
+        const [first] = result.current.keys;
+
+        expect(created.secret).toMatch(/^qlt_[A-Za-z0-9]{64}$/);
+        expect(first).toMatchObject({
+            id: created.id,
+            name: "ci",
+            start: created.secret.slice(0, 6),
+            enabled: true,
+            lastRequest: null,
+            organizations: ["org_7Hq2"],
+            permissions: { apps: ["read"] },
+        });
+        expect(first?.expiresAt?.getTime()).toBeGreaterThan(
+            Date.now() + 6 * 24 * 60 * 60 * 1000,
+        );
+    });
+
+    it("replaces a key's organization access", () => {
+        const { result } = renderHook(() => ({
+            keys: useApiKeys().keys,
+            update: useUpdateApiKeyOrganizations(),
+        }));
+        const [first] = result.current.keys;
+        if (!first) throw new Error("No mock keys");
+
+        act(() => result.current.update(first.id, ["org_3XmP"]));
+
+        expect(result.current.keys.find((key) => key.id === first.id)).toEqual({
+            ...first,
+            organizations: ["org_3XmP"],
+        });
+    });
+
+    it("disables and re-enables a key", () => {
+        const { result } = renderHook(() => ({
+            keys: useApiKeys().keys,
+            setEnabled: useSetApiKeyEnabled(),
+        }));
+        const [first] = result.current.keys;
+        if (!first) throw new Error("No mock keys");
+        const find = () =>
+            result.current.keys.find((key) => key.id === first.id);
+
+        act(() => result.current.setEnabled(first.id, false));
+        expect(find()).toEqual({ ...first, enabled: false });
+
+        act(() => result.current.setEnabled(first.id, true));
+        expect(find()).toEqual({ ...first, enabled: true });
     });
 });

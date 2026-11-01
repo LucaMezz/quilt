@@ -18,7 +18,7 @@ export function keyStatus(key: KeyState, now = new Date()): KeyStatus {
 }
 
 export function expiresSoon(key: KeyState, now = new Date()) {
-    if (!key.expiresAt || key.expiresAt <= now) return false;
+    if (keyStatus(key, now) !== "active" || !key.expiresAt) return false;
     return key.expiresAt.getTime() - now.getTime() <= EXPIRES_SOON_WITHIN;
 }
 

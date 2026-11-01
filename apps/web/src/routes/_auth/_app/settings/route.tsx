@@ -9,7 +9,7 @@ export const Route = createFileRoute("/_auth/_app/settings")({
 
 function SettingsLayout() {
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 p-4 md:p-8">
+    <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 p-4 md:p-8">
       <div className="flex flex-col gap-1">
         <h1 className="font-semibold text-[1.75rem] tracking-tight">
           Settings

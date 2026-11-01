@@ -38,7 +38,10 @@ export function PermissionsTable({
         <TableBody>
           {resources.map(([resource, { label, description }]) => (
             <TableRow key={resource}>
-              <th scope="row" className="p-2 text-left align-top font-medium">
+              <th
+                scope="row"
+                className="px-4 py-3 text-left align-top font-medium"
+              >
                 {label}
               </th>
               <TableCell className="whitespace-normal align-top text-muted-foreground">

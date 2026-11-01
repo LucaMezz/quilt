@@ -37,7 +37,7 @@ export function LoginForm({ redirect, className, ...props }: LoginFormProps) {
         {
           email: value.email,
           password: value.password,
-          callbackURL: redirect ?? "/dashboard",
+          callbackURL: redirect ?? "/account/organizations",
         },
         {
           onSuccess: () => {

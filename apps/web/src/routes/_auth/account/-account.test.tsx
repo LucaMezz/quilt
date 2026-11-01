@@ -27,6 +27,8 @@ describe("account", () => {
   it.each([
     ["/account", "Profile", "API keys"],
     ["/account/api-keys", "API keys", "Profile"],
+    ["/account/organizations", "Organizations", "Profile"],
+    ["/account", "Profile", "Organizations"],
   ])("marks only the current page at %s", async (path, current, other) => {
     await renderRoute(path, getSession);
 

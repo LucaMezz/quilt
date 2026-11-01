@@ -82,7 +82,7 @@ describe("SignupForm", () => {
     expect(signUpEmail).not.toHaveBeenCalled();
   });
 
-  it("signs up and navigates to the dashboard on success", async () => {
+  it("signs up and navigates to your organizations on success", async () => {
     signUpEmail.mockImplementation(async (_body, { onSuccess }) => {
       onSuccess();
     });
@@ -103,7 +103,7 @@ describe("SignupForm", () => {
       },
       expect.any(Object),
     );
-    expect(navigate).toHaveBeenCalledWith({ to: "/dashboard" });
+    expect(navigate).toHaveBeenCalledWith({ to: "/account/organizations" });
   });
 
   it("links to the sign-in page", () => {

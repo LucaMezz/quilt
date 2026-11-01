@@ -18,7 +18,8 @@
         "generate:openapi": "tsx scripts/generate-openapi.ts",
         "test": "vitest run --project unit",
         "test:watch": "vitest --project unit",
-        "test:integration": "vitest run --project integration --coverage.reportsDirectory=coverage/integration"
+        "test:integration": "vitest run --project integration --coverage.reportsDirectory=coverage/integration",
+        "test:fuzz": "schemathesis run openapi.json"
     },
     "dependencies": {
         "@orpc/openapi": "^1.15.6",

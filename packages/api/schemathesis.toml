@@ -1,0 +1,7 @@
+base-url = "http://localhost:3000/api-reference"
+headers = { x-api-key = "${QUILT_API_KEY}" }
+
+[[operations]]
+include-path = "/user/api-keys/{id}"
+exclude-method = "GET"
+enabled = false

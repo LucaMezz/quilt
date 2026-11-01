@@ -26,16 +26,20 @@ const teams = [
   },
 ];
 
-const navMain = [
+const sections = [
   {
-    title: "Dashboard",
-    icon: <LayoutDashboard />,
-    to: "/dashboard",
+    label: "General",
+    items: [
+      { title: "Dashboard", icon: <LayoutDashboard />, to: "/dashboard" },
+      { title: "Apps", icon: <Boxes /> },
+      { title: "Servers", icon: <Server /> },
+      { title: "Deployments", icon: <Rocket /> },
+    ],
   },
-  { title: "Apps", icon: <Boxes /> },
-  { title: "Servers", icon: <Server /> },
-  { title: "Deployments", icon: <Rocket /> },
-  { title: "Settings", icon: <Settings2 /> },
+  {
+    label: "Account",
+    items: [{ title: "Settings", icon: <Settings2 />, to: "/settings" }],
+  },
 ] as const;
 
 export function AppSidebar({
@@ -50,9 +54,9 @@ export function AppSidebar({
         <TeamSwitcher teams={teams} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={[...navMain]} />
+        <NavMain sections={[...sections]} />
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className="border-sidebar-border border-t">
         <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />

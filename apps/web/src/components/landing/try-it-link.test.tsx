@@ -26,16 +26,17 @@ describe("TryItLink", () => {
     ).toHaveAttribute("href", "/login");
   });
 
-  it("links signed-in users to the dashboard", () => {
+  it("links signed-in users to their organizations", () => {
     useSession.mockReturnValue({
       data: { user: { name: "Ada" } },
       isPending: false,
     });
     render(<TryItLink />);
 
-    expect(
-      screen.getByRole("link", { name: "Open dashboard" }),
-    ).toHaveAttribute("href", "/dashboard");
+    expect(screen.getByRole("link", { name: "Open quilt" })).toHaveAttribute(
+      "href",
+      "/account/organizations",
+    );
   });
 
   it("renders no link while the session is loading", () => {

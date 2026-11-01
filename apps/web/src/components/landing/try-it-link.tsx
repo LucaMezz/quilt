@@ -15,10 +15,10 @@ export function TryItLink() {
 
   return (
     <Link
-      to={session ? "/dashboard" : "/login"}
+      to={session ? "/account/organizations" : "/login"}
       className={cn(buttonVariants({ size: "lg" }), "h-10 px-5")}
     >
-      {session ? "Open dashboard" : "Sign in and try it"}
+      {session ? "Open quilt" : "Sign in and try it"}
       <ArrowRight data-icon="inline-end" />
     </Link>
   );

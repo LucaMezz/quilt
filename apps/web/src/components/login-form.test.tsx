@@ -66,7 +66,7 @@ describe("LoginForm", () => {
     );
   });
 
-  it("returns to the dashboard when there is no redirect target", async () => {
+  it("returns to your organizations when there is no redirect target", async () => {
     const user = userEvent.setup();
     render(<LoginForm />);
 
@@ -75,7 +75,7 @@ describe("LoginForm", () => {
     await user.click(screen.getByRole("button", { name: "Sign in" }));
 
     expect(signInEmail).toHaveBeenCalledWith(
-      expect.objectContaining({ callbackURL: "/dashboard" }),
+      expect.objectContaining({ callbackURL: "/account/organizations" }),
       expect.any(Object),
     );
   });

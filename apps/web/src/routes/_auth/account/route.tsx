@@ -25,7 +25,7 @@ function AccountLayout() {
               Account
             </h1>
             <p className="text-muted-foreground text-sm">
-              Manage your profile and how tools sign in as you.
+              Your organizations, your profile and how tools sign in as you.
             </p>
           </div>
           <Outlet />

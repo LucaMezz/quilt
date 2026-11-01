@@ -5,6 +5,7 @@ import {
   ExpiresSoonBadge,
   StatusBadge,
 } from "@/components/api-keys/key-badges";
+import { KeyStatusSection } from "@/components/api-keys/key-status";
 import { OrganizationAccessEditor } from "@/components/api-keys/organization-access-editor";
 import { PermissionsEditor } from "@/components/api-keys/permissions-editor";
 import { RegenerateApiKey } from "@/components/api-keys/regenerate-api-key";
@@ -50,6 +51,7 @@ function ApiKeyPage() {
           <p className="text-muted-foreground">{apiKey.description}</p>
         )}
       </div>
+      <KeyStatusSection apiKey={apiKey} />
       <SectionCard level={3} title="Details">
         <dl className="grid grid-cols-[max-content_1fr] gap-x-6 gap-y-2 text-sm">
           <dt className="text-muted-foreground">Key</dt>

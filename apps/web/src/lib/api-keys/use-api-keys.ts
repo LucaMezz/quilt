@@ -190,3 +190,9 @@ export function useUpdateApiKeyOrganizations() {
         );
     }, []);
 }
+
+export function useSetApiKeyEnabled() {
+    return useCallback((id: string, enabled: boolean) => {
+        setKeys(keys.map((key) => (key.id === id ? { ...key, enabled } : key)));
+    }, []);
+}

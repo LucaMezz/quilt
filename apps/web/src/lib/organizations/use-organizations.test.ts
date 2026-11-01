@@ -1,5 +1,5 @@
 import { act, renderHook } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { useApps } from "@/lib/apps/use-apps";
 
@@ -8,6 +8,7 @@ import {
     useCreateOrganization,
     useOrganization,
     useOrganizations,
+    useSetOrganizationLogo,
     useUpdateOrganization,
 } from "./use-organizations";
 
@@ -64,9 +65,32 @@ describe("organization store", () => {
             name: "Lab",
             slug: "lab",
             role,
+            logo: null,
             createdAt: new Date(),
         };
 
         expect(canManageOrganization(organization)).toBe(allowed);
+    });
+
+    it("sets and removes an organization's logo", () => {
+        const createObjectURL = vi
+            .spyOn(URL, "createObjectURL")
+            .mockReturnValue("blob:logo");
+        const revokeObjectURL = vi
+            .spyOn(URL, "revokeObjectURL")
+            .mockImplementation(() => {});
+        const { result } = renderHook(() => ({
+            setLogo: useSetOrganizationLogo(),
+            organization: useOrganization("side-projects"),
+        }));
+        const logo = new File(["png"], "logo.png", { type: "image/png" });
+
+        act(() => result.current.setLogo("org_K9vD", logo));
+        expect(createObjectURL).toHaveBeenCalledWith(logo);
+        expect(result.current.organization?.logo).toBe("blob:logo");
+
+        act(() => result.current.setLogo("org_K9vD", null));
+        expect(revokeObjectURL).toHaveBeenCalledWith("blob:logo");
+        expect(result.current.organization?.logo).toBeNull();
     });
 });

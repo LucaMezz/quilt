@@ -7,6 +7,8 @@ import { PageHeader } from "@/components/app/page-header";
 import { Detail, DetailList } from "@/components/display/detail-list";
 import { RelativeTime } from "@/components/display/relative-time";
 import { useAppForm } from "@/components/form/use-app-form";
+import { OrganizationAvatar } from "@/components/organizations/organization-avatar";
+import { ImagePicker } from "@/components/settings/image-picker";
 import { SectionCard } from "@/components/settings/section-card";
 import { UpdateBar } from "@/components/settings/update-bar";
 import { MAX_NAME, slugProblem } from "@/lib/organizations/slug";
@@ -15,6 +17,7 @@ import {
   type Organization,
   useOrganization,
   useOrganizations,
+  useSetOrganizationLogo,
   useUpdateOrganization,
 } from "@/lib/organizations/use-organizations";
 
@@ -38,6 +41,7 @@ function OrganizationSettings() {
       />
       <div className="flex max-w-3xl flex-col gap-6">
         <General key={organization.id} organization={organization} />
+        <Logo organization={organization} />
         <SectionCard title="Details">
           <DetailList>
             <Detail label="ID">
@@ -160,6 +164,39 @@ function General({ organization }: { organization: Organization }) {
           </form.Subscribe>
         )}
       </form>
+    </SectionCard>
+  );
+}
+
+function Logo({ organization }: { organization: Organization }) {
+  const setLogo = useSetOrganizationLogo();
+
+  if (!canManageOrganization(organization)) {
+    return (
+      <SectionCard
+        title="Logo"
+        description="Only owners and admins can change it."
+      >
+        <OrganizationAvatar organization={organization} className="size-20" />
+      </SectionCard>
+    );
+  }
+
+  return (
+    <SectionCard
+      title="Logo"
+      description="Shown next to the organization's name across quilt. A PNG, JPEG or WebP image of up to 5 MB."
+    >
+      <ImagePicker
+        image={organization.logo}
+        fallback={organization.name.slice(0, 1)}
+        label="logo"
+        shape="square"
+        onChange={(file) => {
+          setLogo(organization.id, file);
+          toast.success(file ? "Logo updated" : "Logo removed");
+        }}
+      />
     </SectionCard>
   );
 }

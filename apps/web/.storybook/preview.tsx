@@ -1,6 +1,5 @@
 import type { Preview } from "@storybook/react-vite";
-import { useEffect } from "react";
-
+import { ThemeProvider } from "../src/components/theme-provider";
 import "../src/index.css";
 
 const preview: Preview = {
@@ -20,14 +19,11 @@ const preview: Preview = {
   },
   initialGlobals: { theme: "light" },
   decorators: [
-    (Story, { globals }) => {
-      const dark = globals.theme === "dark";
-      useEffect(() => {
-        document.documentElement.classList.toggle("dark", dark);
-        document.documentElement.style.colorScheme = dark ? "dark" : "light";
-      }, [dark]);
-      return <Story />;
-    },
+    (Story, { globals }) => (
+      <ThemeProvider attribute="class" forcedTheme={globals.theme}>
+        <Story />
+      </ThemeProvider>
+    ),
   ],
   parameters: {
     a11y: { test: "error" },

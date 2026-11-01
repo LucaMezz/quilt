@@ -41,12 +41,10 @@ export const Warning: Story = {
 };
 
 export const Danger: Story = {
-  parameters: { a11y: { test: "todo" } },
   args: { tone: "danger", children: "Failed" },
 };
 
 export const AllTones: Story = {
-  parameters: { a11y: { test: "todo" } },
   render: () => (
     <div className="flex flex-wrap gap-2">
       <StatusBadge tone="success">Running</StatusBadge>

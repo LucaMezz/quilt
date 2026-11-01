@@ -152,7 +152,6 @@ export const WithText: Story = {
  * Add buttons to perform actions within the input group.
  */
 export const WithButtons: Story = {
-  parameters: { a11y: { test: "todo" } },
   render: (args) => {
     const [isCopied, setIsCopied] = React.useState(false);
     const [isFavorite, setIsFavorite] = React.useState(false);
@@ -190,6 +189,7 @@ export const WithButtons: Story = {
                   <InputGroupButton
                     variant="secondary"
                     size="icon-xs"
+                    aria-label="Connection info"
                     nativeButton
                   />
                 }
@@ -210,11 +210,13 @@ export const WithButtons: Story = {
           <InputGroupAddon className="pl-1.5 text-muted-foreground">
             https://
           </InputGroupAddon>
-          <InputGroupInput id="input-secure-19" />
+          <InputGroupInput id="input-secure-19" aria-label="Website" />
           <InputGroupAddon align="inline-end">
             <InputGroupButton
               onClick={() => setIsFavorite(!isFavorite)}
               size="icon-xs"
+              aria-label="Favorite"
+              aria-pressed={isFavorite}
               nativeButton
             >
               <Star
@@ -306,7 +308,6 @@ export const WithTooltips: Story = {
  * Input groups also work with textarea components.
  */
 export const WithTextarea: Story = {
-  parameters: { a11y: { test: "todo" } },
   render: (args) => {
     return (
       <div className="grid w-full max-w-md gap-4">
@@ -327,10 +328,14 @@ export const WithTextarea: Story = {
               <Code />
               script.js
             </InputGroupText>
-            <InputGroupButton className="ml-auto" size="icon-xs">
+            <InputGroupButton
+              className="ml-auto"
+              size="icon-xs"
+              aria-label="Refresh"
+            >
               <RefreshCcw />
             </InputGroupButton>
-            <InputGroupButton variant="ghost" size="icon-xs">
+            <InputGroupButton variant="ghost" size="icon-xs" aria-label="Copy">
               <Copy />
             </InputGroupButton>
           </InputGroupAddon>
@@ -344,7 +349,11 @@ export const WithTextarea: Story = {
  * Show loading indicators while processing input.
  */
 export const WithSpinner: Story = {
-  parameters: { a11y: { test: "todo" } },
+  parameters: {
+    a11y: {
+      config: { rules: [{ id: "color-contrast", enabled: false }] },
+    },
+  },
   render: (args) => (
     <div className="grid w-full max-w-sm gap-4">
       <InputGroup {...args} data-disabled>

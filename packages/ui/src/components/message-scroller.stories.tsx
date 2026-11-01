@@ -170,7 +170,6 @@ function Transcript({
  * The default transcript scrolls within a height-constrained container.
  */
 export const Default: Story = {
-  parameters: { a11y: { test: "todo" } },
   render: () => (
     <MessageScrollerProvider>
       <Transcript />
@@ -182,7 +181,6 @@ export const Default: Story = {
  * Anchor new turns to user messages so the prompt starts near the top edge.
  */
 export const AnchoringTurns: Story = {
-  parameters: { a11y: { test: "todo" } },
   render: () => {
     const [messages, setMessages] = React.useState(transcript.slice(0, 2));
 
@@ -225,7 +223,6 @@ export const AnchoringTurns: Story = {
  * Auto-scroll follows the live edge while a scripted response streams in.
  */
 export const Streaming: Story = {
-  parameters: { a11y: { test: "todo" } },
   render: () => {
     const [reply, setReply] = React.useState("Ready to stream.");
 
@@ -267,7 +264,6 @@ export const Streaming: Story = {
  * Open a saved transcript at the last anchored turn.
  */
 export const OpeningPosition: Story = {
-  parameters: { a11y: { test: "todo" } },
   render: () => (
     <MessageScrollerProvider defaultScrollPosition="last-anchor">
       <Transcript />
@@ -279,7 +275,6 @@ export const OpeningPosition: Story = {
  * Prepend earlier messages without moving the reader away from the visible row.
  */
 export const LoadHistory: Story = {
-  parameters: { a11y: { test: "todo" } },
   render: () => {
     const earlier: TranscriptMessage[] = [
       {
@@ -374,7 +369,6 @@ function JumpControls() {
  * Use external controls to jump to stable message ids.
  */
 export const JumpToMessage: Story = {
-  parameters: { a11y: { test: "todo" } },
   render: () => (
     <MessageScrollerProvider>
       <div className="flex size-full min-h-0 flex-col overflow-hidden">
@@ -405,7 +399,6 @@ function ScrollStatus() {
  * Read scroll state for custom status text or controls.
  */
 export const ScrollState: Story = {
-  parameters: { a11y: { test: "todo" } },
   render: () => (
     <MessageScrollerProvider>
       <div className="flex size-full min-h-0 flex-col overflow-hidden">
@@ -424,7 +417,6 @@ export const ScrollState: Story = {
  * Verify external controls can scroll to the latest transcript turn.
  */
 export const ScrollToLatest: Story = {
-  parameters: { a11y: { test: "todo" } },
   tags: ["!dev", "!autodocs"],
   render: () => (
     <MessageScrollerProvider>
@@ -449,7 +441,6 @@ export const ScrollToLatest: Story = {
  * Verify loading history preserves the visible transcript position.
  */
 export const PrependHistoryPreservesPosition: Story = {
-  parameters: { a11y: { test: "todo" } },
   tags: ["!dev", "!autodocs"],
   render: LoadHistory.render,
   play: async ({ canvasElement }) => {

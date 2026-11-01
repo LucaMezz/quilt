@@ -46,10 +46,9 @@ type Story = StoryObj<typeof meta>;
 /**
  * The default form of the toaster.
  */
-export const Default: Story = { parameters: { a11y: { test: "todo" } } };
+export const Default: Story = {};
 
 export const ShouldShowToast: Story = {
-  parameters: { a11y: { test: "todo" } },
   name: "when clicking Show Toast button, should show a toast",
   tags: ["!dev", "!autodocs"],
   play: async ({ canvasElement, step }) => {
@@ -82,7 +81,6 @@ export const ShouldShowToast: Story = {
 };
 
 export const ShouldCloseToast: Story = {
-  parameters: { a11y: { test: "todo" } },
   name: "when clicking the close button, should close the toast",
   tags: ["!dev", "!autodocs"],
   play: async ({ canvasElement, step }) => {

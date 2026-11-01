@@ -84,7 +84,6 @@ function BubbleExample({
  * The default bubble is a strong primary surface for current-user messages.
  */
 export const Default: Story = {
-  parameters: { a11y: { test: "todo" } },
   render: (args) => (
     <BubbleExample {...args}>
       I checked the registry output and removed the stale route.
@@ -152,7 +151,6 @@ export const Outline: Story = {
  * Use the destructive variant for failed actions or error messages.
  */
 export const Destructive: Story = {
-  parameters: { a11y: { test: "todo" } },
   args: {
     variant: "destructive",
   },
@@ -182,7 +180,6 @@ export const Ghost: Story = {
  * Align a bubble to the end for current-user messages.
  */
 export const AlignedEnd: Story = {
-  parameters: { a11y: { test: "todo" } },
   args: {
     align: "end",
   },
@@ -298,7 +295,6 @@ export const TooltipBubble: Story = {
  * Pair a bubble with Popover to show additional detail on demand.
  */
 export const PopoverBubble: Story = {
-  parameters: { a11y: { test: "todo" } },
   args: {
     variant: "destructive",
   },

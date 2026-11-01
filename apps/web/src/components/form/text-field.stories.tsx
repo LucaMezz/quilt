@@ -65,7 +65,6 @@ export const Invalid: Story = {
     error: "Use lowercase letters, numbers and dashes",
   },
   parameters: {
-    a11y: { test: "todo" },
     docs: {
       description: {
         story:

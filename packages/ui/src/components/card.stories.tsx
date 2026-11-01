@@ -50,7 +50,6 @@ type Story = StoryObj<typeof meta>;
  * The default form of the card.
  */
 export const Default: Story = {
-  parameters: { a11y: { test: "todo" } },
   render: (args) => (
     <Card {...args}>
       <CardHeader>
@@ -79,7 +78,6 @@ export const Default: Story = {
  * Use the `CardAction` component to add interactive elements in the header.
  */
 export const WithCardAction: Story = {
-  parameters: { a11y: { test: "todo" } },
   render: (args) => (
     <Card {...args}>
       <CardHeader>

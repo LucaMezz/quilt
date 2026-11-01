@@ -72,7 +72,6 @@ export const WithHelperText: Story = {
  * or used to trigger an action.
  */
 export const WithButton: Story = {
-  parameters: { a11y: { test: "todo" } },
   render: (args) => (
     <div className="flex items-center space-x-2">
       <Input {...args} />

@@ -35,6 +35,7 @@ const deployBot: ApiKey = {
   expiresAt: new Date(Date.now() + 60 * DAY),
   lastRequest: null,
   createdAt: new Date(Date.now() - 10 * DAY),
+  organizations: "all",
   permissions: { apps: ["read", "write"], user: ["read"] },
 };
 

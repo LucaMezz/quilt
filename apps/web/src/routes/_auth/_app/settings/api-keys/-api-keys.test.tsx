@@ -21,6 +21,7 @@ function key(overrides: Partial<ApiKey>): ApiKey {
     expiresAt: new Date(Date.now() + 60 * DAY),
     lastRequest: null,
     createdAt: new Date(Date.now() - 10 * DAY),
+    organizations: "all",
     permissions: { apps: ["read"] },
     ...overrides,
   };
@@ -60,7 +61,10 @@ describe("API keys settings", () => {
     await renderRoute("/settings/api-keys", getSession);
 
     expect(await screen.findByText("No API keys yet")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Create key" })).toBeVisible();
+    expect(screen.getByRole("link", { name: "Create key" })).toHaveAttribute(
+      "href",
+      "/settings/api-keys/new",
+    );
     expect(screen.queryByRole("table")).not.toBeInTheDocument();
   });
 
@@ -69,7 +73,10 @@ describe("API keys settings", () => {
     await renderRoute("/settings/api-keys", getSession);
 
     const card = await screen.findByRole("region", { name: "API keys" });
-    expect(within(card).getByRole("button", { name: "New key" })).toBeVisible();
+    expect(within(card).getByRole("link", { name: "New key" })).toHaveAttribute(
+      "href",
+      "/settings/api-keys/new",
+    );
     expect(within(card).getByRole("note")).toHaveTextContent(
       "Keep your keys secure",
     );

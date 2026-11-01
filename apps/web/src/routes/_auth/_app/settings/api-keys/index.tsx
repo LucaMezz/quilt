@@ -3,7 +3,7 @@ import {
   AlertDescription,
   AlertTitle,
 } from "@quilt/ui/components/alert";
-import { Button } from "@quilt/ui/components/button";
+import { buttonVariants } from "@quilt/ui/components/button";
 import {
   Empty,
   EmptyContent,
@@ -12,7 +12,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@quilt/ui/components/empty";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { KeyRoundIcon, PlusIcon, ShieldAlertIcon } from "lucide-react";
 
 import { ApiKeyTable } from "@/components/api-keys/api-key-table";
@@ -32,10 +32,10 @@ function ApiKeysSettings() {
       title="API keys"
       description="Keys let the quilt CLI and your scripts act as you. Each key can only do what you grant it."
       action={
-        <Button>
+        <Link to="/settings/api-keys/new" className={buttonVariants()}>
           <PlusIcon data-icon="inline-start" aria-hidden="true" />
           New key
-        </Button>
+        </Link>
       }
     >
       <div className="flex flex-col gap-4">
@@ -61,10 +61,13 @@ function ApiKeysSettings() {
               </EmptyDescription>
             </EmptyHeader>
             <EmptyContent>
-              <Button variant="outline">
+              <Link
+                to="/settings/api-keys/new"
+                className={buttonVariants({ variant: "outline" })}
+              >
                 <PlusIcon data-icon="inline-start" aria-hidden="true" />
                 Create key
-              </Button>
+              </Link>
             </EmptyContent>
           </Empty>
         ) : (

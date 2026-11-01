@@ -11,6 +11,17 @@ export type ApiKey = {
     expiresAt: Date | null;
     lastRequest: Date | null;
     createdAt: Date;
+    organizations: OrganizationAccess;
+    permissions: ApiKeyPermissions;
+};
+
+type OrganizationAccess = "all" | string[];
+
+export type NewApiKey = {
+    name: string;
+    description: string | null;
+    expiresInDays: number;
+    organizations: OrganizationAccess;
     permissions: ApiKeyPermissions;
 };
 
@@ -30,6 +41,7 @@ const mockKeys: ApiKey[] = [
         expiresAt: daysFromNow(83),
         lastRequest: daysFromNow(-0.1),
         createdAt: daysFromNow(-7),
+        organizations: "all",
         permissions: {
             organizations: ["read", "write"],
             apps: ["read", "write"],
@@ -46,6 +58,7 @@ const mockKeys: ApiKey[] = [
         expiresAt: daysFromNow(4),
         lastRequest: daysFromNow(-1),
         createdAt: daysFromNow(-86),
+        organizations: "all",
         permissions: { organizations: ["read"], apps: ["read"] },
     },
     {
@@ -57,6 +70,7 @@ const mockKeys: ApiKey[] = [
         expiresAt: daysFromNow(200),
         lastRequest: daysFromNow(-12),
         createdAt: daysFromNow(-40),
+        organizations: "all",
         permissions: { apps: ["read", "write"] },
     },
     {
@@ -68,6 +82,7 @@ const mockKeys: ApiKey[] = [
         expiresAt: daysFromNow(-3),
         lastRequest: daysFromNow(-95),
         createdAt: daysFromNow(-93),
+        organizations: "all",
         permissions: { user: ["read"] },
     },
 ];
@@ -139,5 +154,29 @@ export function useUpdateApiKeyPermissions() {
         setKeys(
             keys.map((key) => (key.id === id ? { ...key, permissions } : key)),
         );
+    }, []);
+}
+
+function newId() {
+    return newSecret().slice(API_KEY_PREFIX.length, API_KEY_PREFIX.length + 32);
+}
+
+export function useCreateApiKey() {
+    return useCallback(({ expiresInDays, ...details }: NewApiKey) => {
+        const secret = newSecret();
+        const id = newId();
+        setKeys([
+            {
+                ...details,
+                id,
+                start: secret.slice(0, API_KEY_PREFIX.length + 2),
+                enabled: true,
+                expiresAt: daysFromNow(expiresInDays),
+                lastRequest: null,
+                createdAt: new Date(),
+            },
+            ...keys,
+        ]);
+        return { id, secret };
     }, []);
 }

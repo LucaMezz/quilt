@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import {
     useApiKey,
     useApiKeys,
+    useCreateApiKey,
     useDeleteApiKey,
     useRegenerateApiKey,
     useUpdateApiKeyPermissions,
@@ -78,5 +79,38 @@ describe("API key store", () => {
             ...first,
             permissions: { apps: ["read"] },
         });
+    });
+
+    it("adds a created key first and returns its only copy of the secret", () => {
+        const { result } = renderHook(() => ({
+            keys: useApiKeys().keys,
+            create: useCreateApiKey(),
+        }));
+
+        let created = { id: "", secret: "" };
+        act(() => {
+            created = result.current.create({
+                name: "ci",
+                description: null,
+                expiresInDays: 7,
+                organizations: ["org_7Hq2"],
+                permissions: { apps: ["read"] },
+            });
+        });
+        const [first] = result.current.keys;
+
+        expect(created.secret).toMatch(/^qlt_[A-Za-z0-9]{64}$/);
+        expect(first).toMatchObject({
+            id: created.id,
+            name: "ci",
+            start: created.secret.slice(0, 6),
+            enabled: true,
+            lastRequest: null,
+            organizations: ["org_7Hq2"],
+            permissions: { apps: ["read"] },
+        });
+        expect(first?.expiresAt?.getTime()).toBeGreaterThan(
+            Date.now() + 6 * 24 * 60 * 60 * 1000,
+        );
     });
 });

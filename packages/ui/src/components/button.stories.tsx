@@ -60,7 +60,7 @@ type Story = StoryObj<typeof meta>;
 /**
  * The default form of the button, used for primary actions and commands.
  */
-export const Default: Story = { parameters: { a11y: { test: "todo" } } };
+export const Default: Story = {};
 
 /**
  * Use the `outline` button to reduce emphasis on secondary actions, such as
@@ -97,7 +97,6 @@ export const Secondary: Story = {
  * immediate attention.
  */
 export const Destructive: Story = {
-  parameters: { a11y: { test: "todo" } },
   args: {
     variant: "destructive",
   },
@@ -108,7 +107,6 @@ export const Destructive: Story = {
  * hyperlink or navigation, providing a text-only interactive element.
  */
 export const Link: Story = {
-  parameters: { a11y: { test: "todo" } },
   args: {
     variant: "link",
   },
@@ -151,7 +149,6 @@ export const WithIcon: Story = {
  * compact elements without sacrificing usability.
  */
 export const Small: Story = {
-  parameters: { a11y: { test: "todo" } },
   args: {
     size: "sm",
   },
@@ -162,7 +159,6 @@ export const Small: Story = {
  * easier interaction for users.
  */
 export const Large: Story = {
-  parameters: { a11y: { test: "todo" } },
   args: {
     size: "lg",
   },

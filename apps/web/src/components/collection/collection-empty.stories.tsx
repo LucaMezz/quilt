@@ -34,7 +34,6 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const WithAction: Story = {
-  parameters: { a11y: { test: "todo" } },
   args: {
     action: (
       <Button>

@@ -52,7 +52,6 @@ export const WithActions: Story = {
     ),
   },
   parameters: {
-    a11y: { test: "todo" },
     docs: {
       description: {
         story:

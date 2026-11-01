@@ -56,10 +56,9 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = { parameters: { a11y: { test: "todo" } } };
+export const Default: Story = {};
 
 export const ShowsPending: Story = {
-  parameters: { a11y: { test: "todo" } },
   name: "while submitting, shows the pending label and disables",
   tags: ["!dev", "!autodocs"],
   args: { delay: 800 },

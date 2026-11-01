@@ -93,7 +93,6 @@ export const Default: Story = {
  * Align a message to the end for current-user messages.
  */
 export const AlignedEnd: Story = {
-  parameters: { a11y: { test: "todo" } },
   args: {
     align: "end",
   },
@@ -112,7 +111,6 @@ export const AlignedEnd: Story = {
  * Add an avatar beside a message.
  */
 export const WithAvatar: Story = {
-  parameters: { a11y: { test: "todo" } },
   render: (args) => (
     <Message {...args}>
       <AvatarSlot />
@@ -131,7 +129,6 @@ export const WithAvatar: Story = {
  * Group consecutive messages from the same sender.
  */
 export const Group: Story = {
-  parameters: { a11y: { test: "todo" } },
   render: () => (
     <MessageGroup>
       <Message>
@@ -160,7 +157,6 @@ export const Group: Story = {
  * Use MessageHeader for sender names or concise context.
  */
 export const Header: Story = {
-  parameters: { a11y: { test: "todo" } },
   render: (args) => (
     <Message {...args}>
       <AvatarSlot />
@@ -178,7 +174,6 @@ export const Header: Story = {
  * Use MessageFooter for delivery state or timestamps.
  */
 export const Footer: Story = {
-  parameters: { a11y: { test: "todo" } },
   args: {
     align: "end",
   },
@@ -223,7 +218,6 @@ export const Actions: Story = {
  * Add attachments inside message content.
  */
 export const WithAttachment: Story = {
-  parameters: { a11y: { test: "todo" } },
   render: (args) => (
     <Message {...args}>
       <AvatarSlot />
@@ -302,7 +296,6 @@ export const CopyAction: Story = {
  * Verify retry actions in failed messages are clickable.
  */
 export const RetryAction: Story = {
-  parameters: { a11y: { test: "todo" } },
   tags: ["!dev", "!autodocs"],
   render: () => (
     <Message>

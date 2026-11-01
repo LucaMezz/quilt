@@ -36,7 +36,6 @@ type Story = StoryObj<typeof meta>;
 export const Unchanged: Story = {};
 
 export const Changed: Story = {
-  parameters: { a11y: { test: "todo" } },
   args: { changed: true },
 };
 

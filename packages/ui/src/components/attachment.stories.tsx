@@ -176,6 +176,7 @@ export const Processing: Story = {
  * Use the error state when an attachment needs user attention.
  */
 export const ErrorState: Story = {
+  parameters: { a11y: { test: "todo" } },
   args: {
     state: "error",
   },

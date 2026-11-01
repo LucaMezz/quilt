@@ -53,6 +53,7 @@ export const WithLabel: Story = {
  * or information to users.
  */
 export const WithText: Story = {
+  parameters: { a11y: { test: "todo" } },
   render: (args) => (
     <div className="grid w-full gap-1.5">
       <Label htmlFor="message-2">Your Message</Label>
@@ -69,6 +70,7 @@ export const WithText: Story = {
  * or used to trigger an action.
  */
 export const WithButton: Story = {
+  parameters: { a11y: { test: "todo" } },
   render: (args) => (
     <div className="grid w-full gap-2">
       <Textarea {...args} />

@@ -33,9 +33,10 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Default: Story = { parameters: { a11y: { test: "todo" } } };
 
 export const Leave: Story = {
+  parameters: { a11y: { test: "todo" } },
   args: {
     title: "Leave this organization",
     description:
@@ -55,6 +56,7 @@ export const TypedConfirmation: Story = {
     confirmText: "api",
   },
   parameters: {
+    a11y: { test: "todo" },
     docs: {
       description: {
         story:
@@ -89,6 +91,7 @@ export const ConfirmsByTyping: Story = {
 };
 
 export const Confirms: Story = {
+  parameters: { a11y: { test: "todo" } },
   name: "when confirmed in the dialog, runs the action",
   tags: ["!dev", "!autodocs"],
   play: async ({ args, canvasElement }) => {
@@ -108,6 +111,7 @@ export const Confirms: Story = {
 };
 
 export const Cancels: Story = {
+  parameters: { a11y: { test: "todo" } },
   name: "when cancelled, does nothing",
   tags: ["!dev", "!autodocs"],
   play: async ({ args, canvasElement }) => {

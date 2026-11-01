@@ -53,6 +53,7 @@ export const WithDescription: Story = {
 };
 
 export const Invalid: Story = {
+  parameters: { a11y: { test: "todo" } },
   args: {
     initialValue: "x".repeat(40),
     error: "Use 280 characters or fewer",

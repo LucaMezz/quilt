@@ -152,6 +152,7 @@ export const WithText: Story = {
  * Add buttons to perform actions within the input group.
  */
 export const WithButtons: Story = {
+  parameters: { a11y: { test: "todo" } },
   render: (args) => {
     const [isCopied, setIsCopied] = React.useState(false);
     const [isFavorite, setIsFavorite] = React.useState(false);
@@ -305,6 +306,7 @@ export const WithTooltips: Story = {
  * Input groups also work with textarea components.
  */
 export const WithTextarea: Story = {
+  parameters: { a11y: { test: "todo" } },
   render: (args) => {
     return (
       <div className="grid w-full max-w-md gap-4">
@@ -342,6 +344,7 @@ export const WithTextarea: Story = {
  * Show loading indicators while processing input.
  */
 export const WithSpinner: Story = {
+  parameters: { a11y: { test: "todo" } },
   render: (args) => (
     <div className="grid w-full max-w-sm gap-4">
       <InputGroup {...args} data-disabled>

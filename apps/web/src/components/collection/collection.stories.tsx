@@ -223,6 +223,7 @@ export const Table: Story = {
 export const Empty: Story = {
   args: { items: [] },
   parameters: {
+    a11y: { test: "todo" },
     docs: {
       description: {
         story:

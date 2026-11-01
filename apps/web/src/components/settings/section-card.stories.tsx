@@ -40,6 +40,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {};
 
 export const WithAction: Story = {
+  parameters: { a11y: { test: "todo" } },
   args: {
     action: (
       <Button>
@@ -79,6 +80,7 @@ export const Destructive: Story = {
     className: "ring-destructive/30",
   },
   parameters: {
+    a11y: { test: "todo" },
     docs: {
       description: {
         story:

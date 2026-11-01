@@ -8,20 +8,32 @@ import storybookViteConfig from "./.storybook/vite.config";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
-export default mergeConfig(
-    storybookViteConfig,
-    defineConfig({
+function storybookProject(theme: "light" | "dark") {
+    return {
+        extends: true,
         plugins: [
-            storybookTest({ configDir: path.join(dirname, ".storybook") }),
+            storybookTest({
+                configDir: path.join(dirname, ".storybook"),
+                initialGlobals: { theme },
+            }),
         ],
         test: {
-            name: "storybook",
+            name: `storybook-${theme}`,
             browser: {
                 enabled: true,
                 headless: true,
                 provider: playwright(),
-                instances: [{ browser: "chromium" }],
+                instances: [{ browser: "chromium" as const }],
             },
+        },
+    };
+}
+
+export default mergeConfig(
+    storybookViteConfig,
+    defineConfig({
+        test: {
+            projects: [storybookProject("light"), storybookProject("dark")],
         },
     }),
 );

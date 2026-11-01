@@ -102,6 +102,7 @@ export const Background: Story = {
  * Use the EmptyMedia component to display an avatar in the empty state.
  */
 export const WithAvatar: Story = {
+  parameters: { a11y: { test: "todo" } },
   render: (args) => (
     <Empty {...args}>
       <EmptyHeader>
@@ -131,6 +132,7 @@ export const WithAvatar: Story = {
  * Use the EmptyMedia component to display an avatar group in the empty state.
  */
 export const AvatarGroup: Story = {
+  parameters: { a11y: { test: "todo" } },
   render: (args) => (
     <Empty {...args}>
       <EmptyHeader>

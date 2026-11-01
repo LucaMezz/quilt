@@ -123,6 +123,7 @@ export const CancelsOnEscape: Story = {
 };
 
 export const RejectsEmpty: Story = {
+  parameters: { a11y: { test: "todo" } },
   name: "when emptied and Enter is pressed, explains and keeps editing",
   tags: ["!dev", "!autodocs"],
   play: async ({ args, canvasElement }) => {

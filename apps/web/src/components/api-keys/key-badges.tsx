@@ -38,7 +38,7 @@ const STATUS = {
 export function StatusBadge({ status }: { status: KeyStatus }) {
   const { label, icon, variant } = STATUS[status];
   return (
-    <Badge variant={variant}>
+    <Badge variant={variant} size="lg">
       {icon}
       {label}
     </Badge>
@@ -49,6 +49,7 @@ export function ExpiresSoonBadge() {
   return (
     <Badge
       variant="outline"
+      size="lg"
       className="border-amber-500/40 text-amber-700 dark:text-amber-400"
     >
       <ClockAlertIcon aria-hidden="true" />
@@ -67,6 +68,7 @@ export function AccessBadge({ level }: { level: AccessLevel }) {
   return (
     <Badge
       variant={level === "write" ? "outline" : "secondary"}
+      size="lg"
       className={
         level === "write"
           ? "border-amber-500/40 text-amber-700 dark:text-amber-400"

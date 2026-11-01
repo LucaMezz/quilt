@@ -46,14 +46,14 @@ function ApiKeyPage() {
           All API keys
         </Link>
         <div className="flex flex-wrap items-center gap-2">
-          <h2 className="font-semibold text-lg">
+          <h2 className="font-semibold text-xl">
             {apiKey.name ?? "Unnamed key"}
           </h2>
           <StatusBadge status={keyStatus(apiKey)} />
           {expiresSoon(apiKey) && <ExpiresSoonBadge />}
         </div>
         {apiKey.description && (
-          <p className="text-muted-foreground text-sm">{apiKey.description}</p>
+          <p className="text-muted-foreground">{apiKey.description}</p>
         )}
         <dl className="grid grid-cols-[max-content_1fr] gap-x-6 gap-y-2 text-sm">
           <dt className="text-muted-foreground">Key</dt>

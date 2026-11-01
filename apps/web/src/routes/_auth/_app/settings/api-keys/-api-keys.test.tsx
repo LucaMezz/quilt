@@ -63,14 +63,13 @@ describe("API keys settings", () => {
     expect(screen.queryByRole("table")).not.toBeInTheDocument();
   });
 
-  it("shows each key's status and access", async () => {
+  it("lists each key's name, prefix, status and dates", async () => {
     showKeys([
-      key({ id: "k1", name: "laptop" }),
       key({
-        id: "k2",
-        name: "deploy-bot",
-        start: "qlt_cd",
-        permissions: { apps: ["read", "write"], user: ["read", "write"] },
+        id: "k1",
+        name: "laptop",
+        description: "Work laptop CLI",
+        lastRequest: new Date(Date.now() - 2 * DAY),
       }),
       key({ id: "k3", name: "old-ci", enabled: false }),
       key({
@@ -82,40 +81,31 @@ describe("API keys settings", () => {
         id: "k5",
         name: "short-lived",
         expiresAt: new Date(Date.now() + 2 * DAY),
-        permissions: {},
       }),
     ]);
     await renderRoute("/settings/api-keys", getSession);
-    await screen.findByRole("table", { name: "API keys" });
+    const table = await screen.findByRole("table", { name: "API keys" });
+
+    expect(
+      within(table)
+        .getAllByRole("columnheader")
+        .map((header) => header.textContent),
+    ).toEqual(["Name", "Key", "Status", "Created", "Last used"]);
 
     const laptop = rowFor("laptop");
-    expect(laptop.getByText("Active")).toBeInTheDocument();
-    expect(laptop.getByText("Read-only")).toBeInTheDocument();
     expect(laptop.getByText("qlt_ab…")).toBeInTheDocument();
+    expect(laptop.getByText("Active")).toBeInTheDocument();
+    expect(laptop.getByText("10 days ago")).toBeInTheDocument();
+    expect(laptop.getByText("2 days ago")).toBeInTheDocument();
+    expect(laptop.queryByText("Work laptop CLI")).toBeNull();
 
-    const bot = rowFor("deploy-bot");
-    expect(bot.getByText("Read and write")).toBeInTheDocument();
-    expect(bot.getByText("Writes Apps, Profile")).toBeInTheDocument();
-
-    expect(rowFor("old-ci").getByText("Disabled")).toBeInTheDocument();
+    const oldCi = rowFor("old-ci");
+    expect(oldCi.getByText("Disabled")).toBeInTheDocument();
+    expect(oldCi.getByText("Never used")).toBeInTheDocument();
     expect(rowFor("expired").getByText("Expired")).toBeInTheDocument();
 
-    const shortLived = rowFor("short-lived");
-    const soon = shortLived.getByText("Expires soon");
+    const soon = rowFor("short-lived").getByText("Expires soon");
     expect(soon.closest("td")).toHaveTextContent("Active");
-    expect(shortLived.getByText("No access")).toBeInTheDocument();
-  });
-
-  it("shows a key's description under its name", async () => {
-    showKeys([
-      key({ id: "k1", name: "laptop", description: "Work laptop CLI" }),
-      key({ id: "k2", name: "deploy-bot" }),
-    ]);
-    await renderRoute("/settings/api-keys", getSession);
-    await screen.findByRole("table", { name: "API keys" });
-
-    expect(rowFor("laptop").getByText("Work laptop CLI")).toBeInTheDocument();
-    expect(rowFor("deploy-bot").queryByRole("paragraph")).toBeNull();
   });
 
   it("links each key to its own page", async () => {

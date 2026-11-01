@@ -10,7 +10,7 @@ import { symbols, theme } from "../ui/theme";
 const SOURCES = {
     keychain: "Key stored in your system keychain",
     file: "Key stored in a plain-text file",
-    QUILT_TOKEN: "Key from QUILT_TOKEN",
+    QUILT_API_KEY: "Key from QUILT_API_KEY",
     "--api-key": "Key passed with --api-key",
 };
 

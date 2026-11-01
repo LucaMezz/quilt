@@ -63,9 +63,9 @@ describe("logout", () => {
 
     it("leaves a passed-in key alone", async () => {
         vi.mocked(passedKey).mockReturnValue({
-            from: "in QUILT_TOKEN",
-            reason: "QUILT_TOKEN is set",
-            fix: "Unset QUILT_TOKEN",
+            from: "in QUILT_API_KEY",
+            reason: "QUILT_API_KEY is set",
+            fix: "Unset QUILT_API_KEY",
         });
         signedIn();
 
@@ -73,7 +73,7 @@ describe("logout", () => {
 
         expect(process.exitCode).toBe(1);
         expect(console.error).toHaveBeenCalledWith(
-            expect.stringContaining("QUILT_TOKEN"),
+            expect.stringContaining("QUILT_API_KEY"),
         );
         expect(client.apiKeys.delete).not.toHaveBeenCalled();
         expect(deleteToken).not.toHaveBeenCalled();

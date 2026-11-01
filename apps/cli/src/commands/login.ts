@@ -81,7 +81,7 @@ async function login(browser: boolean, previousKey: string | undefined) {
     }
     if (storage === "file") {
         log.warn(
-            "No system keychain found, so your token is stored in a plain-text file",
+            "No system keychain found, so your key is stored in a plain-text file",
         );
     }
 }

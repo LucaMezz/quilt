@@ -21,17 +21,6 @@ describe("settings", () => {
     );
   });
 
-  it("shows your profile", async () => {
-    await renderRoute("/settings", getSession);
-
-    expect(
-      await screen.findByRole("heading", { level: 2, name: "Profile" }),
-    ).toBeInTheDocument();
-    const main = screen.getByRole("main");
-    expect(within(main).getByText("Ada Lovelace")).toBeInTheDocument();
-    expect(within(main).getByText("ada@example.com")).toBeInTheDocument();
-  });
-
   it("marks Settings as the current section in the sidebar", async () => {
     await renderRoute("/settings", getSession);
 

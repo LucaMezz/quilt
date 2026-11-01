@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { imageProblem } from "./image";
+import { imageProblem } from "./images";
 
 const MB = 1024 * 1024;
 

@@ -35,7 +35,7 @@ describe("TryItLink", () => {
 
     expect(screen.getByRole("link", { name: "Open quilt" })).toHaveAttribute(
       "href",
-      "/account/organizations",
+      "/organizations",
     );
   });
 

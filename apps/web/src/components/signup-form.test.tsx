@@ -103,7 +103,7 @@ describe("SignupForm", () => {
       },
       expect.any(Object),
     );
-    expect(navigate).toHaveBeenCalledWith({ to: "/account/organizations" });
+    expect(navigate).toHaveBeenCalledWith({ to: "/organizations" });
   });
 
   it("links to the sign-in page", () => {

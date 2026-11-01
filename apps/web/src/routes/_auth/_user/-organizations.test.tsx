@@ -15,8 +15,17 @@ vi.mock("@/lib/organizations/use-organizations", () => ({
 }));
 
 describe("organizations", () => {
+  it("has its own heading rather than the account one", async () => {
+    await renderRoute("/organizations", getSession);
+
+    expect(
+      await screen.findByRole("heading", { level: 1, name: "Organizations" }),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Account" })).toBeNull();
+  });
+
   it("lists every organization you belong to with your role", async () => {
-    await renderRoute("/account/organizations", getSession);
+    await renderRoute("/organizations", getSession);
 
     const acme = await screen.findByRole("link", { name: /Acme/ });
     expect(acme).toHaveTextContent("Owner");
@@ -26,7 +35,7 @@ describe("organizations", () => {
   });
 
   it("opens an organization's dashboard", async () => {
-    await renderRoute("/account/organizations", getSession);
+    await renderRoute("/organizations", getSession);
 
     expect(await screen.findByRole("link", { name: /Acme/ })).toHaveAttribute(
       "href",

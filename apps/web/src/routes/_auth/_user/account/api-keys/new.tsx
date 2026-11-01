@@ -39,7 +39,7 @@ import {
 } from "@/lib/api-keys/organization-access";
 import { useCreateApiKey } from "@/lib/api-keys/use-api-keys";
 
-export const Route = createFileRoute("/_auth/account/api-keys/new")({
+export const Route = createFileRoute("/_auth/_user/account/api-keys/new")({
   component: NewApiKeyPage,
   staticData: { breadcrumb: "New API key" },
 });

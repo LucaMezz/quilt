@@ -15,7 +15,7 @@ import { SectionCard } from "@/components/settings/section-card";
 import { expiresSoon, keyStatus } from "@/lib/api-keys/describe";
 import { useApiKey } from "@/lib/api-keys/use-api-keys";
 
-export const Route = createFileRoute("/_auth/account/api-keys/$keyId")({
+export const Route = createFileRoute("/_auth/_user/account/api-keys/$keyId")({
   component: ApiKeyPage,
   staticData: { breadcrumb: "API key" },
 });

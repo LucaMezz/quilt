@@ -75,7 +75,7 @@ describe("LoginForm", () => {
     await user.click(screen.getByRole("button", { name: "Sign in" }));
 
     expect(signInEmail).toHaveBeenCalledWith(
-      expect.objectContaining({ callbackURL: "/account/organizations" }),
+      expect.objectContaining({ callbackURL: "/organizations" }),
       expect.any(Object),
     );
   });

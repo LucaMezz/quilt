@@ -3,11 +3,11 @@ import { createDb, type Database } from "@quilt/db";
 import { member, organization, user } from "@quilt/db/schema/auth";
 import { closeStorage, createStorage, type Storage } from "@quilt/storage";
 import { emptyBucket } from "@quilt/storage/testing";
-import { sql } from "drizzle-orm";
 import { test as baseTest, inject } from "vitest";
 
 import { resolveCaller } from "#/caller";
 import type { Context } from "#/context";
+import { truncateAllTables } from "./database";
 import "./environment";
 
 export const test = baseTest
@@ -60,16 +60,7 @@ export const test = baseTest
                 caller: await resolveCaller(auth, headers),
             }),
     )
-    .extend("resetDb", { auto: true }, async ({ db }) => {
-        const { rows } = await db.execute<{ tablename: string }>(
-            sql`select tablename from pg_tables where schemaname = 'public'`,
-        );
-        if (rows.length === 0) return;
-        const tables = rows.map((row) => sql.identifier(row.tablename));
-        await db.execute(
-            sql`truncate table ${sql.join(tables, sql`, `)} restart identity cascade`,
-        );
-    })
+    .extend("resetDb", { auto: true }, ({ db }) => truncateAllTables(db))
     .extend("createUser", ({ db }) => async (name = "user") => {
         const id = crypto.randomUUID();
         const [created] = await db

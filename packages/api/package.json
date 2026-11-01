@@ -36,6 +36,7 @@
         "@quilt/config": "workspace:*",
         "@types/node": "^26.6.5",
         "@vitest/coverage-v8": "^5.0.5",
+        "fast-check": "^4.10.2",
         "tsx": "^4.23.15",
         "typescript": "^7.0.2",
         "varlock": "1.23.0",

@@ -60,7 +60,19 @@ describe("API keys settings", () => {
     await renderRoute("/settings/api-keys", getSession);
 
     expect(await screen.findByText("No API keys yet")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Create key" })).toBeVisible();
     expect(screen.queryByRole("table")).not.toBeInTheDocument();
+  });
+
+  it("offers a new key and warns to keep keys secure", async () => {
+    showKeys([key({})]);
+    await renderRoute("/settings/api-keys", getSession);
+
+    const card = await screen.findByRole("region", { name: "API keys" });
+    expect(within(card).getByRole("button", { name: "New key" })).toBeVisible();
+    expect(within(card).getByRole("note")).toHaveTextContent(
+      "Keep your keys secure",
+    );
   });
 
   it("lists each key's name, prefix, status and dates", async () => {

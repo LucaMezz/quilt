@@ -4,9 +4,10 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { renderRoute } from "@/test/render-route";
 
-const { getSession, update, toastSuccess } = vi.hoisted(() => ({
+const { getSession, update, setLogo, toastSuccess } = vi.hoisted(() => ({
   getSession: vi.fn(),
   update: vi.fn(),
+  setLogo: vi.fn(),
   toastSuccess: vi.fn(),
 }));
 
@@ -18,10 +19,12 @@ vi.mock("sonner", async (original) => ({
 vi.mock("@/lib/organizations/use-organizations", async (original) => ({
   ...(await original<typeof import("@/lib/organizations/use-organizations")>()),
   useUpdateOrganization: () => update,
+  useSetOrganizationLogo: () => setLogo,
 }));
 
 beforeEach(() => {
   update.mockReset();
+  setLogo.mockReset();
   toastSuccess.mockReset();
 });
 
@@ -135,5 +138,26 @@ describe("organization settings", () => {
     expect(
       await screen.findByRole("link", { name: "Settings" }),
     ).toHaveAttribute("href", "/organizations/acme/settings");
+  });
+
+  it("sets the organization's logo", async () => {
+    const user = userEvent.setup();
+    await renderSettings();
+    const logo = new File(["png"], "logo.png", { type: "image/png" });
+
+    await user.upload(screen.getByLabelText(/^Choose a new logo/), logo);
+
+    expect(setLogo).toHaveBeenCalledWith("org_7Hq2", logo);
+    expect(toastSuccess).toHaveBeenCalledWith("Logo updated");
+  });
+
+  it("only shows the logo to members", async () => {
+    await renderSettings("open-source");
+
+    const card = within(screen.getByRole("region", { name: "Logo" }));
+    expect(
+      card.getByText("Only owners and admins can change it."),
+    ).toBeInTheDocument();
+    expect(card.queryByRole("button", { name: "Upload image" })).toBeNull();
   });
 });

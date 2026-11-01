@@ -1,4 +1,3 @@
-import { Avatar, AvatarFallback } from "@quilt/ui/components/avatar";
 import { Badge } from "@quilt/ui/components/badge";
 import { buttonVariants } from "@quilt/ui/components/button";
 import { Card } from "@quilt/ui/components/card";
@@ -11,6 +10,7 @@ import { CollectionEmpty } from "@/components/collection/collection-empty";
 import type { Column } from "@/components/collection/collection-table";
 import { ViewSwitcher } from "@/components/collection/view-switcher";
 import { viewSearch } from "@/components/collection/views";
+import { OrganizationAvatar } from "@/components/organizations/organization-avatar";
 import {
   type Organization,
   type Role,
@@ -137,26 +137,6 @@ function OrganizationLink({ organization }: { organization: Organization }) {
     >
       {organization.name}
     </Link>
-  );
-}
-
-function OrganizationAvatar({
-  organization,
-  size,
-}: {
-  organization: Organization;
-  size?: "lg";
-}) {
-  return (
-    <Avatar
-      className="rounded-md after:rounded-md"
-      size={size}
-      aria-hidden="true"
-    >
-      <AvatarFallback className="rounded-md">
-        {organization.name.slice(0, 1)}
-      </AvatarFallback>
-    </Avatar>
   );
 }
 

@@ -9,6 +9,7 @@ export type Organization = {
     name: string;
     slug: string;
     role: Role;
+    logo: string | null;
     createdAt: Date;
 };
 
@@ -24,6 +25,7 @@ const mockOrganizations: Organization[] = [
         name: "Acme",
         slug: "acme",
         role: "owner",
+        logo: null,
         createdAt: daysAgo(120),
     },
     {
@@ -31,6 +33,7 @@ const mockOrganizations: Organization[] = [
         name: "Side projects",
         slug: "side-projects",
         role: "admin",
+        logo: null,
         createdAt: daysAgo(400),
     },
     {
@@ -38,6 +41,7 @@ const mockOrganizations: Organization[] = [
         name: "Open source",
         slug: "open-source",
         role: "member",
+        logo: null,
         createdAt: daysAgo(30),
     },
 ];
@@ -71,6 +75,7 @@ export function useCreateOrganization() {
             name,
             slug,
             role: "owner",
+            logo: null,
             createdAt: new Date(),
         };
         organizations = [...organizations, organization];
@@ -102,4 +107,18 @@ export function useUpdateOrganization() {
         },
         [],
     );
+}
+
+export function useSetOrganizationLogo() {
+    return useCallback((id: string, file: File | null) => {
+        organizations = organizations.map((organization) => {
+            if (organization.id !== id) return organization;
+            if (organization.logo) URL.revokeObjectURL(organization.logo);
+            return {
+                ...organization,
+                logo: file ? URL.createObjectURL(file) : null,
+            };
+        });
+        for (const listener of listeners) listener();
+    }, []);
 }

@@ -1,4 +1,3 @@
-import { Avatar, AvatarFallback } from "@quilt/ui/components/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,31 +21,13 @@ import {
   PlusIcon,
 } from "lucide-react";
 
+import { OrganizationAvatar } from "@/components/organizations/organization-avatar";
 import {
   type Organization,
   useOrganizations,
 } from "@/lib/organizations/use-organizations";
 
 const roleLabels = { owner: "Owner", admin: "Admin", member: "Member" };
-
-function Initial({
-  organization,
-  className,
-}: {
-  organization: Organization;
-  className?: string;
-}) {
-  return (
-    <Avatar
-      className={`rounded-md after:rounded-md ${className ?? ""}`}
-      aria-hidden="true"
-    >
-      <AvatarFallback className="rounded-md">
-        {organization.name.slice(0, 1)}
-      </AvatarFallback>
-    </Avatar>
-  );
-}
 
 export function OrganizationSwitcher({ current }: { current: Organization }) {
   const { isMobile } = useSidebar();
@@ -65,7 +46,7 @@ export function OrganizationSwitcher({ current }: { current: Organization }) {
               />
             }
           >
-            <Initial organization={current} />
+            <OrganizationAvatar organization={current} />
             <div className="grid flex-1 text-left text-sm leading-tight">
               <span className="truncate font-medium">{current.name}</span>
               <span className="truncate text-muted-foreground text-xs">
@@ -98,7 +79,10 @@ export function OrganizationSwitcher({ current }: { current: Organization }) {
                     />
                   }
                 >
-                  <Initial organization={organization} className="size-6" />
+                  <OrganizationAvatar
+                    organization={organization}
+                    className="size-6"
+                  />
                   <span className="flex-1 truncate">{organization.name}</span>
                   {organization.id === current.id && (
                     <CheckIcon aria-hidden="true" />

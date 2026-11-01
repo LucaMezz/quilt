@@ -3,16 +3,13 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
   SidebarRail,
 } from "@quilt/ui/components/sidebar";
-import { Link } from "@tanstack/react-router";
-import { ArrowLeftIcon, KeyRoundIcon, UserIcon } from "lucide-react";
+import { KeyRoundIcon, UserIcon } from "lucide-react";
 
 import { NavMain } from "@/components/app/nav-main";
 import { NavUser } from "@/components/app/nav-user";
+import { Logo } from "@/components/logo";
 
 const sections = [
   {
@@ -33,17 +30,7 @@ export function AccountSidebar({
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              tooltip="Back to dashboard"
-              render={<Link to="/dashboard" />}
-            >
-              <ArrowLeftIcon />
-              <span>Back to dashboard</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        <Logo className="h-8 overflow-hidden px-2" />
       </SidebarHeader>
       <SidebarContent>
         <NavMain sections={[...sections]} />

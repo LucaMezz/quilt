@@ -14,15 +14,12 @@ function sidebar() {
 }
 
 describe("account", () => {
-  it("has its own sidebar with a way back to the dashboard", async () => {
+  it("has its own sidebar without organization pages", async () => {
     await renderRoute("/account", getSession);
 
     expect(
       await screen.findByRole("heading", { level: 1, name: "Account" }),
     ).toBeInTheDocument();
-    expect(
-      sidebar().getByRole("link", { name: "Back to dashboard" }),
-    ).toHaveAttribute("href", "/dashboard");
     expect(sidebar().queryByRole("link", { name: "Dashboard" })).toBeNull();
     expect(sidebar().queryByText("Soon")).toBeNull();
   });

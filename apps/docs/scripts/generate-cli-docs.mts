@@ -95,7 +95,11 @@ function renderPage(info: CommandInfo) {
         out.push("", "## Arguments", "", ...argTable(info.positionals));
     }
 
-    out.push("", "## Options", "", ...argTable(info.options), "");
+    if (info.options.length > 0) {
+        out.push("", "## Options", "", ...argTable(info.options));
+    }
+
+    out.push("", "## Global options", "", ...argTable(info.globalOptions), "");
     return out.join("\n");
 }
 

@@ -24,8 +24,25 @@ export interface CommandInfo {
     version?: string;
     positionals: ArgInfo[];
     options: ArgInfo[];
+    globalOptions: ArgInfo[];
     subCommands: CommandInfo[];
 }
+
+export const globalOptions: ArgInfo[] = [
+    {
+        name: "api-key",
+        flag: "-k, --api-key <key>",
+        description:
+            "API key to use instead of QUILT_TOKEN or the one saved by quilt login",
+        required: false,
+    },
+    {
+        name: "help",
+        flag: "-h, --help",
+        description: "Show help",
+        required: false,
+    },
+];
 
 /**
  * Resolves a citty command (and its subcommands) into plain data. Both the
@@ -51,20 +68,6 @@ export async function describeCommand(
     const options = args
         .filter(([, def]) => def.type !== "positional")
         .map(([name, def]) => describeArg(name, def));
-    // citty handles these itself, so they never appear in `args`.
-    options.push({
-        name: "help",
-        flag: "-h, --help",
-        description: "Show help",
-        required: false,
-    });
-    options.push({
-        name: "api-key",
-        flag: "-k, --api-key <key>",
-        description:
-            "API key to use instead of QUILT_TOKEN or the one saved by quilt login",
-        required: false,
-    });
     if (isRoot && meta.version) {
         options.push({
             name: "version",
@@ -82,6 +85,7 @@ export async function describeCommand(
             .filter(([, def]) => def.type === "positional")
             .map(([name, def]) => describeArg(name, def)),
         options,
+        globalOptions,
         subCommands,
     };
 }

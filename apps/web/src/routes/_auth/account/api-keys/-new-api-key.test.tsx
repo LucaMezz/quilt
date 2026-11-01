@@ -22,7 +22,7 @@ beforeEach(() => {
 
 async function openPage() {
   const user = userEvent.setup();
-  const router = await renderRoute("/settings/api-keys/new", getSession);
+  const router = await renderRoute("/account/api-keys/new", getSession);
   await screen.findByRole("heading", { level: 2, name: "New API key" });
   return { user, router };
 }
@@ -96,7 +96,7 @@ describe("New API key page", () => {
 
     await user.click(within(card).getByRole("link", { name: "Done" }));
 
-    expect(router.state.location.pathname).toBe("/settings/api-keys/new-key");
+    expect(router.state.location.pathname).toBe("/account/api-keys/new-key");
   });
 
   it("gives every organization access by default", async () => {

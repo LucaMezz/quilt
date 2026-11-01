@@ -47,7 +47,7 @@ export function DeleteApiKey({ apiKey }: { apiKey: ApiKey }) {
                 onClick={() => {
                   deleteKey(apiKey.id);
                   toast.success(`Deleted API key ${name}`);
-                  navigate({ to: "/settings/api-keys" });
+                  navigate({ to: "/account/api-keys" });
                 }}
               >
                 Delete key

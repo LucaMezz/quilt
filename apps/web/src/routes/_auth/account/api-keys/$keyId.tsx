@@ -15,7 +15,7 @@ import { SectionCard } from "@/components/settings/section-card";
 import { expiresSoon, keyStatus } from "@/lib/api-keys/describe";
 import { useApiKey } from "@/lib/api-keys/use-api-keys";
 
-export const Route = createFileRoute("/_auth/_app/settings/api-keys/$keyId")({
+export const Route = createFileRoute("/_auth/account/api-keys/$keyId")({
   component: ApiKeyPage,
   staticData: { breadcrumb: "API key" },
 });
@@ -31,7 +31,7 @@ function ApiKeyPage() {
         <p className="text-muted-foreground text-sm">
           It may have been deleted.
         </p>
-        <BackLink to="/settings/api-keys">Back to API keys</BackLink>
+        <BackLink to="/account/api-keys">Back to API keys</BackLink>
       </section>
     );
   }
@@ -39,7 +39,7 @@ function ApiKeyPage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-3">
-        <BackLink to="/settings/api-keys">All API keys</BackLink>
+        <BackLink to="/account/api-keys">All API keys</BackLink>
         <div className="flex flex-wrap items-center gap-2">
           <h2 className="font-semibold text-xl">
             {apiKey.name ?? "Unnamed key"}

@@ -77,9 +77,9 @@ export function NavUser({
               </DropdownMenuLabel>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem render={<Link to="/settings" />}>
+            <DropdownMenuItem render={<Link to="/account" />}>
               <SettingsIcon />
-              Settings
+              Account settings
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem

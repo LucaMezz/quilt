@@ -11,7 +11,6 @@ import {
   LayoutDashboard,
   Rocket,
   Server,
-  Settings2,
 } from "lucide-react";
 
 import { NavMain } from "./nav-main";
@@ -35,10 +34,6 @@ const sections = [
       { title: "Servers", icon: <Server /> },
       { title: "Deployments", icon: <Rocket /> },
     ],
-  },
-  {
-    label: "Account",
-    items: [{ title: "Settings", icon: <Settings2 />, to: "/settings" }],
   },
 ] as const;
 

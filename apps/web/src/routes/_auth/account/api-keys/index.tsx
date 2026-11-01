@@ -19,7 +19,7 @@ import { ApiKeyTable } from "@/components/api-keys/api-key-table";
 import { SectionCard } from "@/components/settings/section-card";
 import { useApiKeys } from "@/lib/api-keys/use-api-keys";
 
-export const Route = createFileRoute("/_auth/_app/settings/api-keys/")({
+export const Route = createFileRoute("/_auth/account/api-keys/")({
   component: ApiKeysSettings,
   staticData: { breadcrumb: "API keys" },
 });
@@ -32,7 +32,7 @@ function ApiKeysSettings() {
       title="API keys"
       description="Keys let the quilt CLI and your scripts act as you. Each key can only do what you grant it."
       action={
-        <Link to="/settings/api-keys/new" className={buttonVariants()}>
+        <Link to="/account/api-keys/new" className={buttonVariants()}>
           <PlusIcon data-icon="inline-start" aria-hidden="true" />
           New key
         </Link>
@@ -62,7 +62,7 @@ function ApiKeysSettings() {
             </EmptyHeader>
             <EmptyContent>
               <Link
-                to="/settings/api-keys/new"
+                to="/account/api-keys/new"
                 className={buttonVariants({ variant: "outline" })}
               >
                 <PlusIcon data-icon="inline-start" aria-hidden="true" />

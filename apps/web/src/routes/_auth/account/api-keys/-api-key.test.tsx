@@ -48,7 +48,7 @@ const deployBot: ApiKey = {
   permissions: { apps: ["read", "write"], user: ["read"] },
 };
 
-const path = `/settings/api-keys/${deployBot.id}`;
+const path = `/account/api-keys/${deployBot.id}`;
 
 const NEW_SECRET = "qlt_N3wS3cretValueThatIsOnlyShownOnce";
 
@@ -319,12 +319,12 @@ describe("API key page", () => {
 
   it("says when the key doesn't exist", async () => {
     vi.mocked(useApiKey).mockReturnValue(undefined);
-    await renderRoute("/settings/api-keys/nope", getSession);
+    await renderRoute("/account/api-keys/nope", getSession);
 
     expect(await screen.findByText("API key not found")).toBeInTheDocument();
     expect(
       screen.getByRole("link", { name: "Back to API keys" }),
-    ).toHaveAttribute("href", "/settings/api-keys");
+    ).toHaveAttribute("href", "/account/api-keys");
   });
 
   it("keeps the key when deletion is cancelled", async () => {
@@ -352,7 +352,7 @@ describe("API key page", () => {
 
     expect(deleteKey).toHaveBeenCalledWith(deployBot.id);
     await vi.waitFor(() =>
-      expect(router.state.location.pathname).toBe("/settings/api-keys"),
+      expect(router.state.location.pathname).toBe("/account/api-keys"),
     );
   });
 

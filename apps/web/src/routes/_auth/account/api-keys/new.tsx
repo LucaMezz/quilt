@@ -39,7 +39,7 @@ import {
 } from "@/lib/api-keys/organization-access";
 import { useCreateApiKey } from "@/lib/api-keys/use-api-keys";
 
-export const Route = createFileRoute("/_auth/_app/settings/api-keys/new")({
+export const Route = createFileRoute("/_auth/account/api-keys/new")({
   component: NewApiKeyPage,
   staticData: { breadcrumb: "New API key" },
 });
@@ -65,7 +65,7 @@ function NewApiKeyPage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-3">
-        <BackLink to="/settings/api-keys">All API keys</BackLink>
+        <BackLink to="/account/api-keys">All API keys</BackLink>
         <h2 className="font-semibold text-xl">New API key</h2>
         <p className="text-muted-foreground">
           A key lets the quilt CLI, a script or a CI job act as you. It can only
@@ -95,7 +95,7 @@ function CopyNewKey({ created }: { created: Created }) {
           secret={created.secret}
         />
         <Link
-          to="/settings/api-keys/$keyId"
+          to="/account/api-keys/$keyId"
           params={{ keyId: created.id }}
           className={cn(buttonVariants(), "self-end")}
         >
@@ -265,7 +265,7 @@ function NewApiKeyForm({ onCreated }: { onCreated: (key: Created) => void }) {
 
       <div className="flex justify-end gap-2">
         <Link
-          to="/settings/api-keys"
+          to="/account/api-keys"
           className={buttonVariants({ variant: "outline" })}
         >
           Cancel

@@ -35,7 +35,7 @@ function showProfile(profile: Profile) {
 }
 
 async function renderProfile() {
-  await renderRoute("/settings", getSession);
+  await renderRoute("/account", getSession);
   return screen.findByRole("region", { name: "Profile picture" });
 }
 

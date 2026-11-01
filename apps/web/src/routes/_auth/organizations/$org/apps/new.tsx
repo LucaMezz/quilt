@@ -41,7 +41,10 @@ function NewAppPage() {
     onSubmit: ({ value }) => {
       const app = create({ organization: org, name: value.name });
       toast.success(`Created app ${app.name}`);
-      navigate({ to: "/organizations/$org/apps", params: { org } });
+      navigate({
+        to: "/organizations/$org/apps/$app",
+        params: { org, app: app.name },
+      });
     },
   });
 

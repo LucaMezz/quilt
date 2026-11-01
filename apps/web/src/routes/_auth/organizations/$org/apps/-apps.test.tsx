@@ -95,4 +95,13 @@ describe("apps", () => {
       `/organizations/${org}/apps/new`,
     );
   });
+
+  it("opens an app from the list", async () => {
+    const user = userEvent.setup();
+    const router = await renderRoute("/organizations/acme/apps", getSession);
+
+    await user.click(await screen.findByRole("link", { name: "web" }));
+
+    expect(router.state.location.pathname).toBe("/organizations/acme/apps/web");
+  });
 });

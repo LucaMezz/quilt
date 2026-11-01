@@ -76,6 +76,13 @@ const mockApps: App[] = [
 let apps = mockApps;
 const listeners = new Set<() => void>();
 
+export const TEARDOWN_MS = 4000;
+
+function setApps(next: App[]) {
+    apps = next;
+    for (const listener of listeners) listener();
+}
+
 function subscribe(listener: () => void) {
     listeners.add(listener);
     return () => listeners.delete(listener);
@@ -105,10 +112,27 @@ export function useCreateApp() {
     return useCallback(
         ({ organization, name }: { organization: string; name: string }) => {
             const created = app(organization, name, "pending", 0);
-            apps = [...apps, created];
-            for (const listener of listeners) listener();
+            setApps([...apps, created]);
             return created;
         },
         [],
     );
+}
+
+export function useApp(organization: string, name: string) {
+    const apps = useApps(organization);
+    return apps.find((app) => app.name === name);
+}
+
+export function useDestroyApp() {
+    return useCallback((id: string) => {
+        setApps(
+            apps.map((app) =>
+                app.id === id ? { ...app, status: "destroying" } : app,
+            ),
+        );
+        setTimeout(() => {
+            setApps(apps.filter((app) => app.id !== id));
+        }, TEARDOWN_MS);
+    }, []);
 }

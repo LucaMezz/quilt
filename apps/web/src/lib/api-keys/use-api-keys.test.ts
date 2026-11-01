@@ -7,6 +7,7 @@ import {
     useCreateApiKey,
     useDeleteApiKey,
     useRegenerateApiKey,
+    useUpdateApiKeyOrganizations,
     useUpdateApiKeyPermissions,
 } from "./use-api-keys";
 
@@ -112,5 +113,21 @@ describe("API key store", () => {
         expect(first?.expiresAt?.getTime()).toBeGreaterThan(
             Date.now() + 6 * 24 * 60 * 60 * 1000,
         );
+    });
+
+    it("replaces a key's organization access", () => {
+        const { result } = renderHook(() => ({
+            keys: useApiKeys().keys,
+            update: useUpdateApiKeyOrganizations(),
+        }));
+        const [first] = result.current.keys;
+        if (!first) throw new Error("No mock keys");
+
+        act(() => result.current.update(first.id, ["org_3XmP"]));
+
+        expect(result.current.keys.find((key) => key.id === first.id)).toEqual({
+            ...first,
+            organizations: ["org_3XmP"],
+        });
     });
 });

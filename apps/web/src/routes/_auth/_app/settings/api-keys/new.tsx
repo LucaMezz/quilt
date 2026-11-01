@@ -1,19 +1,13 @@
 import type { ApiKeyPermissions } from "@quilt/auth/permissions";
 import { Button, buttonVariants } from "@quilt/ui/components/button";
-import { Checkbox } from "@quilt/ui/components/checkbox";
 import {
   Field,
-  FieldContent,
   FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
-  FieldLegend,
-  FieldSet,
-  FieldTitle,
 } from "@quilt/ui/components/field";
 import { Input } from "@quilt/ui/components/input";
-import { RadioGroup, RadioGroupItem } from "@quilt/ui/components/radio-group";
 import {
   Select,
   SelectContent,
@@ -28,7 +22,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 import z from "zod";
-
+import { OrganizationAccessFields } from "@/components/api-keys/organization-access-fields";
 import {
   AddPermission,
   PermissionList,
@@ -38,8 +32,12 @@ import { BackLink } from "@/components/settings/back-link";
 import { SectionCard } from "@/components/settings/section-card";
 import { grantedResources } from "@/lib/api-keys/describe";
 import { EXPIRATIONS, expiryDate } from "@/lib/api-keys/expiration";
+import {
+  accessFor,
+  missingOrganizations,
+  type OrganizationChoice,
+} from "@/lib/api-keys/organization-access";
 import { useCreateApiKey } from "@/lib/api-keys/use-api-keys";
-import { useOrganizations } from "@/lib/organizations/use-organizations";
 
 export const Route = createFileRoute("/_auth/_app/settings/api-keys/new")({
   component: NewApiKeyPage,
@@ -50,8 +48,7 @@ const schema = z.object({
   name: z.string().trim().min(1, "Give the key a name"),
   description: z.string(),
   expiresInDays: z.number(),
-  organizationAccess: z.enum(["all", "selected"]),
-  organizationIds: z.array(z.string()),
+  organizations: z.custom<OrganizationChoice>(),
   permissions: z
     .custom<ApiKeyPermissions>()
     .refine(
@@ -111,15 +108,13 @@ function CopyNewKey({ created }: { created: Created }) {
 
 function NewApiKeyForm({ onCreated }: { onCreated: (key: Created) => void }) {
   const create = useCreateApiKey();
-  const organizations = useOrganizations();
 
   const form = useForm({
     defaultValues: {
       name: "",
       description: "",
       expiresInDays: 30,
-      organizationAccess: "all" as "all" | "selected",
-      organizationIds: [] as string[],
+      organizations: { mode: "all", ids: [] } as OrganizationChoice,
       permissions: {} as ApiKeyPermissions,
     },
     validators: { onSubmit: schema },
@@ -129,8 +124,7 @@ function NewApiKeyForm({ onCreated }: { onCreated: (key: Created) => void }) {
         name,
         description: value.description.trim() || null,
         expiresInDays: value.expiresInDays,
-        organizations:
-          value.organizationAccess === "all" ? "all" : value.organizationIds,
+        organizations: accessFor(value.organizations),
         permissions: value.permissions,
       });
       toast.success(`Created API key ${name}`);
@@ -225,111 +219,23 @@ function NewApiKeyForm({ onCreated }: { onCreated: (key: Created) => void }) {
         title="Organization access"
         description="Which of your organizations the key can reach."
       >
-        <FieldGroup>
-          <form.Field name="organizationAccess">
-            {(field) => (
-              <FieldSet>
-                <FieldLegend className="sr-only">Organizations</FieldLegend>
-                <RadioGroup
-                  value={field.state.value}
-                  onValueChange={(value) =>
-                    field.handleChange(value as "all" | "selected")
-                  }
-                >
-                  <FieldLabel htmlFor="access-all">
-                    <Field orientation="horizontal">
-                      <FieldContent>
-                        <FieldTitle>All organizations</FieldTitle>
-                        <FieldDescription>
-                          Every organization you belong to, including ones you
-                          join later.
-                        </FieldDescription>
-                      </FieldContent>
-                      <RadioGroupItem id="access-all" value="all" />
-                    </Field>
-                  </FieldLabel>
-                  <FieldLabel htmlFor="access-selected">
-                    <Field orientation="horizontal">
-                      <FieldContent>
-                        <FieldTitle>Only selected organizations</FieldTitle>
-                        <FieldDescription>
-                          Just the organizations you choose below.
-                        </FieldDescription>
-                      </FieldContent>
-                      <RadioGroupItem id="access-selected" value="selected" />
-                    </Field>
-                  </FieldLabel>
-                </RadioGroup>
-              </FieldSet>
-            )}
-          </form.Field>
-          <form.Subscribe selector={(state) => state.values.organizationAccess}>
-            {(access) =>
-              access === "selected" && (
-                <form.Field
-                  name="organizationIds"
-                  validators={{
-                    onSubmit: ({ value }) =>
-                      value.length === 0
-                        ? { message: "Choose at least one organization" }
-                        : undefined,
-                  }}
-                >
-                  {(field) => {
-                    const isInvalid = !field.state.meta.isValid;
-                    return (
-                      <FieldSet data-invalid={isInvalid}>
-                        <FieldLegend variant="label">
-                          Choose organizations
-                        </FieldLegend>
-                        <FieldGroup className="gap-3">
-                          {organizations.map((organization) => {
-                            const id = `organization-${organization.id}`;
-                            const checked = field.state.value.includes(
-                              organization.id,
-                            );
-                            return (
-                              <Field
-                                key={organization.id}
-                                orientation="horizontal"
-                              >
-                                <Checkbox
-                                  id={id}
-                                  checked={checked}
-                                  aria-invalid={isInvalid}
-                                  onCheckedChange={(next) =>
-                                    field.handleChange(
-                                      next
-                                        ? [
-                                            ...field.state.value,
-                                            organization.id,
-                                          ]
-                                        : field.state.value.filter(
-                                            (value) =>
-                                              value !== organization.id,
-                                          ),
-                                    )
-                                  }
-                                />
-                                <FieldLabel
-                                  htmlFor={id}
-                                  className="font-normal"
-                                >
-                                  {organization.name}
-                                </FieldLabel>
-                              </Field>
-                            );
-                          })}
-                        </FieldGroup>
-                        <FieldError errors={field.state.meta.errors} />
-                      </FieldSet>
-                    );
-                  }}
-                </form.Field>
-              )
-            }
-          </form.Subscribe>
-        </FieldGroup>
+        <form.Field
+          name="organizations"
+          validators={{
+            onSubmit: ({ value }) =>
+              missingOrganizations(value)
+                ? { message: "Choose at least one organization" }
+                : undefined,
+          }}
+        >
+          {(field) => (
+            <OrganizationAccessFields
+              value={field.state.value}
+              onChange={field.handleChange}
+              errors={field.state.meta.errors}
+            />
+          )}
+        </form.Field>
       </SectionCard>
 
       <form.Field name="permissions">

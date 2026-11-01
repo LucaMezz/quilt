@@ -5,6 +5,7 @@ import {
   ExpiresSoonBadge,
   StatusBadge,
 } from "@/components/api-keys/key-badges";
+import { OrganizationAccessEditor } from "@/components/api-keys/organization-access-editor";
 import { PermissionsEditor } from "@/components/api-keys/permissions-editor";
 import { RegenerateApiKey } from "@/components/api-keys/regenerate-api-key";
 import { When } from "@/components/api-keys/when";
@@ -73,6 +74,10 @@ function ApiKeyPage() {
           </dd>
         </dl>
       </SectionCard>
+      <OrganizationAccessEditor
+        key={`${apiKey.id}-organizations`}
+        apiKey={apiKey}
+      />
       <PermissionsEditor key={apiKey.id} apiKey={apiKey} />
       <RegenerateApiKey apiKey={apiKey} />
       <DeleteApiKey apiKey={apiKey} />

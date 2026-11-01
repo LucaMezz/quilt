@@ -8,18 +8,24 @@ import {
   useApiKeys,
   useDeleteApiKey,
   useRegenerateApiKey,
+  useUpdateApiKeyOrganizations,
   useUpdateApiKeyPermissions,
 } from "@/lib/api-keys/use-api-keys";
 import { renderRoute } from "@/test/render-route";
 
-const { getSession, deleteKey, regenerateKey, updatePermissions } = vi.hoisted(
-  () => ({
-    getSession: vi.fn(),
-    deleteKey: vi.fn(),
-    regenerateKey: vi.fn(),
-    updatePermissions: vi.fn(),
-  }),
-);
+const {
+  getSession,
+  deleteKey,
+  regenerateKey,
+  updatePermissions,
+  updateOrganizations,
+} = vi.hoisted(() => ({
+  getSession: vi.fn(),
+  deleteKey: vi.fn(),
+  regenerateKey: vi.fn(),
+  updatePermissions: vi.fn(),
+  updateOrganizations: vi.fn(),
+}));
 
 vi.mock("@/lib/auth-client", () => ({ authClient: { getSession } }));
 vi.mock("@/lib/api-keys/use-api-keys");
@@ -62,6 +68,8 @@ beforeEach(() => {
   vi.mocked(useRegenerateApiKey).mockReturnValue(regenerateKey);
   vi.mocked(useUpdateApiKeyPermissions).mockReturnValue(updatePermissions);
   updatePermissions.mockReset();
+  vi.mocked(useUpdateApiKeyOrganizations).mockReturnValue(updateOrganizations);
+  updateOrganizations.mockReset();
   deleteKey.mockReset();
   regenerateKey.mockReset().mockReturnValue(NEW_SECRET);
 });
@@ -150,7 +158,12 @@ describe("API key page", () => {
     await user.click(
       await screen.findByRole("button", { name: "Remove Apps" }),
     );
-    await user.click(screen.getByRole("button", { name: "Discard" }));
+    await user.click(
+      within(screen.getByRole("region", { name: "Permissions" })).getByRole(
+        "button",
+        { name: "Discard" },
+      ),
+    );
 
     expect(screen.getByRole("rowheader", { name: /^Apps/ })).toBeVisible();
     expect(updateButton()).toBeDisabled();
@@ -170,6 +183,74 @@ describe("API key page", () => {
     expect(
       screen.queryByRole("table", { name: "Permissions" }),
     ).not.toBeInTheDocument();
+  });
+
+  it("limits a key to chosen organizations only on update", async () => {
+    const user = userEvent.setup();
+    await renderRoute(path, getSession);
+    const card = within(
+      await screen.findByRole("region", { name: "Organization access" }),
+    );
+    const update = card.getByRole("button", {
+      name: "Update organization access",
+    });
+
+    expect(
+      card.getByRole("radio", { name: /All organizations/ }),
+    ).toBeChecked();
+    await user.click(card.getByRole("radio", { name: /Only selected/ }));
+
+    expect(card.getByText("Choose at least one organization")).toBeVisible();
+    expect(update).toBeDisabled();
+
+    await user.click(card.getByRole("checkbox", { name: "Acme" }));
+    expect(updateOrganizations).not.toHaveBeenCalled();
+    await user.click(update);
+
+    expect(updateOrganizations).toHaveBeenCalledExactlyOnceWith(deployBot.id, [
+      "org_7Hq2",
+    ]);
+  });
+
+  it("shows a key's selected organizations and can widen it to all", async () => {
+    vi.mocked(useApiKey).mockReturnValue({
+      ...deployBot,
+      organizations: ["org_K9vD"],
+    });
+    const user = userEvent.setup();
+    await renderRoute(path, getSession);
+    const card = within(
+      await screen.findByRole("region", { name: "Organization access" }),
+    );
+
+    expect(card.getByRole("checkbox", { name: "Side projects" })).toBeChecked();
+    expect(card.getByRole("checkbox", { name: "Acme" })).not.toBeChecked();
+
+    await user.click(card.getByRole("radio", { name: /All organizations/ }));
+    await user.click(
+      card.getByRole("button", { name: "Update organization access" }),
+    );
+
+    expect(updateOrganizations).toHaveBeenCalledExactlyOnceWith(
+      deployBot.id,
+      "all",
+    );
+  });
+
+  it("discards organization changes", async () => {
+    const user = userEvent.setup();
+    await renderRoute(path, getSession);
+    const card = within(
+      await screen.findByRole("region", { name: "Organization access" }),
+    );
+
+    await user.click(card.getByRole("radio", { name: /Only selected/ }));
+    await user.click(card.getByRole("button", { name: "Discard" }));
+
+    expect(
+      card.getByRole("radio", { name: /All organizations/ }),
+    ).toBeChecked();
+    expect(card.queryByRole("checkbox")).not.toBeInTheDocument();
   });
 
   it("says when the key doesn't exist", async () => {

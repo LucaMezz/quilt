@@ -15,7 +15,7 @@ export type ApiKey = {
     permissions: ApiKeyPermissions;
 };
 
-type OrganizationAccess = "all" | string[];
+export type OrganizationAccess = "all" | string[];
 
 export type NewApiKey = {
     name: string;
@@ -70,7 +70,7 @@ const mockKeys: ApiKey[] = [
         expiresAt: daysFromNow(200),
         lastRequest: daysFromNow(-12),
         createdAt: daysFromNow(-40),
-        organizations: "all",
+        organizations: ["org_7Hq2"],
         permissions: { apps: ["read", "write"] },
     },
     {
@@ -178,5 +178,15 @@ export function useCreateApiKey() {
             ...keys,
         ]);
         return { id, secret };
+    }, []);
+}
+
+export function useUpdateApiKeyOrganizations() {
+    return useCallback((id: string, organizations: OrganizationAccess) => {
+        setKeys(
+            keys.map((key) =>
+                key.id === id ? { ...key, organizations } : key,
+            ),
+        );
     }, []);
 }

@@ -1,9 +1,9 @@
 import type { ApiKeyPermissions } from "@quilt/auth/permissions";
-import { Button } from "@quilt/ui/components/button";
 import { useState } from "react";
 import { toast } from "sonner";
 
 import { SectionCard } from "@/components/settings/section-card";
+import { UpdateBar } from "@/components/settings/update-bar";
 import { samePermissions } from "@/lib/api-keys/describe";
 import {
   type ApiKey,
@@ -31,29 +31,15 @@ export function PermissionsEditor({ apiKey }: { apiKey: ApiKey }) {
           onChange={setDraft}
           emptyHint="This key can't do anything until you add a permission."
         />
-        <div className="flex flex-wrap items-center justify-end gap-2">
-          {changed && (
-            <p className="mr-auto text-muted-foreground text-sm">
-              You have unsaved changes.
-            </p>
-          )}
-          <Button
-            variant="outline"
-            disabled={!changed}
-            onClick={() => setDraft(apiKey.permissions)}
-          >
-            Discard
-          </Button>
-          <Button
-            disabled={!changed}
-            onClick={() => {
-              update(apiKey.id, draft);
-              toast.success(`Updated permissions for ${name}`);
-            }}
-          >
-            Update permissions
-          </Button>
-        </div>
+        <UpdateBar
+          changed={changed}
+          label="Update permissions"
+          onDiscard={() => setDraft(apiKey.permissions)}
+          onUpdate={() => {
+            update(apiKey.id, draft);
+            toast.success(`Updated permissions for ${name}`);
+          }}
+        />
       </div>
     </SectionCard>
   );

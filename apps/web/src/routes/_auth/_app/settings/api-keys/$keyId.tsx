@@ -1,5 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { ChevronLeftIcon } from "lucide-react";
+import { createFileRoute } from "@tanstack/react-router";
 
 import { DeleteApiKey } from "@/components/api-keys/delete-api-key";
 import {
@@ -9,6 +8,7 @@ import {
 import { PermissionsEditor } from "@/components/api-keys/permissions-editor";
 import { RegenerateApiKey } from "@/components/api-keys/regenerate-api-key";
 import { When } from "@/components/api-keys/when";
+import { BackLink } from "@/components/settings/back-link";
 import { SectionCard } from "@/components/settings/section-card";
 import { expiresSoon, keyStatus } from "@/lib/api-keys/describe";
 import { useApiKey } from "@/lib/api-keys/use-api-keys";
@@ -17,9 +17,6 @@ export const Route = createFileRoute("/_auth/_app/settings/api-keys/$keyId")({
   component: ApiKeyPage,
   staticData: { breadcrumb: "API key" },
 });
-
-const backLink =
-  "inline-flex w-fit items-center gap-1 rounded-sm text-muted-foreground text-sm outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring";
 
 function ApiKeyPage() {
   const { keyId } = Route.useParams();
@@ -32,9 +29,7 @@ function ApiKeyPage() {
         <p className="text-muted-foreground text-sm">
           It may have been deleted.
         </p>
-        <Link to="/settings/api-keys" className={backLink}>
-          Back to API keys
-        </Link>
+        <BackLink to="/settings/api-keys">Back to API keys</BackLink>
       </section>
     );
   }
@@ -42,10 +37,7 @@ function ApiKeyPage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-3">
-        <Link to="/settings/api-keys" className={backLink}>
-          <ChevronLeftIcon aria-hidden="true" className="size-4" />
-          All API keys
-        </Link>
+        <BackLink to="/settings/api-keys">All API keys</BackLink>
         <div className="flex flex-wrap items-center gap-2">
           <h2 className="font-semibold text-xl">
             {apiKey.name ?? "Unnamed key"}

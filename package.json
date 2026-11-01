@@ -12,6 +12,7 @@
         "test:browser": "turbo run test:browser",
         "test:e2e": "turbo run test:e2e",
         "test:e2e:api": "turbo run test:e2e -F e2e",
+        "test:fuzz": "turbo run test:fuzz -F @quilt/api",
         "dev:web": "turbo run dev -F web --",
         "dev:server": "turbo run dev -F server --",
         "dev:controller": "turbo run dev -F controller --",

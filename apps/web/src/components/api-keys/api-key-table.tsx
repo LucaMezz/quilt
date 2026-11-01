@@ -7,12 +7,10 @@ import {
   TableRow,
 } from "@quilt/ui/components/table";
 import { Link } from "@tanstack/react-router";
-
+import { RelativeTime } from "@/components/display/relative-time";
 import { expiresSoon, keyStatus } from "@/lib/api-keys/describe";
 import type { ApiKey } from "@/lib/api-keys/use-api-keys";
-
-import { ExpiresSoonBadge, StatusBadge } from "./key-badges";
-import { When } from "./when";
+import { ExpiresSoonBadge, KeyStatusBadge } from "./key-badges";
 
 export function ApiKeyTable({ keys }: { keys: ApiKey[] }) {
   return (
@@ -46,15 +44,15 @@ export function ApiKeyTable({ keys }: { keys: ApiKey[] }) {
               </TableCell>
               <TableCell>
                 <div className="flex flex-wrap items-center gap-1">
-                  <StatusBadge status={keyStatus(key)} />
+                  <KeyStatusBadge status={keyStatus(key)} />
                   {expiresSoon(key) && <ExpiresSoonBadge />}
                 </div>
               </TableCell>
               <TableCell>
-                <When date={key.createdAt} never="Unknown" />
+                <RelativeTime date={key.createdAt} fallback="Unknown" />
               </TableCell>
               <TableCell>
-                <When date={key.lastRequest} never="Never used" />
+                <RelativeTime date={key.lastRequest} fallback="Never used" />
               </TableCell>
             </TableRow>
           ))}

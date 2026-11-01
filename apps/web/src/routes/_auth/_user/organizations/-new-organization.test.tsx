@@ -52,7 +52,9 @@ describe("new organization", () => {
     await user.type(name, "Café Labs");
 
     expect(slug).toHaveValue("cafe-labs");
-    expect(slug).toHaveAccessibleDescription(/like \/cafe-labs\./);
+    expect(slug).toHaveAccessibleDescription(
+      /like \/organizations\/cafe-labs\./,
+    );
   });
 
   it("stops following the name once you edit the URL name", async () => {
@@ -82,7 +84,7 @@ describe("new organization", () => {
   it.each([
     ["", "", ["Enter a name", "Enter a URL name"]],
     ["Acme", "acme", ["That URL name is already taken"]],
-    ["Accounts", "account", ["That URL name is reserved by quilt"]],
+    ["New", "new", ["That URL name is reserved by quilt"]],
   ])(
     "rejects name %j with URL name %j",
     async (nameValue, slugValue, problems) => {

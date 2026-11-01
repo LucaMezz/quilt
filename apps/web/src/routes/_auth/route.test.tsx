@@ -44,7 +44,7 @@ describe("_auth route", () => {
     // return an object with no data, meaning there is no session.
     getSession.mockResolvedValue({ data: null });
 
-    const router = await loadAt("/dashboard");
+    const router = await loadAt("/organizations");
 
     expect(router.state.location.pathname).toBe("/login");
   });
@@ -60,7 +60,7 @@ describe("_auth route", () => {
     });
   });
 
-  it("allows logged-in users to access /dashboard", async () => {
+  it("allows logged-in users to access their organizations", async () => {
     getSession.mockResolvedValue({
       data: {
         user: { id: "u1", name: "Ada", email: "ada@example.com" },
@@ -68,8 +68,8 @@ describe("_auth route", () => {
       },
     });
 
-    const router = await loadAt("/dashboard");
+    const router = await loadAt("/organizations");
 
-    expect(router.state.location.pathname).toBe("/dashboard");
+    expect(router.state.location.pathname).toBe("/organizations");
   });
 });

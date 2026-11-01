@@ -22,9 +22,9 @@
         "test:fuzz": "schemathesis run openapi.json"
     },
     "dependencies": {
-        "@orpc/openapi": "^1.15.6",
-        "@orpc/server": "^1.15.7",
-        "@orpc/zod": "^1.15.6",
+        "@orpc/openapi": "^1.16.1",
+        "@orpc/server": "^1.16.1",
+        "@orpc/zod": "^1.16.1",
         "@quilt/auth": "workspace:*",
         "@quilt/db": "workspace:*",
         "@quilt/storage": "workspace:*",
@@ -34,7 +34,7 @@
     },
     "devDependencies": {
         "@quilt/config": "workspace:*",
-        "@types/node": "^26.6.5",
+        "@types/node": "^26.6.6",
         "@vitest/coverage-v8": "^5.0.5",
         "fast-check": "^4.10.2",
         "tsx": "^4.23.15",

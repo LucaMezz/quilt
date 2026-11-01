@@ -56,6 +56,18 @@ describe("expiresSoon", () => {
             expiresSoon(key({ expiresAt: new Date(now.getTime() - DAY) }), now),
         ).toBe(false);
     });
+
+    it("is false for a disabled key, which already doesn't work", () => {
+        expect(
+            expiresSoon(
+                key({
+                    enabled: false,
+                    expiresAt: new Date(now.getTime() + 3 * DAY),
+                }),
+                now,
+            ),
+        ).toBe(false);
+    });
 });
 
 describe("grantedResources", () => {

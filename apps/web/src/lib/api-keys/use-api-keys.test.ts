@@ -6,6 +6,7 @@ import {
     useApiKeys,
     useDeleteApiKey,
     useRegenerateApiKey,
+    useSetApiKeyEnabled,
     useUpdateApiKeyPermissions,
 } from "./use-api-keys";
 
@@ -78,5 +79,22 @@ describe("API key store", () => {
             ...first,
             permissions: { apps: ["read"] },
         });
+    });
+
+    it("disables and re-enables a key", () => {
+        const { result } = renderHook(() => ({
+            keys: useApiKeys().keys,
+            setEnabled: useSetApiKeyEnabled(),
+        }));
+        const [first] = result.current.keys;
+        if (!first) throw new Error("No mock keys");
+        const find = () =>
+            result.current.keys.find((key) => key.id === first.id);
+
+        act(() => result.current.setEnabled(first.id, false));
+        expect(find()).toEqual({ ...first, enabled: false });
+
+        act(() => result.current.setEnabled(first.id, true));
+        expect(find()).toEqual({ ...first, enabled: true });
     });
 });

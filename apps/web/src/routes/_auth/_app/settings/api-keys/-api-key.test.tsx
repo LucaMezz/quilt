@@ -8,18 +8,19 @@ import {
   useApiKeys,
   useDeleteApiKey,
   useRegenerateApiKey,
+  useSetApiKeyEnabled,
   useUpdateApiKeyPermissions,
 } from "@/lib/api-keys/use-api-keys";
 import { renderRoute } from "@/test/render-route";
 
-const { getSession, deleteKey, regenerateKey, updatePermissions } = vi.hoisted(
-  () => ({
+const { getSession, deleteKey, regenerateKey, updatePermissions, setEnabled } =
+  vi.hoisted(() => ({
     getSession: vi.fn(),
     deleteKey: vi.fn(),
     regenerateKey: vi.fn(),
     updatePermissions: vi.fn(),
-  }),
-);
+    setEnabled: vi.fn(),
+  }));
 
 vi.mock("@/lib/auth-client", () => ({ authClient: { getSession } }));
 vi.mock("@/lib/api-keys/use-api-keys");
@@ -50,6 +51,16 @@ function rowFor(name: string) {
   return within(row);
 }
 
+function headerBadges() {
+  const heading = screen.getByRole("heading", { level: 2 });
+  if (!heading.parentElement) throw new Error("No key header");
+  return heading.parentElement;
+}
+
+async function statusCard() {
+  return within(await screen.findByRole("region", { name: "Status" }));
+}
+
 function updateButton() {
   return screen.getByRole("button", { name: "Update permissions" });
 }
@@ -61,6 +72,8 @@ beforeEach(() => {
   vi.mocked(useRegenerateApiKey).mockReturnValue(regenerateKey);
   vi.mocked(useUpdateApiKeyPermissions).mockReturnValue(updatePermissions);
   updatePermissions.mockReset();
+  vi.mocked(useSetApiKeyEnabled).mockReturnValue(setEnabled);
+  setEnabled.mockReset();
   deleteKey.mockReset();
   regenerateKey.mockReset().mockReturnValue(NEW_SECRET);
 });
@@ -72,7 +85,6 @@ describe("API key page", () => {
     expect(
       await screen.findByRole("heading", { level: 2, name: /deploy-bot/ }),
     ).toBeInTheDocument();
-    expect(screen.getByText("Active")).toBeInTheDocument();
     expect(screen.getByText("qlt_Nb…")).toBeInTheDocument();
     expect(screen.getByText(deployBot.id)).toBeInTheDocument();
     expect(screen.getByText("Never used")).toBeInTheDocument();
@@ -169,6 +181,56 @@ describe("API key page", () => {
     expect(
       screen.queryByRole("table", { name: "Permissions" }),
     ).not.toBeInTheDocument();
+  });
+
+  it("disables an active key", async () => {
+    const user = userEvent.setup();
+    await renderRoute(path, getSession);
+
+    const status = await statusCard();
+    expect(headerBadges()).toHaveTextContent("Active");
+    expect(status.getByText(/accepted until it expires/)).toBeVisible();
+    await user.click(status.getByRole("button", { name: "Disable key" }));
+
+    expect(setEnabled).toHaveBeenCalledExactlyOnceWith(deployBot.id, false);
+  });
+
+  it("enables a disabled key", async () => {
+    vi.mocked(useApiKey).mockReturnValue({ ...deployBot, enabled: false });
+    const user = userEvent.setup();
+    await renderRoute(path, getSession);
+
+    const status = await statusCard();
+    expect(headerBadges()).toHaveTextContent("Disabled");
+    expect(status.getByText(/rejected until you enable it/)).toBeVisible();
+    await user.click(status.getByRole("button", { name: "Enable key" }));
+
+    expect(setEnabled).toHaveBeenCalledExactlyOnceWith(deployBot.id, true);
+  });
+
+  it("points an expired key to regeneration instead of a toggle", async () => {
+    vi.mocked(useApiKey).mockReturnValue({
+      ...deployBot,
+      expiresAt: new Date(Date.now() - DAY),
+    });
+    await renderRoute(path, getSession);
+
+    const status = await statusCard();
+    expect(headerBadges()).toHaveTextContent("Expired");
+    expect(status.getByText(/Regenerate it to use it again/)).toBeVisible();
+    expect(status.queryByRole("button")).not.toBeInTheDocument();
+  });
+
+  it("warns when an active key expires soon", async () => {
+    vi.mocked(useApiKey).mockReturnValue({
+      ...deployBot,
+      expiresAt: new Date(Date.now() + 2 * DAY),
+    });
+    await renderRoute(path, getSession);
+
+    const status = await statusCard();
+    expect(headerBadges()).toHaveTextContent("Expires soon");
+    expect(status.getByText(/Regenerate it to keep using it/)).toBeVisible();
   });
 
   it("says when the key doesn't exist", async () => {

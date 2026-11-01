@@ -7,7 +7,6 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@quilt/ui/components/field";
-import { Input } from "@quilt/ui/components/input";
 import {
   Select,
   SelectContent,
@@ -15,9 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@quilt/ui/components/select";
-import { Textarea } from "@quilt/ui/components/textarea";
 import { cn } from "@quilt/ui/lib/utils";
-import { useForm } from "@tanstack/react-form";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -28,6 +25,7 @@ import {
   PermissionList,
 } from "@/components/api-keys/permission-list";
 import { SecretField } from "@/components/api-keys/secret-field";
+import { useAppForm } from "@/components/form/use-app-form";
 import { BackLink } from "@/components/settings/back-link";
 import { SectionCard } from "@/components/settings/section-card";
 import { grantedResources } from "@/lib/api-keys/describe";
@@ -109,7 +107,7 @@ function CopyNewKey({ created }: { created: Created }) {
 function NewApiKeyForm({ onCreated }: { onCreated: (key: Created) => void }) {
   const create = useCreateApiKey();
 
-  const form = useForm({
+  const form = useAppForm({
     defaultValues: {
       name: "",
       description: "",
@@ -144,45 +142,26 @@ function NewApiKeyForm({ onCreated }: { onCreated: (key: Created) => void }) {
     >
       <SectionCard level={3} title="Basics">
         <FieldGroup>
-          <form.Field name="name">
-            {(field) => {
-              const isInvalid = !field.state.meta.isValid;
-              return (
-                <Field data-invalid={isInvalid}>
-                  <FieldLabel htmlFor="key-name">Name</FieldLabel>
-                  <Input
-                    id="key-name"
-                    name={field.name}
-                    placeholder="e.g. GitHub Actions deploys"
-                    autoComplete="off"
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(event) => field.handleChange(event.target.value)}
-                    aria-invalid={isInvalid}
-                  />
-                  <FieldDescription>
-                    Something that tells you where the key is used.
-                  </FieldDescription>
-                  <FieldError errors={field.state.meta.errors} />
-                </Field>
-              );
-            }}
-          </form.Field>
-          <form.Field name="description">
+          <form.AppField name="name">
             {(field) => (
-              <Field>
-                <FieldLabel htmlFor="key-description">Description</FieldLabel>
-                <Textarea
-                  id="key-description"
-                  name={field.name}
-                  placeholder="Optional"
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(event) => field.handleChange(event.target.value)}
-                />
-              </Field>
+              <field.TextField
+                id="key-name"
+                label="Name"
+                placeholder="e.g. GitHub Actions deploys"
+                autoComplete="off"
+                description="Something that tells you where the key is used."
+              />
             )}
-          </form.Field>
+          </form.AppField>
+          <form.AppField name="description">
+            {(field) => (
+              <field.TextareaField
+                id="key-description"
+                label="Description"
+                placeholder="Optional"
+              />
+            )}
+          </form.AppField>
           <form.Field name="expiresInDays">
             {(field) => (
               <Field>

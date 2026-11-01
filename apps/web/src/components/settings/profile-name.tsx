@@ -1,11 +1,9 @@
-import { Button } from "@quilt/ui/components/button";
-import { Field, FieldError, FieldLabel } from "@quilt/ui/components/field";
-import { Input } from "@quilt/ui/components/input";
-import { useForm } from "@tanstack/react-form";
 import { toast } from "sonner";
 import z from "zod";
 
+import { useAppForm } from "@/components/form/use-app-form";
 import { SectionCard } from "@/components/settings/section-card";
+import { UpdateBar } from "@/components/settings/update-bar";
 import { type Profile, useUpdateProfileName } from "@/lib/profile/use-profile";
 
 const MAX_NAME = 64;
@@ -21,13 +19,13 @@ const schema = z.object({
 export function ProfileName({ profile }: { profile: Profile }) {
   const updateName = useUpdateProfileName();
 
-  const form = useForm({
+  const form = useAppForm({
     defaultValues: { name: profile.name },
     validators: { onSubmit: schema },
     onSubmit: ({ value }) => {
       const name = value.name.trim();
       updateName(name);
-      form.setFieldValue("name", name);
+      form.reset({ name });
       toast.success("Name updated");
     },
   });
@@ -46,42 +44,30 @@ export function ProfileName({ profile }: { profile: Profile }) {
           form.handleSubmit();
         }}
       >
-        <form.Field name="name">
-          {(field) => {
-            const isInvalid = !field.state.meta.isValid;
-            return (
-              <Field data-invalid={isInvalid} className="max-w-sm">
-                <FieldLabel htmlFor="profile-name" className="sr-only">
-                  Name
-                </FieldLabel>
-                <Input
-                  id="profile-name"
-                  name={field.name}
-                  autoComplete="name"
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(event) => field.handleChange(event.target.value)}
-                  aria-invalid={isInvalid}
-                />
-                <FieldError errors={field.state.meta.errors} />
-              </Field>
-            );
-          }}
-        </form.Field>
-        <div className="flex items-center justify-between gap-4 border-t pt-4">
-          <p className="text-muted-foreground text-sm">
-            {MAX_NAME} characters maximum.
-          </p>
-          <form.Subscribe
-            selector={(state) => state.values.name.trim() !== profile.name}
-          >
-            {(changed) => (
-              <Button type="submit" disabled={!changed}>
-                Save
-              </Button>
-            )}
-          </form.Subscribe>
-        </div>
+        <form.AppField name="name">
+          {(field) => (
+            <field.TextField
+              id="profile-name"
+              label="Name"
+              hideLabel
+              autoComplete="name"
+              description={`${MAX_NAME} characters maximum.`}
+              className="max-w-sm"
+            />
+          )}
+        </form.AppField>
+        <form.Subscribe
+          selector={(state) => state.values.name.trim() !== profile.name}
+        >
+          {(changed) => (
+            <UpdateBar
+              changed={changed}
+              label="Update name"
+              onDiscard={() => form.reset()}
+              onUpdate={() => form.handleSubmit()}
+            />
+          )}
+        </form.Subscribe>
       </form>
     </SectionCard>
   );

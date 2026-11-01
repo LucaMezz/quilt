@@ -1,19 +1,15 @@
-import { Button } from "@quilt/ui/components/button";
 import { Card, CardContent } from "@quilt/ui/components/card";
 import {
   Field,
   FieldDescription,
-  FieldError,
   FieldGroup,
-  FieldLabel,
 } from "@quilt/ui/components/field";
-import { Input } from "@quilt/ui/components/input";
 import { cn } from "@quilt/ui/lib/utils";
-import { useForm } from "@tanstack/react-form";
 import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 import z from "zod";
 
+import { useAppForm } from "@/components/form/use-app-form";
 import { authClient } from "@/lib/auth-client";
 
 import { AuthPanel } from "./auth-panel";
@@ -27,7 +23,7 @@ interface LoginFormProps extends React.ComponentProps<"div"> {
 export function LoginForm({ redirect, className, ...props }: LoginFormProps) {
   const { isPending } = authClient.useSession();
 
-  const form = useForm({
+  const form = useAppForm({
     defaultValues: {
       email: "",
       password: "",
@@ -82,63 +78,32 @@ export function LoginForm({ redirect, className, ...props }: LoginFormProps) {
                   Sign in to your quilt account
                 </p>
               </div>
-              <form.Field name="email">
-                {(field) => {
-                  const isInvalid = !field.state.meta.isValid;
-                  return (
-                    <Field data-invalid={isInvalid}>
-                      <FieldLabel htmlFor={field.name}>Email</FieldLabel>
-                      <Input
-                        id={field.name}
-                        name={field.name}
-                        type="email"
-                        placeholder="m@example.com"
-                        autoComplete="email"
-                        value={field.state.value}
-                        onBlur={field.handleBlur}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                        aria-invalid={isInvalid}
-                      />
-                      <FieldError errors={field.state.meta.errors} />
-                    </Field>
-                  );
-                }}
-              </form.Field>
-              <form.Field name="password">
-                {(field) => {
-                  const isInvalid = !field.state.meta.isValid;
-                  return (
-                    <Field data-invalid={isInvalid}>
-                      <FieldLabel htmlFor={field.name}>Password</FieldLabel>
-                      <Input
-                        id={field.name}
-                        name={field.name}
-                        type="password"
-                        autoComplete="current-password"
-                        value={field.state.value}
-                        onBlur={field.handleBlur}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                        aria-invalid={isInvalid}
-                      />
-                      <FieldError errors={field.state.meta.errors} />
-                    </Field>
-                  );
-                }}
-              </form.Field>
-              <form.Subscribe
-                selector={(state) => ({
-                  canSubmit: state.canSubmit,
-                  isSubmitting: state.isSubmitting,
-                })}
-              >
-                {({ canSubmit, isSubmitting }) => (
-                  <Field>
-                    <Button type="submit" disabled={!canSubmit || isSubmitting}>
-                      {isSubmitting ? "Signing in..." : "Sign in"}
-                    </Button>
-                  </Field>
+              <form.AppField name="email">
+                {(field) => (
+                  <field.TextField
+                    label="Email"
+                    type="email"
+                    placeholder="m@example.com"
+                    autoComplete="email"
+                  />
                 )}
-              </form.Subscribe>
+              </form.AppField>
+              <form.AppField name="password">
+                {(field) => (
+                  <field.TextField
+                    label="Password"
+                    type="password"
+                    autoComplete="current-password"
+                  />
+                )}
+              </form.AppField>
+              <Field>
+                <form.AppForm>
+                  <form.SubmitButton pending="Signing in...">
+                    Sign in
+                  </form.SubmitButton>
+                </form.AppForm>
+              </Field>
               <FieldDescription className="text-center">
                 Don&apos;t have an account? <Link to="/signup">Sign up</Link>
               </FieldDescription>

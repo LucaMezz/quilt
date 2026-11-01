@@ -13,7 +13,7 @@ import { main } from "cli/main";
 
 const outDir = new URL("../content/docs/cli/", import.meta.url).pathname;
 
-const root = await describeCommand(main);
+const root = describeCommand(main);
 
 await rm(outDir, { recursive: true, force: true });
 await writeCommand(root, outDir, true);

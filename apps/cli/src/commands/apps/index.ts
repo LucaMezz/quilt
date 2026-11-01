@@ -1,17 +1,11 @@
-import { defineCommand } from "citty";
+import { Command } from "@commander-js/extra-typings";
 
 import create from "./create";
 import destroy from "./destroy";
 import list from "./list";
 
-export default defineCommand({
-    meta: {
-        name: "apps",
-        description: "Manage the apps in an organization",
-    },
-    subCommands: {
-        list,
-        create,
-        destroy,
-    },
-});
+export default new Command("apps")
+    .description("Manage the apps in an organization")
+    .addCommand(list)
+    .addCommand(create)
+    .addCommand(destroy);

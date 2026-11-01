@@ -1,4 +1,4 @@
-import { defineCommand } from "citty";
+import { Command } from "@commander-js/extra-typings";
 
 import { client } from "../../client";
 import { log } from "../../ui/log";
@@ -6,36 +6,16 @@ import { printJson } from "../../ui/output";
 import { withSpinner } from "../../ui/spinner";
 import { theme } from "../../ui/theme";
 
-export default defineCommand({
-    meta: {
-        name: "update",
-        description: "Rename an organization or change its slug",
-    },
-    args: {
-        org: {
-            type: "positional",
-            required: true,
-            description: "Slug of the organization",
-        },
-        name: {
-            type: "string",
-            alias: "n",
-            description: "New display name",
-        },
-        slug: {
-            type: "string",
-            alias: "s",
-            description:
-                "New slug; scripts and links using the old one stop working",
-        },
-        json: {
-            type: "boolean",
-            alias: "j",
-            default: false,
-            description: "Print the updated organization as JSON",
-        },
-    },
-    async run({ args }) {
+export default new Command("update")
+    .description("Rename an organization or change its slug")
+    .argument("<org>", "Slug of the organization")
+    .option("-n, --name <name>", "New display name")
+    .option(
+        "-s, --slug <slug>",
+        "New slug; scripts and links using the old one stop working",
+    )
+    .option("-j, --json", "Print the updated organization as JSON")
+    .action(async (org, args) => {
         if (args.name === undefined && args.slug === undefined) {
             log.error("Nothing to update");
             log.hint(`Pass ${theme.brand("--name or --slug")}.`);
@@ -45,7 +25,7 @@ export default defineCommand({
         const organization = await withSpinner(
             "Updating organization…",
             client.organizations.update({
-                org: args.org,
+                org,
                 name: args.name,
                 slug: args.slug,
             }),
@@ -59,5 +39,4 @@ export default defineCommand({
             `Updated organization ${theme.heading(organization.name)}`,
             organization.slug,
         );
-    },
-});
+    });

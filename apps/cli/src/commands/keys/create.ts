@@ -1,4 +1,4 @@
-import { defineCommand } from "citty";
+import { Command } from "@commander-js/extra-typings";
 
 import { client } from "../../client";
 import { log } from "../../ui/log";
@@ -8,32 +8,17 @@ import { theme } from "../../ui/theme";
 
 const SECONDS_PER_DAY = 24 * 60 * 60;
 
-export default defineCommand({
-    meta: {
-        name: "create",
-        description: "Create an API key; it's printed once to stdout",
-    },
-    args: {
-        name: {
-            type: "positional",
-            required: true,
-            description: "Name to recognise the key by",
-        },
-        "expires-in": {
-            type: "string",
-            alias: "e",
-            default: "90",
-            description: "Days until the key expires, from 1 to 365",
-        },
-        json: {
-            type: "boolean",
-            alias: "j",
-            default: false,
-            description: "Print the new key and its details as JSON",
-        },
-    },
-    async run({ args }) {
-        const days = Number(args["expires-in"]);
+export default new Command("create")
+    .description("Create an API key; it's printed once to stdout")
+    .argument("<name>", "Name to recognise the key by")
+    .option(
+        "-e, --expires-in <days>",
+        "Days until the key expires, from 1 to 365",
+        "90",
+    )
+    .option("-j, --json", "Print the new key and its details as JSON")
+    .action(async (name, args) => {
+        const days = Number(args.expiresIn);
         if (!Number.isInteger(days)) {
             log.error("--expires-in must be a whole number of days");
             process.exitCode = 1;
@@ -42,7 +27,7 @@ export default defineCommand({
         const created = await withSpinner(
             "Creating API key…",
             client.apiKeys.create({
-                name: args.name,
+                name,
                 expiresIn: days * SECONDS_PER_DAY,
             }),
         );
@@ -51,8 +36,7 @@ export default defineCommand({
             printJson(created);
             return;
         }
-        log.success(`Created API key ${theme.heading(args.name)}`, created.id);
+        log.success(`Created API key ${theme.heading(name)}`, created.id);
         log.warn("Copy it now: it won't be shown again");
         console.log(created.key);
-    },
-});
+    });

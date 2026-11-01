@@ -1,7 +1,6 @@
-import { runCommand } from "citty";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-
 import { client } from "../../client";
+import { runCommand } from "../../testing/command";
 import { captureOutput, stdout } from "../../testing/output";
 import list from "./list";
 

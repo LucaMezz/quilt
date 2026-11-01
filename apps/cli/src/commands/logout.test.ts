@@ -1,10 +1,9 @@
 import { API_KEY_HEADER } from "@quilt/auth/api-keys";
-import { runCommand } from "citty";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-
 import { client } from "../client";
 import { authClient } from "../lib/auth-client";
 import { deleteToken, getToken, passedKey } from "../lib/credentials";
+import { runCommand } from "../testing/command";
 import logout from "./logout";
 
 vi.mock("../client", () => ({

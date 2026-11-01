@@ -1,11 +1,13 @@
+import { Option } from "@commander-js/extra-typings";
+
 import { log } from "../ui/log";
 import { theme } from "../ui/theme";
 
-export const orgArg = {
-    type: "string",
-    alias: "o",
-    description: "Slug of the organization; defaults to QUILT_ORG",
-} as const;
+export const orgOption = () =>
+    new Option(
+        "-o, --org <slug>",
+        "Slug of the organization; defaults to QUILT_ORG",
+    );
 
 export function selectedOrg(flag: string | undefined) {
     const org = flag || process.env.QUILT_ORG;

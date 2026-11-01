@@ -1,4 +1,4 @@
-import { defineCommand } from "citty";
+import { Command } from "@commander-js/extra-typings";
 
 import { client } from "../../client";
 import { shortId } from "../../lib/key-ref";
@@ -24,20 +24,10 @@ function dateOr(date: Date | null | undefined, fallback: string) {
     return date ? formatDate(date) : fallback;
 }
 
-export default defineCommand({
-    meta: {
-        name: "list",
-        description: "List your API keys",
-    },
-    args: {
-        json: {
-            type: "boolean",
-            alias: "j",
-            default: false,
-            description: "Print the keys as JSON",
-        },
-    },
-    async run({ args }) {
+export default new Command("list")
+    .description("List your API keys")
+    .option("-j, --json", "Print the keys as JSON")
+    .action(async (args) => {
         const keys = await withSpinner(
             "Loading API keys…",
             allPages((cursor) => client.apiKeys.list({ limit: 100, cursor })),
@@ -63,5 +53,4 @@ export default defineCommand({
                 ]),
             ),
         );
-    },
-});
+    });

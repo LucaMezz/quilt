@@ -1,12 +1,11 @@
-import { runCommand } from "citty";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-
 import { serverHost } from "../client";
 import { getKeySession, revokeApiKey } from "../lib/api-key-session";
 import { canOpenBrowser, openBrowser } from "../lib/browser";
 import { getToken, passedKey, saveToken } from "../lib/credentials";
 import { pollForToken, requestDeviceCode } from "../lib/device-auth";
 import { LoginDeniedError } from "../lib/login-errors";
+import { runCommand } from "../testing/command";
 import login from "./login";
 
 vi.mock("../lib/api-key-session");

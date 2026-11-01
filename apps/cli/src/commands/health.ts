@@ -1,16 +1,13 @@
-import { defineCommand } from "citty";
+import { Command } from "@commander-js/extra-typings";
 
 import { client, serverUrl } from "../client";
 import { log } from "../ui/log";
 import { spinner } from "../ui/spinner";
 import { symbols } from "../ui/theme";
 
-export default defineCommand({
-    meta: {
-        name: "health",
-        description: "Check that the quilt API is reachable",
-    },
-    async run() {
+export default new Command("health")
+    .description("Check that the quilt API is reachable")
+    .action(async () => {
         const host = new URL(serverUrl).host;
         const progress = spinner(`Checking ${host}…`);
         const started = performance.now();
@@ -29,5 +26,4 @@ export default defineCommand({
             log.hint("Set QUILT_API_URL to point at your quilt server.");
             process.exitCode = 1;
         }
-    },
-});
+    });

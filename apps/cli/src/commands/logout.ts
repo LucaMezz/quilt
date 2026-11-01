@@ -1,16 +1,13 @@
-import { defineCommand } from "citty";
+import { Command } from "@commander-js/extra-typings";
 
 import { serverHost } from "../client";
 import { revokeApiKey } from "../lib/api-key-session";
 import { deleteToken, getToken, passedKey } from "../lib/credentials";
 import { log } from "../ui/log";
 
-export default defineCommand({
-    meta: {
-        name: "logout",
-        description: "Sign this device out of your quilt server",
-    },
-    async run() {
+export default new Command("logout")
+    .description("Sign this device out of your quilt server")
+    .action(async () => {
         const passed = passedKey();
         if (passed) {
             log.error(
@@ -41,5 +38,4 @@ export default defineCommand({
             return;
         }
         log.success(`Signed out of ${serverHost}`);
-    },
-});
+    });

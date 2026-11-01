@@ -1,33 +1,21 @@
-import { defineCommand } from "citty";
+import { Command } from "@commander-js/extra-typings";
 
 import { client } from "../../client";
-import { orgArg, selectedOrg } from "../../lib/org";
+import { orgOption, selectedOrg } from "../../lib/org";
 import { log } from "../../ui/log";
 import { printJson } from "../../ui/output";
 import { withSpinner } from "../../ui/spinner";
 import { theme } from "../../ui/theme";
 
-export default defineCommand({
-    meta: {
-        name: "create",
-        description: "Create an app in an organization",
-    },
-    args: {
-        name: {
-            type: "positional",
-            required: true,
-            description:
-                "Name of the app, unique across all organizations; can't be changed later",
-        },
-        org: orgArg,
-        json: {
-            type: "boolean",
-            alias: "j",
-            default: false,
-            description: "Print the new app as JSON",
-        },
-    },
-    async run({ args }) {
+export default new Command("create")
+    .description("Create an app in an organization")
+    .argument(
+        "<name>",
+        "Name of the app, unique across all organizations; can't be changed later",
+    )
+    .addOption(orgOption())
+    .option("-j, --json", "Print the new app as JSON")
+    .action(async (name, args) => {
         const org = selectedOrg(args.org);
         if (!org) {
             process.exitCode = 1;
@@ -35,7 +23,7 @@ export default defineCommand({
         }
         const app = await withSpinner(
             "Creating app…",
-            client.apps.create({ org, name: args.name }),
+            client.apps.create({ org, name }),
         );
 
         if (args.json) {
@@ -43,5 +31,4 @@ export default defineCommand({
             return;
         }
         log.success(`Created app ${theme.heading(app.name)}`, app.hostname);
-    },
-});
+    });

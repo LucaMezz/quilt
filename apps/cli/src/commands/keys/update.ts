@@ -1,4 +1,4 @@
-import { defineCommand } from "citty";
+import { Command } from "@commander-js/extra-typings";
 
 import { client } from "../../client";
 import { resolveKey } from "../../lib/key-ref";
@@ -7,47 +7,23 @@ import { printJson } from "../../ui/output";
 import { withSpinner } from "../../ui/spinner";
 import { theme } from "../../ui/theme";
 
-function enabledFrom(enable: boolean, disable: boolean) {
+function enabledFrom(enable?: boolean, disable?: boolean) {
     if (enable) return true;
     if (disable) return false;
     return undefined;
 }
 
-export default defineCommand({
-    meta: {
-        name: "update",
-        description: "Rename, enable or disable an API key",
-    },
-    args: {
-        key: {
-            type: "positional",
-            required: false,
-            description:
-                "Name or ID of the key, or the start of its ID; omit to choose from a list",
-        },
-        name: {
-            type: "string",
-            alias: "n",
-            description: "New name",
-        },
-        enable: {
-            type: "boolean",
-            default: false,
-            description: "Let the key be used again",
-        },
-        disable: {
-            type: "boolean",
-            default: false,
-            description: "Stop the key from working until it's enabled again",
-        },
-        json: {
-            type: "boolean",
-            alias: "j",
-            default: false,
-            description: "Print the updated key as JSON",
-        },
-    },
-    async run({ args }) {
+export default new Command("update")
+    .description("Rename, enable or disable an API key")
+    .argument(
+        "[key]",
+        "Name or ID of the key, or the start of its ID; omit to choose from a list",
+    )
+    .option("-n, --name <name>", "New name")
+    .option("--enable", "Let the key be used again")
+    .option("--disable", "Stop the key from working until it's enabled again")
+    .option("-j, --json", "Print the updated key as JSON")
+    .action(async (ref, args) => {
         if (args.enable && args.disable) {
             log.error("Pass either --enable or --disable, not both");
             process.exitCode = 1;
@@ -60,7 +36,7 @@ export default defineCommand({
             process.exitCode = 1;
             return;
         }
-        const target = await resolveKey(args.key);
+        const target = await resolveKey(ref);
         if (!target) {
             process.exitCode = 1;
             return;
@@ -78,5 +54,4 @@ export default defineCommand({
             `Updated API key ${theme.heading(key.name ?? key.id)}`,
             key.enabled ? "enabled" : "disabled",
         );
-    },
-});
+    });

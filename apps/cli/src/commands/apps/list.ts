@@ -1,7 +1,7 @@
-import { defineCommand } from "citty";
+import { Command } from "@commander-js/extra-typings";
 
 import { client } from "../../client";
-import { orgArg, selectedOrg } from "../../lib/org";
+import { orgOption, selectedOrg } from "../../lib/org";
 import { allPages } from "../../lib/pages";
 import { log } from "../../ui/log";
 import { formatDate, printJson } from "../../ui/output";
@@ -9,21 +9,11 @@ import { withSpinner } from "../../ui/spinner";
 import { table } from "../../ui/table";
 import { theme } from "../../ui/theme";
 
-export default defineCommand({
-    meta: {
-        name: "list",
-        description: "List an organization's apps",
-    },
-    args: {
-        org: orgArg,
-        json: {
-            type: "boolean",
-            alias: "j",
-            default: false,
-            description: "Print the apps as JSON",
-        },
-    },
-    async run({ args }) {
+export default new Command("list")
+    .description("List an organization's apps")
+    .addOption(orgOption())
+    .option("-j, --json", "Print the apps as JSON")
+    .action(async (args) => {
         const org = selectedOrg(args.org);
         if (!org) {
             process.exitCode = 1;
@@ -53,5 +43,4 @@ export default defineCommand({
                 ]),
             ),
         );
-    },
-});
+    });

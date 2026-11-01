@@ -35,7 +35,10 @@ export function confirmYesNo(message: string) {
     );
 }
 
-export async function confirmed(yes: boolean, ask: () => Promise<boolean>) {
+export async function confirmed(
+    yes: boolean | undefined,
+    ask: () => Promise<boolean>,
+) {
     if (yes) return true;
     if (!canPrompt()) {
         log.error("Can't ask for confirmation without an interactive terminal");

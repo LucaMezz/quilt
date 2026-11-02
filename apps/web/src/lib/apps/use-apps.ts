@@ -8,6 +8,7 @@ export type App = {
     name: string;
     hostname: string;
     status: AppStatus;
+    logo: string | null;
     liveDeployment: {
         version: number;
         image: string;
@@ -38,6 +39,7 @@ function app(
         name,
         hostname: `${name}.${APPS_DOMAIN}`,
         status,
+        logo: null,
         liveDeployment: live
             ? {
                   version: live.version,
@@ -145,4 +147,19 @@ export function moveApps(from: string, to: string) {
                 : app,
         ),
     );
+}
+
+export function useSetAppLogo() {
+    return useCallback((id: string, file: File | null) => {
+        setApps(
+            apps.map((app) => {
+                if (app.id !== id) return app;
+                if (app.logo) URL.revokeObjectURL(app.logo);
+                return {
+                    ...app,
+                    logo: file ? URL.createObjectURL(file) : null,
+                };
+            }),
+        );
+    }, []);
 }

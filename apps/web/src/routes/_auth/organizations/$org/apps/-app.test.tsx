@@ -94,4 +94,19 @@ describe("app", () => {
     await vi.advanceTimersByTimeAsync(TEARDOWN_MS);
     expect(list.queryByRole("link", { name: "web" })).toBeNull();
   });
+
+  it("sets the app's logo", async () => {
+    vi.spyOn(URL, "createObjectURL").mockReturnValue("blob:logo");
+    const user = userEvent.setup();
+    await renderRoute("/organizations/acme/apps/api", getSession);
+    const card = within(await screen.findByRole("region", { name: "Logo" }));
+
+    await user.upload(
+      card.getByLabelText(/^Choose a new logo/),
+      new File(["png"], "logo.png", { type: "image/png" }),
+    );
+
+    expect(toastSuccess).toHaveBeenCalledWith("Logo updated");
+    expect(card.getByRole("button", { name: "Remove" })).toBeInTheDocument();
+  });
 });

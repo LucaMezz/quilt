@@ -4,12 +4,16 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { renderRoute } from "@/test/render-route";
 
-const { getSession, update, setLogo, toastSuccess } = vi.hoisted(() => ({
-  getSession: vi.fn(),
-  update: vi.fn(),
-  setLogo: vi.fn(),
-  toastSuccess: vi.fn(),
-}));
+const { getSession, update, setLogo, remove, apps, toastSuccess } = vi.hoisted(
+  () => ({
+    getSession: vi.fn(),
+    update: vi.fn(),
+    setLogo: vi.fn(),
+    remove: vi.fn(),
+    apps: vi.fn(),
+    toastSuccess: vi.fn(),
+  }),
+);
 
 vi.mock("@/lib/auth-client", () => ({ authClient: { getSession } }));
 vi.mock("sonner", async (original) => ({
@@ -20,11 +24,19 @@ vi.mock("@/lib/organizations/use-organizations", async (original) => ({
   ...(await original<typeof import("@/lib/organizations/use-organizations")>()),
   useUpdateOrganization: () => update,
   useSetOrganizationLogo: () => setLogo,
+  useDeleteOrganization: () => remove,
+}));
+vi.mock("@/lib/apps/use-apps", async (original) => ({
+  ...(await original<typeof import("@/lib/apps/use-apps")>()),
+  useApps: apps,
 }));
 
 beforeEach(() => {
   update.mockReset();
   setLogo.mockReset();
+  remove.mockReset();
+  apps.mockReset();
+  apps.mockReturnValue([]);
   toastSuccess.mockReset();
 });
 
@@ -160,4 +172,62 @@ describe("organization settings", () => {
     ).toBeInTheDocument();
     expect(card.queryByRole("button", { name: "Upload image" })).toBeNull();
   });
+
+  it("deletes the organization once its URL name is typed", async () => {
+    const user = userEvent.setup();
+    const { router } = await renderSettings();
+    const section = within(
+      screen.getByRole("region", { name: "Delete this organization" }),
+    );
+
+    await user.click(
+      section.getByRole("button", { name: "Delete organization" }),
+    );
+    const dialog = within(
+      await screen.findByRole("alertdialog", { name: "Delete Acme?" }),
+    );
+    const confirm = dialog.getByRole("button", { name: "Delete organization" });
+    await user.type(
+      dialog.getByRole("textbox", { name: "Type acme to confirm" }),
+      "acm",
+    );
+    expect(confirm).toBeDisabled();
+    await user.type(
+      dialog.getByRole("textbox", { name: "Type acme to confirm" }),
+      "e",
+    );
+    await user.click(confirm);
+
+    await vi.waitFor(() => expect(remove).toHaveBeenCalledWith("org_7Hq2"));
+    expect(toastSuccess).toHaveBeenCalledWith("Deleted Acme");
+    expect(router.state.location.pathname).toBe("/organizations");
+  });
+
+  it("asks to destroy the organization's apps before deleting it", async () => {
+    apps.mockReturnValue([{ id: "app_1" }, { id: "app_2" }]);
+    await renderSettings();
+
+    const section = within(
+      screen.getByRole("region", { name: "Delete this organization" }),
+    );
+    expect(
+      section.getByRole("button", { name: "Delete organization" }),
+    ).toBeDisabled();
+    expect(section.getByText(/Destroy its 2 apps/)).toBeInTheDocument();
+    expect(section.getByRole("link", { name: "View apps" })).toHaveAttribute(
+      "href",
+      "/organizations/acme/apps",
+    );
+  });
+
+  it.each(["side-projects", "open-source"])(
+    "only lets owners delete the organization, not in %s",
+    async (org) => {
+      await renderSettings(org);
+
+      expect(
+        screen.queryByRole("region", { name: "Delete this organization" }),
+      ).toBeNull();
+    },
+  );
 });

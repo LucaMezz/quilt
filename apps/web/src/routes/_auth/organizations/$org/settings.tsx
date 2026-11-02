@@ -1,5 +1,5 @@
 import { FieldGroup } from "@quilt/ui/components/field";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 import z from "zod";
 
@@ -8,13 +8,16 @@ import { Detail, DetailList } from "@/components/display/detail-list";
 import { RelativeTime } from "@/components/display/relative-time";
 import { useAppForm } from "@/components/form/use-app-form";
 import { OrganizationAvatar } from "@/components/organizations/organization-avatar";
+import { DangerSection } from "@/components/settings/danger-section";
 import { ImagePicker } from "@/components/settings/image-picker";
 import { SectionCard } from "@/components/settings/section-card";
 import { UpdateBar } from "@/components/settings/update-bar";
+import { useApps } from "@/lib/apps/use-apps";
 import { MAX_NAME, slugProblem } from "@/lib/organizations/slug";
 import {
   canManageOrganization,
   type Organization,
+  useDeleteOrganization,
   useOrganization,
   useOrganizations,
   useSetOrganizationLogo,
@@ -53,6 +56,9 @@ function OrganizationSettings() {
             </Detail>
           </DetailList>
         </SectionCard>
+        {organization.role === "owner" && (
+          <DeleteOrganization organization={organization} />
+        )}
       </div>
     </>
   );
@@ -198,5 +204,45 @@ function Logo({ organization }: { organization: Organization }) {
         }}
       />
     </SectionCard>
+  );
+}
+
+function DeleteOrganization({ organization }: { organization: Organization }) {
+  const apps = useApps(organization.slug);
+  const remove = useDeleteOrganization();
+  const navigate = Route.useNavigate();
+  const count = apps.length === 1 ? "its app" : `its ${apps.length} apps`;
+
+  return (
+    <DangerSection
+      title="Delete this organization"
+      description={
+        apps.length > 0 ? (
+          <>
+            Destroy {count} before deleting it, and wait for them to finish
+            tearing down.{" "}
+            <Link
+              to="/organizations/$org/apps"
+              params={{ org: organization.slug }}
+              className="underline underline-offset-4 hover:text-foreground"
+            >
+              View apps
+            </Link>
+          </>
+        ) : (
+          "Its members lose access and its pending invitations are cancelled. This can't be undone."
+        )
+      }
+      confirmDescription="Its members lose access and its pending invitations are cancelled. This can't be undone."
+      actionLabel="Delete organization"
+      confirmTitle={`Delete ${organization.name}?`}
+      confirmText={organization.slug}
+      disabled={apps.length > 0}
+      onConfirm={async () => {
+        await navigate({ to: "/organizations" });
+        remove(organization.id);
+        toast.success(`Deleted ${organization.name}`);
+      }}
+    />
   );
 }

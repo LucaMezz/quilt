@@ -23,7 +23,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "A section for an action that can't be undone, like deleting or leaving something. It sits last on the page, tinted red, and its button opens a dialog that asks again before `onConfirm` runs. Use the same verb for the button and the confirm button (\"Delete app\"), name the thing in `confirmTitle`, and say what's lost in the description. `confirmDescription` defaults to the description. For the most destructive actions, set `confirmText` to the thing's name: the confirm button stays disabled until it's typed exactly, as the CLI asks.",
+          "A section for an action that can't be undone, like deleting or leaving something. It sits last on the page, tinted red, and its button opens a dialog that asks again before `onConfirm` runs. Use the same verb for the button and the confirm button (\"Delete app\"), name the thing in `confirmTitle`, and say what's lost in the description. `confirmDescription` defaults to the description. Set `disabled` while something blocks the action, and say what in the description. For the most destructive actions, set `confirmText` to the thing's name: the confirm button stays disabled until it's typed exactly, as the CLI asks.",
       },
     },
   },
@@ -59,6 +59,24 @@ export const TypedConfirmation: Story = {
       description: {
         story:
           "With `confirmText`, the dialog asks you to type the name before the action is allowed.",
+      },
+    },
+  },
+};
+
+export const Disabled: Story = {
+  args: {
+    title: "Delete this organization",
+    description: "Destroy its 3 apps before deleting it.",
+    actionLabel: "Delete organization",
+    confirmTitle: "Delete Acme?",
+    disabled: true,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "With `disabled`, the button can't be pressed. Say why in the description, and what to do first.",
       },
     },
   },

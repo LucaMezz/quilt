@@ -24,15 +24,17 @@ export function DangerSection({
   confirmDescription = description,
   confirmText,
   onConfirm,
+  disabled,
   level,
 }: {
   title: string;
-  description: string;
+  description: React.ReactNode;
   actionLabel: string;
   confirmTitle: string;
-  confirmDescription?: string;
+  confirmDescription?: React.ReactNode;
   confirmText?: string;
   onConfirm: () => void;
+  disabled?: boolean;
   level?: 2 | 3;
 }) {
   const [open, setOpen] = useState(false);
@@ -59,7 +61,9 @@ export function DangerSection({
       className="ring-destructive/30"
       action={
         <AlertDialog open={open} onOpenChange={onOpenChange}>
-          <AlertDialogTrigger render={<Button variant="destructive" />}>
+          <AlertDialogTrigger
+            render={<Button variant="destructive" disabled={disabled} />}
+          >
             {actionLabel}
           </AlertDialogTrigger>
           <AlertDialogContent>

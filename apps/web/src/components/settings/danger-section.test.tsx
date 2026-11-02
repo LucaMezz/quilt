@@ -63,6 +63,26 @@ describe("DangerSection", () => {
   });
 });
 
+describe("DangerSection while disabled", () => {
+  it("can't be started", () => {
+    const onConfirm = vi.fn();
+    render(
+      <DangerSection
+        title="Delete this organization"
+        description="Destroy its apps first."
+        actionLabel="Delete organization"
+        confirmTitle="Delete Acme?"
+        onConfirm={onConfirm}
+        disabled
+      />,
+    );
+
+    expect(
+      screen.getByRole("button", { name: "Delete organization" }),
+    ).toBeDisabled();
+  });
+});
+
 describe("DangerSection with typed confirmation", () => {
   function renderTyped(onConfirm = vi.fn()) {
     render(

@@ -122,3 +122,12 @@ export function useSetOrganizationLogo() {
         for (const listener of listeners) listener();
     }, []);
 }
+
+export function useDeleteOrganization() {
+    return useCallback((id: string) => {
+        organizations = organizations.filter(
+            (organization) => organization.id !== id,
+        );
+        for (const listener of listeners) listener();
+    }, []);
+}

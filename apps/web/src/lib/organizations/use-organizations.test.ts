@@ -6,6 +6,7 @@ import { useApps } from "@/lib/apps/use-apps";
 import {
     canManageOrganization,
     useCreateOrganization,
+    useDeleteOrganization,
     useOrganization,
     useOrganizations,
     useSetOrganizationLogo,
@@ -92,5 +93,16 @@ describe("organization store", () => {
         act(() => result.current.setLogo("org_K9vD", null));
         expect(revokeObjectURL).toHaveBeenCalledWith("blob:logo");
         expect(result.current.organization?.logo).toBeNull();
+    });
+
+    it("deletes an organization", () => {
+        const { result } = renderHook(() => ({
+            remove: useDeleteOrganization(),
+            organization: useOrganization("open-source"),
+        }));
+
+        act(() => result.current.remove("org_3XmP"));
+
+        expect(result.current.organization).toBeUndefined();
     });
 });

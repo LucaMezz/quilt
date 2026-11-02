@@ -1,17 +1,34 @@
-import { Avatar, AvatarFallback } from "@quilt/ui/components/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@quilt/ui/components/avatar";
 import { cn } from "@quilt/ui/lib/utils";
 import { ExternalLinkIcon } from "lucide-react";
 
 import { RelativeTime } from "@/components/display/relative-time";
 import type { App } from "@/lib/apps/use-apps";
 
-export function AppAvatar({ app, size }: { app: App; size?: "lg" }) {
+export function AppAvatar({
+  app,
+  size,
+}: {
+  app: Pick<App, "name" | "logo">;
+  size?: "lg";
+}) {
   return (
     <Avatar
       className="rounded-md after:rounded-md"
       size={size}
       aria-hidden="true"
     >
+      {app.logo && (
+        <AvatarImage
+          src={app.logo}
+          alt=""
+          className="rounded-md object-cover"
+        />
+      )}
       <AvatarFallback className="rounded-md">
         {app.name.slice(0, 1).toUpperCase()}
       </AvatarFallback>

@@ -9,6 +9,7 @@ import {
     useApps,
     useCreateApp,
     useDestroyApp,
+    useSetAppLogo,
 } from "./use-apps";
 
 describe("app store", () => {
@@ -89,5 +90,29 @@ describe("app store", () => {
 
         act(() => vi.advanceTimersByTime(TEARDOWN_MS));
         expect(result.current.blog).toBeUndefined();
+    });
+
+    it("sets and removes an app's logo", () => {
+        vi.spyOn(URL, "createObjectURL").mockReturnValue("blob:logo");
+        const revoke = vi
+            .spyOn(URL, "revokeObjectURL")
+            .mockImplementation(() => {});
+        const { result } = renderHook(() => ({
+            setLogo: useSetAppLogo(),
+            app: useApp("acme", "web"),
+        }));
+        const id = result.current.app?.id ?? "";
+
+        act(() =>
+            result.current.setLogo(
+                id,
+                new File(["png"], "logo.png", { type: "image/png" }),
+            ),
+        );
+        expect(result.current.app?.logo).toBe("blob:logo");
+
+        act(() => result.current.setLogo(id, null));
+        expect(revoke).toHaveBeenCalledWith("blob:logo");
+        expect(result.current.app?.logo).toBeNull();
     });
 });

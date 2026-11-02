@@ -10,8 +10,14 @@ import { Detail, DetailList } from "@/components/display/detail-list";
 import { RelativeTime } from "@/components/display/relative-time";
 import { BackLink } from "@/components/settings/back-link";
 import { DangerSection } from "@/components/settings/danger-section";
+import { ImagePicker } from "@/components/settings/image-picker";
 import { SectionCard } from "@/components/settings/section-card";
-import { type App, useApp, useDestroyApp } from "@/lib/apps/use-apps";
+import {
+  type App,
+  useApp,
+  useDestroyApp,
+  useSetAppLogo,
+} from "@/lib/apps/use-apps";
 
 export const Route = createFileRoute("/_auth/organizations/$org/apps/$app")({
   component: AppPage,
@@ -59,6 +65,7 @@ function AppPage() {
         </div>
       </div>
       <LiveDeploymentSection app={app} />
+      <AppLogo app={app} />
       <SectionCard title="Details">
         <DetailList>
           <Detail label="Name">
@@ -102,6 +109,28 @@ function LiveDeploymentSection({ app }: { app: App }) {
           </Detail>
         </DetailList>
       )}
+    </SectionCard>
+  );
+}
+
+function AppLogo({ app }: { app: App }) {
+  const setLogo = useSetAppLogo();
+
+  return (
+    <SectionCard
+      title="Logo"
+      description="Shown next to the app's name in the dashboard. A PNG, JPEG or WebP image of up to 5 MB."
+    >
+      <ImagePicker
+        image={app.logo}
+        fallback={app.name.slice(0, 1).toUpperCase()}
+        label="logo"
+        shape="square"
+        onChange={(file) => {
+          setLogo(app.id, file);
+          toast.success(file ? "Logo updated" : "Logo removed");
+        }}
+      />
     </SectionCard>
   );
 }

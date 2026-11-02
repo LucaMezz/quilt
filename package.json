@@ -62,5 +62,6 @@
             "@tanstack/router-plugin",
             "@tanstack/virtual-file-routes"
         ]
-    }
+    },
+    "version": "0.1.0"
 }

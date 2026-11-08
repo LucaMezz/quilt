@@ -19,14 +19,14 @@
         "@quilt/cluster": "workspace:*",
         "@quilt/db": "workspace:*",
         "drizzle-orm": "1.0.0-rc.5",
-        "varlock": "1.23.0"
+        "varlock": "1.24.0"
     },
     "devDependencies": {
         "@quilt/config": "workspace:*",
-        "@types/node": "^26.6.5",
-        "tsdown": "^0.23.1",
+        "@types/node": "^26.6.6",
+        "tsdown": "^0.23.5",
         "tsx": "^4.23.15",
         "typescript": "^7.0.2",
-        "vitest": "^5.0.5"
+        "vitest": "^5.1.0"
     }
 }

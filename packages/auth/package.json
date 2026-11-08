@@ -13,19 +13,19 @@
         "test:watch": "vitest"
     },
     "dependencies": {
-        "@better-auth/api-key": "1.7.10",
-        "@better-auth/core": "1.7.10",
-        "@better-auth/drizzle-adapter": "1.7.10",
+        "@better-auth/api-key": "1.7.17",
+        "@better-auth/core": "1.7.17",
+        "@better-auth/drizzle-adapter": "1.7.17",
         "@quilt/db": "workspace:*",
-        "better-auth": "1.7.10",
-        "better-call": "1.4.2",
+        "better-auth": "1.7.17",
+        "better-call": "1.4.5",
         "drizzle-orm": "1.0.0-rc.5",
         "zod": "^4.5.4"
     },
     "devDependencies": {
         "@quilt/config": "workspace:*",
-        "@vitest/coverage-v8": "^5.0.5",
+        "@vitest/coverage-v8": "^5.1.0",
         "typescript": "^7.0.2",
-        "vitest": "^5.0.5"
+        "vitest": "^5.1.0"
     }
 }

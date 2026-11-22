@@ -22,25 +22,25 @@
     },
     "devDependencies": {
         "@quilt/config": "workspace:*",
-        "@types/node": "^26.6.5",
-        "@vitest/coverage-v8": "^5.0.5",
-        "tsdown": "^0.23.1",
+        "@types/node": "^26.6.6",
+        "@vitest/coverage-v8": "^5.1.1",
+        "tsdown": "^0.23.7",
         "tsx": "^4.23.15",
         "typescript": "^7.0.2",
-        "vitest": "^5.0.5"
+        "vitest": "^5.1.1"
     },
     "dependencies": {
-        "@better-auth/api-key": "1.7.10",
-        "@commander-js/extra-typings": "15.0.0",
-        "@inquirer/prompts": "8.7.4",
+        "@better-auth/api-key": "1.7.26",
+        "@commander-js/extra-typings": "15.1.0",
+        "@inquirer/prompts": "8.8.0",
         "@napi-rs/keyring": "^2.1.2",
-        "@orpc/client": "^1.15.7",
+        "@orpc/client": "^1.16.3",
         "@quilt/api": "workspace:*",
         "@quilt/auth": "workspace:*",
-        "better-auth": "1.7.10",
+        "better-auth": "1.7.26",
         "chalk": "^6.0.1",
         "cli-table3": "^0.6.5",
-        "commander": "15.0.0",
+        "commander": "15.1.0",
         "log-symbols": "^7.0.1",
         "ora": "^9.4.1"
     }
